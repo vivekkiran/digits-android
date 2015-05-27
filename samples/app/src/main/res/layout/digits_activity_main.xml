@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center"
+              android:orientation="vertical"
+              android:paddingLeft="@dimen/padding_container"
+              android:paddingRight="@dimen/padding_container">
+
+    <com.digits.sdk.android.DigitsAuthButton
+        android:id="@+id/signup_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <Button
+        android:id="@+id/verify_credentials_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/verify_credentials"/>
+
+    <Button
+        android:id="@+id/clear_session_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/clear_session"/>
+
+    <Button
+        android:id="@+id/find_your_friends_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/find_your_friends"/>
+
+    <TextView
+        android:id="@+id/user_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/token"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"/>
+
+    <TextView
+        android:id="@+id/secret"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="5dp"/>
+</LinearLayout>

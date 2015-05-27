@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="LightTheme" parent="android:Theme.Holo.Light">
+        <item name="dgts__accentColor">#9bfad0</item>
+    </style>
+
+    <style name="DarkTheme" parent="android:Theme.Holo">
+        <item name="dgts__accentColor">#9bfad0</item>
+    </style>
+</resources>
