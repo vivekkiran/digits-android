@@ -77,8 +77,7 @@ more details about how to contribute.
 
 ## Contact
 
-For usage questions post on [Digits Community](https://twittercommunity.com/c/fabric/digits) or
-email <support@fabric.io>
+For usage questions post on [Digits Community](https://twittercommunity.com/c/fabric/digits).
 
 Please report any bugs as [issues](https://github.com/twitter/digits-android/issues).
 
