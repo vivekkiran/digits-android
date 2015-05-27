@@ -39,8 +39,8 @@ Check out [more details and other build tool integrations](https://fabric.io/dow
 ## Getting Started
 
 * Sign up for a [Fabric account](https://fabric.io) and follow onboarding instructions to get your Fabric API Key and build secret, found under the organization settings of the Fabric web dashboard.
-* Get your Digits API key from the plugin.
-* Rename /samples/app/fabric.properties.sample to /samples/app/fabric.properties and populate information.
+* Get your Digits API key from the IDE plugin.
+* Rename samples/app/fabric.properties.sample to samples/app/fabric.properties and populate information.
 * Run Sample app to verify build.
 * For extensive documentation, please see the [official documentation](http://docs.fabric.io/android/digits/index.html).
 
