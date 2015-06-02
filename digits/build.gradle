@@ -63,10 +63,8 @@ dependencies {
     compile rootProject.fabric
     compile rootProject.appCompat
 
-    debugCompile rootProject.mockito
-    debugCompile rootProject.dexmakerMockito
-    debugCompile rootProject.fabricTest
-
+    androidTestCompile rootProject.mockito
+    androidTestCompile rootProject.dexmakerMockito
+    androidTestCompile rootProject.fabricTest
     androidTestCompile rootProject.androidTestingSupport
 }
-
