@@ -104,12 +104,14 @@ public class StateButton extends RelativeLayout {
     }
 
     public void showProgress() {
+        setClickable(false);
         textView.setText(progressText);
         progressBar.setVisibility(View.VISIBLE);
         imageView.setVisibility(View.GONE);
     }
 
     public void showFinish() {
+        setClickable(false);
         textView.setText(finishText);
         progressBar.setVisibility(View.GONE);
         imageView.setVisibility(View.VISIBLE);
@@ -120,6 +122,7 @@ public class StateButton extends RelativeLayout {
     }
 
     public void showStart() {
+        setClickable(true);
         textView.setText(startText);
         progressBar.setVisibility(View.GONE);
         imageView.setVisibility(View.GONE);

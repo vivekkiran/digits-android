@@ -70,6 +70,7 @@ public class StateButtonTest extends DigitsAndroidTestCase {
         assertEquals(View.GONE, progressBar.getVisibility());
         assertEquals(View.GONE, imageView.getVisibility());
         assertTrue(progressBar.isIndeterminate());
+        assertTrue(button.isClickable());
     }
 
     @Test
@@ -79,6 +80,7 @@ public class StateButtonTest extends DigitsAndroidTestCase {
         assertEquals(View.VISIBLE, progressBar.getVisibility());
         assertEquals(View.GONE, imageView.getVisibility());
         assertTrue(progressBar.isIndeterminate());
+        assertFalse(button.isClickable());
     }
 
     @Test
@@ -88,6 +90,7 @@ public class StateButtonTest extends DigitsAndroidTestCase {
         assertEquals(View.GONE, progressBar.getVisibility());
         assertEquals(View.VISIBLE, imageView.getVisibility());
         assertTrue(progressBar.isIndeterminate());
+        assertFalse(button.isClickable());
     }
 
     @Test
