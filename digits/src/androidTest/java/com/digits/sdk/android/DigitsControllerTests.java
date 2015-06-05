@@ -81,7 +81,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         controller.showTOS(context);
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
-        assertEquals(controller.getTOSUri(), intent.getData());
+        assertEquals(controller.getTosUri(), intent.getData());
         assertEquals(Intent.ACTION_VIEW, intent.getAction());
     }
 

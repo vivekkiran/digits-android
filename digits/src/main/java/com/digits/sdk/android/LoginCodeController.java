@@ -88,7 +88,7 @@ class LoginCodeController extends DigitsControllerImpl {
     }
 
     @Override
-    Uri getTOSUri() {
+    Uri getTosUri() {
         return DigitsConstants.TWITTER_TOS;
     }
 }

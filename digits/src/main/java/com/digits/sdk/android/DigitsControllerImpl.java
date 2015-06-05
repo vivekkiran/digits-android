@@ -62,7 +62,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     @Override
     public void showTOS(Context context) {
         final Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.setData(getTOSUri());
+        intent.setData(getTosUri());
         context.startActivity(intent);
     }
 
@@ -140,7 +140,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
         //Nothing to do
     }
 
-    abstract Uri getTOSUri();
+    abstract Uri getTosUri();
 
     Bundle getBundle(String phoneNumber) {
         final Bundle bundle = new Bundle();

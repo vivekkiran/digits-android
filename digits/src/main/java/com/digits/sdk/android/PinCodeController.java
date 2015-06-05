@@ -59,7 +59,7 @@ class PinCodeController extends DigitsControllerImpl {
     }
 
     @Override
-    Uri getTOSUri() {
+    Uri getTosUri() {
         return null;
     }
 

@@ -120,7 +120,7 @@ class PhoneNumberController extends DigitsControllerImpl {
     }
 
     @Override
-    Uri getTOSUri() {
+    Uri getTosUri() {
         return DigitsConstants.DIGITS_TOS;
     }
 
