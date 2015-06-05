@@ -115,7 +115,8 @@ dependencies {
     androidTestCompile rootProject.mockito
     androidTestCompile rootProject.dexmakerMockito
     androidTestCompile rootProject.androidTestingSupport
-
+    
+    testCompile rootProject.mavenAntTasks
     testCompile rootProject.mockito
     testCompile rootProject.androidTestingSupport
     testCompile rootProject.junit
