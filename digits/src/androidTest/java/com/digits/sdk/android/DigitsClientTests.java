@@ -175,8 +175,23 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         verifyCallbackInReceiver(callback);
     }
 
+    public void testStartSignUp_withPhone() throws Exception {
+        verifySignUpWithProvidedPhone(callback, PHONE);
+        verifyCallbackInReceiver(callback);
+    }
+
+    public void testStartSignUp_withNullPhone() throws Exception {
+        verifySignUpWithProvidedPhone(callback, null);
+        verifyCallbackInReceiver(callback);
+    }
+
     public void testStartSignUp_nullListener() throws Exception {
         verifySignUp(null);
+        verifyCallbackInReceiver(null);
+    }
+
+    public void testStartSignUp_nullListenerWithPhone() throws Exception {
+        verifySignUpWithProvidedPhone(null, PHONE);
         verifyCallbackInReceiver(null);
     }
 
@@ -186,9 +201,21 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         verify(callback).success(userSession, null);
     }
 
+    public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
+        when(sessionManager.getActiveSession()).thenReturn(userSession);
+        digitsClient.startSignUp(callback, PHONE);
+        verify(callback).success(userSession, null);
+    }
+
     public void testStartSignUp_loggedOutUser() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(guestSession);
         verifySignUp(callback);
+        verifyCallbackInReceiver(callback);
+    }
+
+    public void testStartSignUp_loggedOutUserWithPhone() throws Exception {
+        when(sessionManager.getActiveSession()).thenReturn(guestSession);
+        verifySignUpWithProvidedPhone(callback, PHONE);
         verifyCallbackInReceiver(callback);
     }
 
@@ -226,6 +253,19 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         // if it's correctly build
         verify(context).startActivity(argument.capture());
         capturedIntent = argument.getValue();
+        assertTrue(component.equals(capturedIntent.getComponent()));
+    }
+
+    private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone) {
+        digitsClient.startSignUp(callback, phone);
+        verify(scribeService).dailyPing();
+        final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
+        //verify start activity is called, passing an ArgumentCaptor to get the intent and check
+        // if it's correctly build
+        verify(context).startActivity(argument.capture());
+        capturedIntent = argument.getValue();
+        assertEquals(phone == null ? "" : phone, capturedIntent.getStringExtra(DigitsClient
+                .EXTRA_PHONE));
         assertTrue(component.equals(capturedIntent.getComponent()));
     }
 }

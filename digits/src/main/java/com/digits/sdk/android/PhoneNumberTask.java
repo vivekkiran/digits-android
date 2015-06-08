@@ -22,18 +22,30 @@ import io.fabric.sdk.android.services.concurrency.AsyncTask;
 class PhoneNumberTask extends AsyncTask<Void, Void, PhoneNumber> {
     private final Listener listener;
     private final PhoneNumberUtils phoneNumberUtils;
+    private final String providedPhoneNumber;
 
     protected PhoneNumberTask(PhoneNumberUtils phoneNumberUtils, Listener listener) {
         if (phoneNumberUtils == null) {
-            throw new NullPointerException("phoneNumberManager can't be null");
+            throw new NullPointerException("phoneNumberUtils can't be null");
         }
         this.listener = listener;
         this.phoneNumberUtils = phoneNumberUtils;
+        this.providedPhoneNumber = "";
+    }
+
+    protected PhoneNumberTask(PhoneNumberUtils phoneNumberUtils, String providedPhoneNumber,
+            Listener listener) {
+        if (phoneNumberUtils == null) {
+            throw new NullPointerException("phoneNumberUtils can't be null");
+        }
+        this.listener = listener;
+        this.phoneNumberUtils = phoneNumberUtils;
+        this.providedPhoneNumber = providedPhoneNumber;
     }
 
     @Override
     protected PhoneNumber doInBackground(Void... params) {
-        return phoneNumberUtils.getPhoneNumber();
+        return phoneNumberUtils.getPhoneNumber(providedPhoneNumber);
     }
 
 

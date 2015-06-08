@@ -24,33 +24,53 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
 public class PhoneNumberTaskTest {
+    private static final String EMPTY_PHONE = "";
     private PhoneNumberUtils phoneNumberUtils;
     private PhoneNumber phoneNumber;
+    private PhoneNumberTask.Listener listener;
+    private PhoneNumberTask taskWithProvidedPhone;
+    private PhoneNumberTask task;
 
     @Before
     public void setUp() throws Exception {
 
-        phoneNumberUtils = mock(PhoneNumberUtilsTest.DummyPhoneNumberUtils.class);
+        phoneNumberUtils = mock(PhoneNumberUtils.class);
+        listener = mock(PhoneNumberTask.Listener.class);
         phoneNumber = new PhoneNumber(TestConstants.PHONE, TestConstants.US_ISO2,
                 TestConstants.US_COUNTRY_CODE);
-        when(phoneNumberUtils.getPhoneNumber()).thenReturn(phoneNumber);
+        taskWithProvidedPhone = new PhoneNumberTask(phoneNumberUtils, TestConstants.PHONE,
+                listener);
+        task = new PhoneNumberTask(phoneNumberUtils, listener);
     }
 
     @Test
-    public void testExecute() throws Exception {
+    public void testDoInBackgroundProvidedPhone() throws Exception {
+        taskWithProvidedPhone.doInBackground();
+        verify(phoneNumberUtils).getPhoneNumber(TestConstants.PHONE);
+    }
 
-        new PhoneNumberTask(phoneNumberUtils, new PhoneNumberTask.Listener() {
-            @Override
-            public void onLoadComplete(PhoneNumber result) {
-                assertEquals(phoneNumber, result);
-                verify(phoneNumberUtils).getPhoneNumber();
-            }
-        }).execute();
+    @Test
+    public void testDoInBackground() throws Exception {
+        task.doInBackground();
+        verify(phoneNumberUtils).getPhoneNumber(EMPTY_PHONE);
+    }
+
+    @Test
+    public void testOnPostExecute() throws Exception {
+        task.onPostExecute(phoneNumber);
+        verify(listener).onLoadComplete(phoneNumber);
+    }
+
+    @Test
+    public void testOnPostExecuteProvidedPhone() throws Exception {
+        taskWithProvidedPhone.onPostExecute(phoneNumber);
+        verify(listener).onLoadComplete(phoneNumber);
     }
 
     @Test
@@ -58,7 +78,7 @@ public class PhoneNumberTaskTest {
         try {
             new PhoneNumberTask(null, mock(PhoneNumberTask.Listener.class));
         } catch (NullPointerException ex) {
-            assertEquals("phoneNumberManager can't be null", ex.getMessage());
+            assertEquals("phoneNumberUtils can't be null", ex.getMessage());
         }
     }
 

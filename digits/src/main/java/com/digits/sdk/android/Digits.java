@@ -63,10 +63,31 @@ public class Digits extends Kit<Void> {
     }
 
     /**
-     * Starts and sets the theme for the authentication flow
+     * Starts the authentication flow
      *
      * @param callback will get the success or failure callback. It can be null,
-     *                 but the developer will not get any callback.
+     * but the developer will not get any callback.
+     */
+    public static void authenticate(AuthCallback callback) {
+        authenticate(callback, ThemeUtils.DEFAULT_THEME);
+    }
+
+    /**
+     * Starts the authentication flow with the provided phone number.
+     *
+     * @param callback will get the success or failure callback. It can be null,
+     * but the developer will not get any callback.
+     * @param phoneNumber the phone number to authenticate
+     */
+    public static void authenticate(AuthCallback callback, String phoneNumber) {
+        authenticate(callback, ThemeUtils.DEFAULT_THEME, phoneNumber);
+    }
+
+    /**
+     * Starts and sets the theme for the authentication flow.
+     *
+     * @param callback will get the success or failure callback. It can be null,
+     * but the developer will not get any callback.
      * @param themeResId Theme resource id
      */
     public static void authenticate(AuthCallback callback, int themeResId) {
@@ -75,19 +96,21 @@ public class Digits extends Kit<Void> {
     }
 
     /**
-     * Starts the authentication flow
+     * Starts the authentication flow with the provided phone number and theme.
      *
      * @param callback will get the success or failure callback. It can be null,
-     *                 but the developer will not get any callback.
+     * but the developer will not get any callback.
+     * @param themeResId Theme resource id
+     * @param phoneNumber the phone number to authenticate
      */
-    public static void authenticate(AuthCallback callback) {
-        authenticate(callback, ThemeUtils.DEFAULT_THEME);
+    public static void authenticate(AuthCallback callback, int themeResId, String phoneNumber) {
+        getInstance().setTheme(themeResId);
+        getInstance().getDigitsClient().startSignUp(callback, phoneNumber);
     }
 
     public static SessionManager<DigitsSession> getSessionManager() {
         return getInstance().sessionManager;
     }
-
 
     public Digits() {
         super();

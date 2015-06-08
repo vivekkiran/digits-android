@@ -24,7 +24,9 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
@@ -34,22 +36,21 @@ public class PhoneNumberUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-
         simManager = mock(SimManagerTest.DummySimManager.class);
     }
 
     @Test
     public void testGetPhoneNumber_nullSim() throws Exception {
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(null);
-        assertEquals(PhoneNumber.emptyPhone(), DummyPhoneNumberUtils.getPhoneNumber());
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
+        assertEquals(PhoneNumber.emptyPhone(), phoneNumberUtils.getPhoneNumber());
     }
 
     @Test
     public void testGetPhoneNumber() throws Exception {
         when(simManager.getCountryIso()).thenReturn(TestConstants.US_ISO2);
         when(simManager.getRawPhoneNumber()).thenReturn(TestConstants.RAW_PHONE);
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(simManager);
-        final PhoneNumber number = DummyPhoneNumberUtils.getPhoneNumber();
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(simManager);
+        final PhoneNumber number = phoneNumberUtils.getPhoneNumber();
         verify(simManager).getCountryIso();
         verify(simManager).getRawPhoneNumber();
         assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
@@ -58,11 +59,36 @@ public class PhoneNumberUtilsTest {
     }
 
     @Test
+    public void testGetPhoneNumberProvidedRawPhoneNumber() throws Exception {
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
+        final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber(TestConstants.ES_RAW_PHONE);
+        assertEquals(TestConstants.ES_COUNTRY_CODE, phoneNumber.getCountryCode());
+        assertEquals(TestConstants.ES_ISO2, phoneNumber.getCountryIso().toLowerCase());
+        assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, phoneNumber.getPhoneNumber());
+    }
+
+    @Test
+    public void testGetPhoneNumberProvidedPhone_empty() throws Exception {
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
+        final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber("");
+        assertEquals(PhoneNumber.emptyPhone(), phoneNumber);
+    }
+
+    @Test
+    public void testGetPhoneNumberProvidedPhone_withoutPlusSign() throws Exception {
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(null);
+        final PhoneNumber phoneNumber = phoneNumberUtils.getPhoneNumber(TestConstants.PHONE);
+        assertEquals(TestConstants.PHONE, phoneNumber.getPhoneNumber());
+        assertEquals(TestConstants.US_COUNTRY_CODE, phoneNumber.getCountryCode());
+        assertEquals(TestConstants.US_ISO2, phoneNumber.getCountryIso().toLowerCase());
+    }
+
+    @Test
     public void testGetPhoneNumber_noCountryCode() throws Exception {
         when(simManager.getCountryIso()).thenReturn(TestConstants.US_ISO2);
         when(simManager.getRawPhoneNumber()).thenReturn(TestConstants.PHONE_NO_COUNTRY_CODE);
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(simManager);
-        final PhoneNumber number = DummyPhoneNumberUtils.getPhoneNumber();
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(simManager);
+        final PhoneNumber number = phoneNumberUtils.getPhoneNumber();
         verify(simManager).getCountryIso();
         verify(simManager).getRawPhoneNumber();
         assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
@@ -74,8 +100,8 @@ public class PhoneNumberUtilsTest {
     public void testGetPhoneNumber_noPlusSymbol() throws Exception {
         when(simManager.getCountryIso()).thenReturn(TestConstants.US_ISO2);
         when(simManager.getRawPhoneNumber()).thenReturn(TestConstants.PHONE);
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(simManager);
-        final PhoneNumber number = DummyPhoneNumberUtils.getPhoneNumber();
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(simManager);
+        final PhoneNumber number = phoneNumberUtils.getPhoneNumber();
         verify(simManager).getCountryIso();
         verify(simManager).getRawPhoneNumber();
         assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
@@ -88,8 +114,8 @@ public class PhoneNumberUtilsTest {
         when(simManager.getCountryIso()).thenReturn(TestConstants.US_ISO2);
         when(simManager.getRawPhoneNumber()).thenReturn(
                 TestConstants.PHONE_PLUS_SYMBOL_NO_COUNTRY_CODE);
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(simManager);
-        final PhoneNumber number = DummyPhoneNumberUtils.getPhoneNumber();
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(simManager);
+        final PhoneNumber number = phoneNumberUtils.getPhoneNumber();
         verify(simManager).getCountryIso();
         verify(simManager).getRawPhoneNumber();
         assertEquals(TestConstants.PHONE_NO_COUNTRY_CODE, number.getPhoneNumber());
@@ -101,20 +127,12 @@ public class PhoneNumberUtilsTest {
     public void testGetPhoneNumber_nonMatchingISO() throws Exception {
         when(simManager.getCountryIso()).thenReturn(INVENTED_ISO);
         when(simManager.getRawPhoneNumber()).thenReturn(TestConstants.RAW_PHONE);
-        final DummyPhoneNumberUtils DummyPhoneNumberUtils = new DummyPhoneNumberUtils(simManager);
-        final PhoneNumber number = DummyPhoneNumberUtils.getPhoneNumber();
+        final PhoneNumberUtils phoneNumberUtils = new PhoneNumberUtils(simManager);
+        final PhoneNumber number = phoneNumberUtils.getPhoneNumber();
         verify(simManager).getCountryIso();
         verify(simManager).getRawPhoneNumber();
         assertEquals(TestConstants.PHONE, number.getPhoneNumber());
         assertEquals("", number.getCountryCode());
         assertEquals(INVENTED_ISO, number.getCountryIso());
-    }
-
-    public class DummyPhoneNumberUtils extends PhoneNumberUtils{
-
-
-        DummyPhoneNumberUtils(SimManager simManager) {
-            super(simManager);
-        }
     }
 }

@@ -103,21 +103,40 @@ public class DigitsClient {
     }
 
     protected void startSignUp(AuthCallback callback) {
+        startSignUpWithBundle(callback, createBundleForAuthFlow(callback));
+    }
+
+    protected void startSignUp(AuthCallback callback, String phoneNumber) {
+        startSignUpWithBundle(callback, createBundleForAuthFlow(callback,
+                phoneNumber == null ? "" : phoneNumber));
+    }
+
+    private void startSignUpWithBundle(AuthCallback callback, Bundle bundle) {
         final DigitsSession session = sessionManager.getActiveSession();
         digits.getScribeService().dailyPing();
         if (session != null && !session.isLoggedOutUser()) {
             callback.success(session, null);
         } else {
-            startPhoneNumberActivity(callback, twitterCore.getContext());
+            startPhoneNumberActivity(twitterCore.getContext(), bundle);
         }
     }
 
-    private void startPhoneNumberActivity(AuthCallback callback, Context context) {
-        final Intent intent = new Intent(context, digits.getActivityClassManager()
-                .getPhoneNumberActivity());
+    private Bundle createBundleForAuthFlow(AuthCallback callback, String phoneNumber) {
+        final Bundle bundle = createBundleForAuthFlow(callback);
+        bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
+        return bundle;
+    }
+
+    private Bundle createBundleForAuthFlow(AuthCallback callback) {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER,
                 new LoginResultReceiver(callback, sessionManager));
+        return bundle;
+    }
+
+    private void startPhoneNumberActivity(Context context, Bundle bundle) {
+        final Intent intent = new Intent(context, digits.getActivityClassManager()
+                .getPhoneNumberActivity());
         intent.putExtras(bundle);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         context.startActivity(intent);

@@ -20,6 +20,7 @@ package com.digits.sdk.android;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.TextUtils;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -62,14 +63,22 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
         setUpCountrySpinner(countryCodeSpinner);
 
-        executePhoneNumberTask(new PhoneNumberUtils(SimManager.createSimManager(activity)));
+        executePhoneNumberTask(new PhoneNumberUtils(SimManager.createSimManager(activity)),
+                bundle);
 
         CommonUtils.openKeyboard(activity, phoneEditText);
     }
 
-    private void executePhoneNumberTask(PhoneNumberUtils phoneNumberUtils) {
-        new PhoneNumberTask(phoneNumberUtils, this).executeOnExecutor(Digits.getInstance()
-                .getExecutorService());
+    private void executePhoneNumberTask(PhoneNumberUtils phoneNumberUtils, Bundle bundle) {
+        final String phoneNumber = bundle.getString(DigitsClient.EXTRA_PHONE);
+
+        if (TextUtils.isEmpty(phoneNumber)) {
+            new PhoneNumberTask(phoneNumberUtils, this).executeOnExecutor(Digits.getInstance()
+                    .getExecutorService());
+        } else {
+            new PhoneNumberTask(phoneNumberUtils, phoneNumber, this).executeOnExecutor(Digits
+                    .getInstance().getExecutorService());
+        }
     }
 
     PhoneNumberController initController(Bundle bundle) {
