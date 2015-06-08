@@ -6,7 +6,12 @@
 .com/twitter/digits-android/issues/2)
 * (IC) Added a new public API to launch authentication flow with the provided phone number
 
+## v1.5.0
+
+* Prepared for open source release.
+
 ## v1.4.2
+
 * (IC) Added normalized phone number from /device/login endpoint
 * (EF) Change xauth_phone_number.json endpoint to sdk/login endpoint
 * (EF) Change over to api.digits.com
