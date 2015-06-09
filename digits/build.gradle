@@ -67,7 +67,7 @@ android {
 }
 
 dependencies {
-    compile('com.twitter.sdk.android:twitter-core:1.3.4@aar') {
+    compile(rootProject.twitterCore) {
         transitive = true
     }
     compile rootProject.fabric

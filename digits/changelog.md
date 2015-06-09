@@ -2,6 +2,8 @@
 *Non-trivial pull requests should include an entry below. Entries must be suitable for inclusion in public-facing materials such as release notes and blog posts. Keep them short, sweet, and in the past tense. New entries go on top. When merging to deploy, add the version number and date.*
 
 ## Unreleased
+
+## v1.6.0
 * (IC) [Fixed crash on StateButton when multiple clicks] (https://github
 .com/twitter/digits-android/issues/2)
 * (IC) Added a new public API to launch authentication flow with the provided phone number
