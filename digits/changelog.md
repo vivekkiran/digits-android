@@ -4,6 +4,7 @@
 ## Unreleased
 * (IC) [Fixed crash on StateButton when multiple clicks] (https://github
 .com/twitter/digits-android/issues/2)
+* (IC) Added a new public API to launch authentication flow with the provided phone number
 
 ## v1.4.2
 * (IC) Added normalized phone number from /device/login endpoint
