@@ -17,6 +17,8 @@
 
 package com.digits.sdk.android;
 
+import android.net.Uri;
+
 import io.fabric.sdk.android.services.network.HttpMethod;
 
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -67,6 +69,32 @@ public class DigitsOAuthSigning {
     public Map<String, String> getOAuthEchoHeadersForVerifyCredentials() {
         return oAuth1aHeaders.getOAuthEchoHeaders(authConfig, authToken, null,
                 HttpMethod.GET.name(), VERIFY_CREDENTIALS_URL, null);
+    }
+
+    /**
+     * Returns OAuth Echo header for <a href="https://api.digits.com/1.1/sdk/account.json</a>
+     * endpoint.
+     *
+     * @param optParams optional custom params to add the request URL. These extra parameters help
+     * as a Nonce between the client's session and the Echo header to validate that this header
+     * cannot be reused by another client's session.
+     * @return A map of OAuth Echo headers
+     */
+    public Map<String, String> getOAuthEchoHeadersForVerifyCredentials(Map<String, String>
+            optParams) {
+        return oAuth1aHeaders.getOAuthEchoHeaders(authConfig, authToken, null,
+                HttpMethod.GET.name(), createProviderUrlWithQueryParams(optParams), null);
+    }
+
+    private String createProviderUrlWithQueryParams(Map<String, String> optParams) {
+        if (optParams == null) {
+            return VERIFY_CREDENTIALS_URL;
+        }
+        final Uri.Builder uriHeader = Uri.parse(VERIFY_CREDENTIALS_URL).buildUpon();
+        for (String key : optParams.keySet()) {
+            uriHeader.appendQueryParameter(key, optParams.get(key));
+        }
+        return uriHeader.toString();
     }
 }
 

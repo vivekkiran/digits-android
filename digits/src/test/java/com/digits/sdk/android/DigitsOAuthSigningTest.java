@@ -23,30 +23,57 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.internal.oauth.OAuth1aHeaders;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.mockito.Mockito.*;
+import java.util.HashMap;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
 public class DigitsOAuthSigningTest {
     private static final String ANY_AUTH_HEADER = "Digits Authority!";
+    private static final String SESSION_ID = "12345";
+    private static final String SESSION_KEY = "session_id";
+
+    private OAuth1aHeaders oAuthHeaders;
+    private TwitterAuthConfig config;
+    private TwitterAuthToken token;
+    private DigitsOAuthSigning oAuthSigning;
+
+    @Before
+    public void setUp() throws Exception {
+        oAuthHeaders = mock(OAuth1aHeaders.class);
+        config = mock(TwitterAuthConfig.class);
+        token = mock(TwitterAuthToken.class);
+        when(oAuthHeaders.getAuthorizationHeader(config, token, null, HttpMethod.GET.name(),
+                DigitsOAuthSigning.VERIFY_CREDENTIALS_URL, null)).thenReturn(ANY_AUTH_HEADER);
+        oAuthSigning = new DigitsOAuthSigning(config, token, oAuthHeaders);
+
+    }
 
     @Test
     public void testGetOAuthEchoHeadersForVerifyCredentials() throws Exception {
-        final OAuth1aHeaders oAuthHeaders = mock(OAuth1aHeaders.class);
-        final TwitterAuthConfig config = mock(TwitterAuthConfig.class);
-        final TwitterAuthToken token = mock(TwitterAuthToken.class);
-        when(oAuthHeaders.getAuthorizationHeader(config, token, null, HttpMethod.GET.name(),
-                DigitsOAuthSigning.VERIFY_CREDENTIALS_URL, null)).thenReturn(ANY_AUTH_HEADER);
-
-        final DigitsOAuthSigning oAuthSigning = new DigitsOAuthSigning(config, token, oAuthHeaders);
         oAuthSigning.getOAuthEchoHeadersForVerifyCredentials();
 
         verify(oAuthHeaders).getOAuthEchoHeaders(config, token, null, HttpMethod.GET.name(),
                 DigitsOAuthSigning.VERIFY_CREDENTIALS_URL, null);
+    }
+
+    @Test
+    public void testGetOAuthEchoHeadersForVerifyCredentials_withPostParams() throws Exception {
+        final HashMap<String, String> optParams = new HashMap<>();
+        optParams.put(SESSION_KEY, SESSION_ID);
+        oAuthSigning.getOAuthEchoHeadersForVerifyCredentials(optParams);
+
+        verify(oAuthHeaders).getOAuthEchoHeaders(config, token, null, HttpMethod.GET.name(),
+                DigitsOAuthSigning.VERIFY_CREDENTIALS_URL + "?" + SESSION_KEY + "=" + SESSION_ID,
+                null);
     }
 }
