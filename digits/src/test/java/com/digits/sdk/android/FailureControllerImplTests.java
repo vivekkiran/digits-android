@@ -50,8 +50,6 @@ public class FailureControllerImplTests {
 
     @Before
     public void setUp() throws Exception {
-
-
         activity = mock(Activity.class);
         intentArgumentCaptor = ArgumentCaptor.forClass(Intent.class);
         bundleArgumentCaptor = ArgumentCaptor.forClass(Bundle.class);

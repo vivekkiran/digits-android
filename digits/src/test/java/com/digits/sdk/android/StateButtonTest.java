@@ -27,14 +27,18 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class StateButtonTest extends DigitsAndroidTestCase {
+public class StateButtonTest {
     private static final String SEND_TEXT = "Send confirmation code";
     private static final String PROGRESS_TEXT = "Sending confirmation code";
     private static final String END_TEXT = "Sent confirmation code";
@@ -46,8 +50,7 @@ public class StateButtonTest extends DigitsAndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        button = new StateButton(getContext());
+        button = new StateButton(RuntimeEnvironment.application);
         final TypedArray array = mock(TypedArray.class);
 
         when(array.getText(R.styleable.StateButton_startStateText)).thenReturn(SEND_TEXT);

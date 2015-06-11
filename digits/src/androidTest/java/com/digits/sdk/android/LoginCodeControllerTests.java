@@ -42,7 +42,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
 
     public void testExecuteRequest_success() throws Exception {
         final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
-        final DigitsSessionResponse response = DigitsSessionTests.getNewDigitsSessionResponse();
+        final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
 
         callback.success(result);

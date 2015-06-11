@@ -49,7 +49,7 @@ public class DigitsApiProviderTests {
 
         provider = new DigitsApiProvider(guestSession, authConfig,
                 mock(SSLSocketFactory.class), mock(ExecutorService.class),
-                mock(MockDigitsUserAgent.class));
+                mock(DigitsUserAgent.class));
 
     }
 

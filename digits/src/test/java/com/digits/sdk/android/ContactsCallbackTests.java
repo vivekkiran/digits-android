@@ -28,45 +28,31 @@ import org.robolectric.annotation.Config;
 
 import retrofit.RetrofitError;
 
-import static org.junit.Assert.assertTrue;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.verify;
 
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
 public class ContactsCallbackTests {
 
-    private StubContactsCallback contactsCallback;
+    private ContactsCallback contactsCallback;
 
     @Before
     public void setUp() throws Exception {
-
-        contactsCallback = new StubContactsCallback();
+        contactsCallback = mock(ContactsCallback.class);
     }
 
     @Test
     public void testFailure() throws Exception {
         contactsCallback.failure(RetrofitError.unexpectedError("", new NullPointerException("")));
-        assertTrue(contactsCallback.isFailureCalled);
+        verify(contactsCallback).failure(any(TwitterException.class));
     }
 
     @Test
     public void testSuccess() throws Exception {
         contactsCallback.success(null, null);
-        assertTrue(contactsCallback.isSuccessCalled);
-    }
-
-    private class StubContactsCallback extends ContactsCallback<String> {
-        boolean isSuccessCalled = false;
-        boolean isFailureCalled = false;
-
-        @Override
-        public void success(Result<String> result) {
-            isSuccessCalled = true;
-        }
-
-        @Override
-        public void failure(TwitterException exception) {
-            isFailureCalled = true;
-        }
+        verify(contactsCallback).success(any(Result.class));
     }
 }

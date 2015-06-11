@@ -44,13 +44,13 @@ public class SimManagerTest {
         context = mock(Context.class);
         telephonyManager = mock(TelephonyManager.class);
         when(context.getSystemService(Context.TELEPHONY_SERVICE)).thenReturn(telephonyManager);
-        simManager = DummySimManager.createSimManager(context);
+        simManager = SimManager.createSimManager(context);
     }
 
     @Test
     public void testConstructor_nullTelephonyManager() throws Exception {
         when(context.getSystemService(Context.TELEPHONY_SERVICE)).thenReturn(null);
-        simManager = DummySimManager.createSimManager(context);
+        simManager = SimManager.createSimManager(context);
         assertEquals("", simManager.getRawPhoneNumber());
         assertEquals("", simManager.getCountryIso());
     }
@@ -85,7 +85,7 @@ public class SimManagerTest {
     public void testGetCountryIso_noPermission() throws Exception {
         when(context.checkCallingOrSelfPermission(android.Manifest.permission.READ_PHONE_STATE))
                 .thenReturn(PackageManager.PERMISSION_DENIED);
-        simManager = DummySimManager.createSimManager(context);
+        simManager = SimManager.createSimManager(context);
         testGetCountryIso_iso2();
     }
 
@@ -93,7 +93,7 @@ public class SimManagerTest {
     public void testGetPhoneNumber_noPermission() throws Exception {
         when(context.checkCallingOrSelfPermission(android.Manifest.permission.READ_PHONE_STATE))
                 .thenReturn(PackageManager.PERMISSION_DENIED);
-        simManager = DummySimManager.createSimManager(context);
+        simManager = SimManager.createSimManager(context);
         when(telephonyManager.getLine1Number()).thenReturn(TestConstants.PHONE);
         assertEquals("", simManager.getRawPhoneNumber());
     }
@@ -121,11 +121,4 @@ public class SimManagerTest {
         when(telephonyManager.getLine1Number()).thenReturn("+1 650 2910000");
         assertEquals("+16502910000", simManager.getRawPhoneNumber());
     }
-
-    public class DummySimManager extends SimManager {
-        private DummySimManager(TelephonyManager telephonyManager, boolean hasPermission) {
-            super(telephonyManager, hasPermission);
-        }
-    }
-
 }

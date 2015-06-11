@@ -82,8 +82,8 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         callback = mock(AuthCallback.class);
         scribeService = mock(DigitsScribeService.class);
 
-        userSession = DigitsSession.create(DigitsSessionTests.getNewDigitsSessionResponse());
-        guestSession = DigitsSession.create(DigitsSessionTests.getNewLoggedOutUser());
+        userSession = DigitsSession.create(TestConstants.DIGITS_USER);
+        guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER);
 
         when(digitsApiProvider.getDeviceService()).thenReturn(deviceService);
         when(digitsApiProvider.getSdkService()).thenReturn(sdkService);

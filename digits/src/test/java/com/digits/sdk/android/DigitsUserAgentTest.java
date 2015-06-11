@@ -17,22 +17,30 @@
 
 package com.digits.sdk.android;
 
-import io.fabric.sdk.android.FabricAndroidTestCase;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
-public class DigitsUserAgentTest extends FabricAndroidTestCase {
+import static org.junit.Assert.assertEquals;
+
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, emulateSdk = 21)
+public class DigitsUserAgentTest {
     private static final String ANY_ANDROID_VERSION = "5.0";
     private static final String ANY_KIT_VERSION = "1.3.0";
 
+    @Test
     public void testToString() throws Exception {
         final DigitsUserAgent userAgent = new DigitsUserAgent(ANY_KIT_VERSION, ANY_ANDROID_VERSION);
         assertEquals(userAgentString(ANY_KIT_VERSION, ANY_ANDROID_VERSION), userAgent.toString());
     }
 
+    @Test
     public void testToString_nullVersions() throws Exception {
         final DigitsUserAgent userAgent = new DigitsUserAgent(null, null);
         assertEquals(userAgentString(null, null), userAgent.toString());
     }
-
 
     protected String userAgentString(String digitsVersion, String androidVersion) {
         return "Digits/" + digitsVersion + " (Android " + androidVersion + ")";

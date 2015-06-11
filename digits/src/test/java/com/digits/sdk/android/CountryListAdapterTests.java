@@ -21,27 +21,27 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
+
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class CountryListAdapterTests extends DigitsAndroidTestCase {
+public class CountryListAdapterTests {
     private CountryListAdapter countryListAdapter;
 
     @Before
-    @Override
     public void setUp() throws Exception {
-        super.setUp();
-
         final ArrayList<CountryInfo> countries = new ArrayList<>();
         countries.add(new CountryInfo("Germany", 1));
         countries.add(new CountryInfo("Saoma", 2));
         countries.add(new CountryInfo("spain", 3));
         countries.add(new CountryInfo("United States", 4));
 
-        countryListAdapter = new CountryListAdapter(getContext());
+        countryListAdapter = new CountryListAdapter(RuntimeEnvironment.application);
         countryListAdapter.setData(countries);
     }
 

@@ -17,30 +17,36 @@
 
 package com.digits.sdk.android;
 
+import android.content.Context;
+
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class DigitsErrorCodesTests extends DigitsAndroidTestCase {
+public class DigitsErrorCodesTests {
     //all the API codes are positive integers
     private static final int UNKNOWN_ERROR = -10;
     private DigitsErrorCodes errorCodes;
+    private Context context;
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-        errorCodes = new DigitsErrorCodes(getContext().getResources());
+        context = RuntimeEnvironment.application;
+        errorCodes = new DigitsErrorCodes(context.getResources());
     }
 
     @Test
     public void testGetMessage_knownError() throws Exception {
-        assertEquals(getContext().getString(R.string.dgts__confirmation_error_alternative),
+        assertEquals(context.getString(R.string.dgts__confirmation_error_alternative),
                 errorCodes.getMessage(TwitterApiErrorConstants.RATE_LIMIT_EXCEEDED));
     }
 
@@ -52,13 +58,13 @@ public class DigitsErrorCodesTests extends DigitsAndroidTestCase {
 
     @Test
     public void testGetDefaultMessage() throws Exception {
-        assertEquals(getContext().getString(R.string.dgts__try_again),
+        assertEquals(context.getString(R.string.dgts__try_again),
                 errorCodes.getDefaultMessage());
     }
 
     @Test
     public void testGetNetworkError() throws Exception {
-        assertEquals(getContext().getString(R.string.dgts__network_error),
+        assertEquals(context.getString(R.string.dgts__network_error),
                 errorCodes.getNetworkError());
     }
 }

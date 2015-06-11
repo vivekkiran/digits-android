@@ -21,7 +21,6 @@ import android.os.Bundle;
 
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterCore;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -44,12 +43,10 @@ public class LoginResultReceiverTests {
     private Bundle bundle;
 
     private ArgumentCaptor<DigitsException> digitsErrorCaptor;
-    private TwitterCore kit;
     private ArgumentCaptor<DigitsSession> sessionCaptor;
     private SessionManager<DigitsSession> mockSessionManager;
     private DigitsSession session;
     private LoginResultReceiver receiver;
-
 
     @Before
     public void setUp() throws Exception {

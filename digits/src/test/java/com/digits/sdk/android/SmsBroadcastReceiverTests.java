@@ -25,13 +25,16 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class SmsBroadcastReceiverTests extends DigitsAndroidTestCase {
+public class SmsBroadcastReceiverTests {
     final String TEST_CODE = "635589";
     final String TEST_MESSAGE =
             "40404 - Confirmation code: 635589. Enter this code in your app. (Digits by Twitter)";
@@ -47,10 +50,8 @@ public class SmsBroadcastReceiverTests extends DigitsAndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-
         sms = mock(SmsMessage.class);
-        editText = new EditText(getContext());
+        editText = mock(EditText.class);
         receiver = new SmsBroadcastReceiver(editText);
     }
 
@@ -101,9 +102,9 @@ public class SmsBroadcastReceiverTests extends DigitsAndroidTestCase {
         when(intent.getSerializableExtra(SmsBroadcastReceiver.PDU_EXTRA)).thenReturn(new
                 Object[]{pdu});
 
-        receiver.onReceive(getContext(), intent);
+        receiver.onReceive(RuntimeEnvironment.application, intent);
 
-        assertEquals(TEST_CODE, editText.getText().toString());
-        assertEquals(TEST_CODE.length(), editText.getSelectionEnd());
+        verify(editText).setText(TEST_CODE);
+        verify(editText).setSelection(TEST_CODE.length());
     }
 }

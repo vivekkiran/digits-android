@@ -17,8 +17,6 @@
 
 package com.digits.sdk.android;
 
-import android.content.res.Configuration;
-
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -31,12 +29,14 @@ import java.util.List;
 import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class CountryListLoadTaskTests extends DigitsAndroidTestCase {
+public class CountryListLoadTaskTests {
     private static final ArrayList<CountryInfo> COUNTRY_LIST = new ArrayList<>();
 
     static {
@@ -293,13 +293,6 @@ public class CountryListLoadTaskTests extends DigitsAndroidTestCase {
 
     @Before
     public void setUp() throws Exception {
-        super.setUp();
-
-        // Set the default locale to english
-        final Configuration config = getContext().getResources().getConfiguration();
-        config.locale = Locale.US;
-        getContext().getResources().updateConfiguration(config, null);
-
         // Create task and mock dependencies
         listener = mock(CountryListLoadTask.Listener.class);
         task = new CountryListLoadTask(listener);

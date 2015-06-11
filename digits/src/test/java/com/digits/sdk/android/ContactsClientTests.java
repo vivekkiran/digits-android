@@ -18,7 +18,6 @@
 package com.digits.sdk.android;
 
 import android.content.ComponentName;
-import android.content.Context;
 import android.content.Intent;
 import android.test.mock.MockContext;
 
@@ -56,11 +55,11 @@ public class ContactsClientTests {
     public void setUp() throws Exception {
 
         twitterCore = mock(TwitterCore.class);
-        activityClassManagerFactory = new ActivityClassManagerFactoryMock();
+        activityClassManagerFactory = new ActivityClassManagerFactory();
         context = mock(MockContext.class);
         callback = mock(ContactsCallback.class);
         contactsService = mock(ContactsService.class);
-        prefManager = mock(MockContactsPreferenceManager.class);
+        prefManager = mock(ContactsPreferenceManager.class);
         final Digits digits = mock(Digits.class);
         contactsClient = new ContactsClient(twitterCore, prefManager, activityClassManagerFactory,
                 contactsService);
@@ -218,12 +217,5 @@ public class ContactsClientTests {
         contactsClient.uploadContacts(vCards);
 
         verify(contactsService).upload(vCards);
-    }
-
-    class ActivityClassManagerFactoryMock extends ActivityClassManagerFactory {
-        @Override
-        ActivityClassManager createActivityClassManager(Context context, int themeResId) {
-            return new ActivityClassManagerImp();
-        }
     }
 }

@@ -30,10 +30,7 @@ import static org.junit.Assert.assertNull;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class
-
-
-        DigitsSessionSerializerTests {
+public class DigitsSessionSerializerTests {
     private static final long CREATED_AT = 1414450780L;
     public static final String SESSION_JSON = "{\"auth_token\":{\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"

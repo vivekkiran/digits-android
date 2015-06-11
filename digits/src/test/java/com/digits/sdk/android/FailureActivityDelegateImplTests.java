@@ -59,11 +59,9 @@ public class FailureActivityDelegateImplTests {
 
     @Before
     public void setUp() throws Exception {
-
-
         activity = mock(Activity.class);
         controller = mock(FailureController.class);
-        delegate = spy(new DummyFailureDelegateImpl(activity, controller));
+        delegate = spy(new FailureActivityDelegateImpl(activity, controller));
         captorClick = ArgumentCaptor.forClass(View.OnClickListener.class);
         intent = mock(Intent.class);
         button = mock(Button.class);
@@ -145,12 +143,5 @@ public class FailureActivityDelegateImplTests {
         listener.onClick(null);
         verify(controller).tryAnotherNumber(eq(activity), any(ResultReceiver.class));
         verify(activity).finish();
-    }
-
-    public class DummyFailureDelegateImpl extends FailureActivityDelegateImpl {
-
-        public DummyFailureDelegateImpl(Activity activity, FailureController controller) {
-            super(activity, controller);
-        }
     }
 }

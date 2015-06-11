@@ -36,7 +36,7 @@ public class PhoneNumberUtilsTest {
 
     @Before
     public void setUp() throws Exception {
-        simManager = mock(SimManagerTest.DummySimManager.class);
+        simManager = mock(SimManager.class);
     }
 
     @Test
