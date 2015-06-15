@@ -242,7 +242,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
     private void verifyCallbackInReceiver(AuthCallback expected) {
         final LoginResultReceiver receiver = capturedIntent.getParcelableExtra(DigitsClient
                 .EXTRA_RESULT_RECEIVER);
-        assertEquals(expected, receiver.callback);
+        assertEquals(expected, receiver.callback.getCallback());
     }
 
     private void verifySignUp(AuthCallback callback) {
