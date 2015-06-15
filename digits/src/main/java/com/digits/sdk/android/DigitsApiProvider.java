@@ -75,6 +75,7 @@ class DigitsApiProvider {
                 @Field("text_key") String textKey,
                 @Field("send_numeric_pin") Boolean sendNumericPin,
                 @Field("lang") String lang,
+                @Field("client_identifier_string") String id,
                 Callback<DeviceRegistrationResponse> cb);
     }
 

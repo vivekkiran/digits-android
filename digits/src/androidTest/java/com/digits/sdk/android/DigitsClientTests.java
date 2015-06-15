@@ -224,7 +224,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         final Callback listener = mock(Callback.class);
         digitsClient.registerDevice(PHONE, listener);
         verify(deviceService).register(PHONE, DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true,
-                Locale.getDefault().getLanguage(), listener);
+                Locale.getDefault().getLanguage(), DigitsClient.CLIENT_IDENTIFIER, listener);
     }
 
     public void testLoginDevice() throws Exception {

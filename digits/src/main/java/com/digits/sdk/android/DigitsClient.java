@@ -39,6 +39,7 @@ public class DigitsClient {
     public static final String THIRD_PARTY_CONFIRMATION_CODE = "third_party_confirmation_code";
     public static final String EXTRA_FALLBACK_REASON = "fallback_reason";
     public static final String EXTRA_TOS_UPDATED = "tos_updated";
+    public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
     private final OAuth2Service authService;
     private final Digits digits;
@@ -152,7 +153,7 @@ public class DigitsClient {
     protected void registerDevice(String phoneNumber, Callback<DeviceRegistrationResponse>
             listener) {
         digitsApiProvider.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
-                true, Locale.getDefault().getLanguage(), listener);
+                true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER, listener);
     }
 
     protected void verifyPin(String requestId, long userId, String pin,
