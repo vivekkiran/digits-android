@@ -33,6 +33,7 @@ import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
 
 import org.mockito.ArgumentCaptor;
 
+import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.SSLSocketFactory;
@@ -223,7 +224,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         final Callback listener = mock(Callback.class);
         digitsClient.registerDevice(PHONE, listener);
         verify(deviceService).register(PHONE, DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true,
-                listener);
+                Locale.getDefault().getLanguage(), listener);
     }
 
     public void testLoginDevice() throws Exception {

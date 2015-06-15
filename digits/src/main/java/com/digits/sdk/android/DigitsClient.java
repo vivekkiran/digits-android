@@ -29,6 +29,8 @@ import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Service;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
 
+import java.util.Locale;
+
 public class DigitsClient {
     public static final String EXTRA_PHONE = "phone_number";
     public static final String EXTRA_RESULT_RECEIVER = "receiver";
@@ -150,7 +152,7 @@ public class DigitsClient {
     protected void registerDevice(String phoneNumber, Callback<DeviceRegistrationResponse>
             listener) {
         digitsApiProvider.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
-                true, listener);
+                true, Locale.getDefault().getLanguage(), listener);
     }
 
     protected void verifyPin(String requestId, long userId, String pin,

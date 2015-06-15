@@ -72,9 +72,10 @@ class DigitsApiProvider {
         @FormUrlEncoded
         @POST("/1.1/device/register.json")
         void register(@Field("raw_phone_number") String rawPhoneNumber,
-                             @Field("text_key") String textKey,
-                             @Field("send_numeric_pin") Boolean sendNumericPin,
-                             Callback<DeviceRegistrationResponse> cb);
+                @Field("text_key") String textKey,
+                @Field("send_numeric_pin") Boolean sendNumericPin,
+                @Field("lang") String lang,
+                Callback<DeviceRegistrationResponse> cb);
     }
 
     protected interface SdkService {
