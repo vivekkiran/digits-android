@@ -155,3 +155,4 @@ fabricKitRelease {
     }
 }
 
+project.tasks.getByName('fabricKitRelease').enabled = rootProject.ext.projectsForRelease.contains(project.path)
