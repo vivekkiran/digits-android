@@ -40,7 +40,6 @@
             />
         <activity
             android:name=".LoginCodeActivity"
-            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="false"
@@ -49,7 +48,6 @@
             />
         <activity
             android:name=".PinCodeActivity"
-            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="false"
@@ -87,7 +85,6 @@
             />
         <activity
             android:name=".LoginCodeActionBarActivity"
-            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="false"
@@ -109,7 +106,6 @@
             />
         <activity
             android:name=".PinCodeActionBarActivity"
-            android:launchMode="singleTop"
             android:configChanges="orientation|screenSize"
             android:excludeFromRecents="true"
             android:exported="false"
