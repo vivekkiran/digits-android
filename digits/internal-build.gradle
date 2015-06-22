@@ -98,16 +98,9 @@ android {
     }
 }
 
-ext.projectDependencies = [
-        ':sdk:fabric:fabric',
-        ':sdk:twitter:twitter-core'
-]
-
 dependencies {
-    projectDependencies.each {
-        debugCompile project(path: it, configuration: 'debug')
-        releaseCompile kitDependency(path: it, configuration: 'release')
-    }
+    debugCompile project(path: ':sdk:twitter:twitter-core', configuration: 'debug')
+    releaseCompile kitDependency(path: ':sdk:twitter:twitter-core', configuration: 'release')
 
     // We need to include the appcompat as a compile time dependency to workaround a bug that exists
     // in 1.1.0-1.1.3 version, see https://code.google.com/p/android/issues/detail?id=149268.
@@ -116,7 +109,8 @@ dependencies {
     androidTestCompile rootProject.mockito
     androidTestCompile rootProject.dexmakerMockito
     androidTestCompile rootProject.androidTestingSupport
-    
+
+    testCompile rootProject.fabricTest
     testCompile rootProject.mavenAntTasks
     testCompile rootProject.mockito
     testCompile rootProject.androidTestingSupport
