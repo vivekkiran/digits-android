@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+## v1.6.1
+
 ## v1.6.0
 * (IC) [Fixed crash on StateButton when multiple clicks] (https://github
 .com/twitter/digits-android/issues/2)
