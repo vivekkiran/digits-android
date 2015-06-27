@@ -1,2 +1,2 @@
 #Proguard Config for when AppCompat is not a dependency
--dontwarn  com.digits.sdk.android.*ActionBarActivity
+-dontwarn  com.digits.sdk.android.*AppCompatActivity

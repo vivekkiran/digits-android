@@ -26,7 +26,7 @@ class ActivityClassManagerFactory {
 
     ActivityClassManager createActivityClassManager(Context context, int themeResId) {
         try {
-            Class.forName("android.support.v7.app.ActionBarActivity");
+            Class.forName("android.support.v7.app.AppCompatActivity");
 
             final ThemeAttributes attributes = new ThemeAttributes();
             if (isAppCompatTheme(context, themeResId, attributes)) {

@@ -18,9 +18,9 @@
 package com.digits.sdk.android;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
-public class ContactsActionBarActivity extends ActionBarActivity {
+public class ContactsActionBarActivity extends AppCompatActivity {
 
     ContactsActivityDelegateImpl delegate;
 

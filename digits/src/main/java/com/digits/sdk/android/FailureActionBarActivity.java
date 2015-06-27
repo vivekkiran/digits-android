@@ -18,13 +18,13 @@
 package com.digits.sdk.android;
 
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
 /**
  * FailureActionBarActivity should never be started from outside digits otherwise
  * will throw an IllegalAccessError
  */
-public class FailureActionBarActivity extends ActionBarActivity {
+public class FailureActionBarActivity extends AppCompatActivity {
     FailureActivityDelegateImpl delegate;
 
     public void onCreate(Bundle savedInstanceState) {

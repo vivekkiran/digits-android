@@ -19,9 +19,9 @@ package com.digits.sdk.android;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v7.app.ActionBarActivity;
+import android.support.v7.app.AppCompatActivity;
 
-public abstract class DigitsActionBarActivity extends ActionBarActivity {
+public abstract class DigitsActionBarActivity extends AppCompatActivity {
 
     static final int RESULT_FINISH_DIGITS = 200;
     static final int REQUEST_CODE = 140;
