@@ -36,26 +36,26 @@ public class DigitsSessionSerializerTests {
             + "\"auth_token\":{"
             + "\"token\":\"token\","
             + "\"secret\":\"secret\","
-            + "\"createdAt\":" + CREATED_AT + "}},"
+            + "\"created_at\":" + CREATED_AT + "}},"
             + "\"id\":-1}";
     public static final String FULL_SESSION_JSON = "{\"auth_token\":{\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"
             + "\"token\":\"token\","
             + "\"secret\":\"secret\","
-            + "\"createdAt\":" + CREATED_AT + "}},"
+            + "\"created_at\":" + CREATED_AT + "}},"
             + "\"id\":1}";
     public static final String SESSION_JSON_NULL_USERNAME = "{\"auth_token\":{"
             + "\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"
             + "\"token\":\"token\","
             + "\"secret\":\"secret\","
-            + "\"createdAt\":" + CREATED_AT + "}},"
+            + "\"created_at\":" + CREATED_AT + "}},"
             + "\"id\":1}";
     private static final String SESSION_JSON_INVALID_OAUTH_TYPE =
             "{\"auth_token\":{\"auth_type\":\"INVALID\",\"auth_token\":{"
                     + "\"token\":\"token\","
                     + "\"secret\":\"secret\","
-                    + "\"createdAt\":" + CREATED_AT + "}},"
+                    + "\"created_at\":" + CREATED_AT + "}},"
                     + "\"id\":1}";
 
     private DigitsSession.Serializer serializer;
