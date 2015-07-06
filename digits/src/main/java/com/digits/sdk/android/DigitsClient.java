@@ -24,11 +24,13 @@ import android.os.Bundle;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterCore;
-import com.twitter.sdk.android.core.internal.oauth.OAuth2Service;
-import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
+import com.twitter.sdk.android.core.TwitterException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 
 public class DigitsClient {
@@ -41,22 +43,18 @@ public class DigitsClient {
     public static final String EXTRA_TOS_UPDATED = "tos_updated";
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
-    private final OAuth2Service authService;
     private final Digits digits;
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
-    protected DigitsApiClient digitsApiClient;
-
+    private final DigitsAuthRequestQueue authRequestQueue;
+    private DigitsApiClient digitsApiClient;
 
     DigitsClient() {
-        this(Digits.getInstance(), TwitterCore.getInstance(), Digits.getSessionManager(),
-                new OAuth2Service(TwitterCore.getInstance(), TwitterCore.getInstance()
-                        .getSSLSocketFactory(), new DigitsApi()), null);
+        this(Digits.getInstance(), TwitterCore.getInstance(), Digits.getSessionManager(), null);
     }
 
     DigitsClient(Digits digits, TwitterCore twitterCore, SessionManager<DigitsSession>
-            sessionManager, OAuth2Service authService, DigitsApiClient digitsApiClient) {
-
+            sessionManager, DigitsAuthRequestQueue authRequestQueue) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
         }
@@ -66,43 +64,25 @@ public class DigitsClient {
         if (sessionManager == null) {
             throw new IllegalArgumentException("sessionManager must not be null");
         }
-        if (authService == null) {
-            throw new IllegalArgumentException("authService must not be null");
-        }
 
         this.twitterCore = twitterCore;
         this.digits = digits;
         this.sessionManager = sessionManager;
-        this.authService = authService;
-        this.digitsApiClient = digitsApiClient;
+
+        if (authRequestQueue == null) {
+            this.authRequestQueue = createAuthRequestQueue(sessionManager);
+            this.authRequestQueue.sessionRestored(null);
+        } else {
+            this.authRequestQueue = authRequestQueue;
+        }
     }
 
-    protected void authDevice(Context context, DigitsController controller,
-            final String phoneNumber, final Callback<AuthResponse> callback) {
-
-        authService.requestGuestOrAppAuthToken(new DigitsCallback<OAuth2Token>(context,
-                controller) {
-
-            @Override
-            public void success(Result<OAuth2Token> result) {
-                final DigitsSession session = setSession(result);
-                digitsApiClient = new DigitsApiClient(session, twitterCore.getAuthConfig(),
-                        twitterCore.getSSLSocketFactory(), digits.getExecutorService(),
-                        new DigitsUserAgent(digits.getVersion(), Build.VERSION.RELEASE));
-                digitsApiClient.getSdkService().auth(phoneNumber, callback);
-            }
-
-        });
-    }
-
-    private DigitsSession setSession(Result<OAuth2Token> result) {
-        final DigitsSession session = new DigitsSession(result.data);
-        sessionManager.setSession(DigitsSession.LOGGED_OUT_USER_ID, session);
-        return session;
-    }
-
-    protected void createAccount(String pin, String phoneNumber, Callback<DigitsUser> listener) {
-        digitsApiClient.getSdkService().account(phoneNumber, pin, listener);
+    protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {
+        final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>(1);
+        sessionManagers.add(sessionManager);
+        final DigitsGuestSessionProvider sessionProvider =
+                new DigitsGuestSessionProvider(sessionManager, sessionManagers);
+        return new DigitsAuthRequestQueue(this, sessionProvider);
     }
 
     protected void startSignUp(AuthCallback callback) {
@@ -145,19 +125,92 @@ public class DigitsClient {
         context.startActivity(intent);
     }
 
-    protected void loginDevice(String requestId, long userId, String code,
-            Callback<DigitsSessionResponse> digitsCallback) {
-        digitsApiClient.getSdkService().login(requestId, userId, code, digitsCallback);
+    protected void authDevice(final String phoneNumber,
+            final Callback<AuthResponse> callback) {
+        authRequestQueue.addClientRequest(new CallbackWrapper<AuthResponse>(callback) {
+
+            @Override
+            public void success(Result<DigitsApiClient> result) {
+                result.data.getSdkService().auth(phoneNumber, callback);
+            }
+
+        });
     }
 
-    protected void registerDevice(String phoneNumber, Callback<DeviceRegistrationResponse>
-            listener) {
-        digitsApiClient.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
-                true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER, listener);
+    protected void createAccount(final String pin, final String phoneNumber,
+            final Callback<DigitsUser> callback) {
+        authRequestQueue.addClientRequest(new CallbackWrapper<DigitsUser>(callback) {
+
+            @Override
+            public void success(Result<DigitsApiClient> result) {
+                result.data.getSdkService().account(phoneNumber, pin, callback);
+            }
+
+        });
     }
 
-    protected void verifyPin(String requestId, long userId, String pin,
-            Callback<DigitsSessionResponse> digitsCallback) {
-        digitsApiClient.getSdkService().verifyPin(requestId, userId, pin, digitsCallback);
+    protected void loginDevice(final String requestId, final long userId, final String code,
+            final Callback<DigitsSessionResponse> callback) {
+        authRequestQueue.addClientRequest(new CallbackWrapper<DigitsSessionResponse>(callback) {
+
+            @Override
+            public void success(Result<DigitsApiClient> result) {
+                result.data.getSdkService().login(requestId, userId, code, callback);
+            }
+
+        });
+    }
+
+    protected void registerDevice(final String phoneNumber,
+            final Callback<DeviceRegistrationResponse> callback) {
+        authRequestQueue.addClientRequest(
+                new CallbackWrapper<DeviceRegistrationResponse>(callback) {
+
+            @Override
+            public void success(Result<DigitsApiClient> result) {
+                result.data.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
+                        true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER, callback);
+            }
+
+        });
+    }
+
+    protected void verifyPin(final String requestId, final long userId, final String pin,
+            final Callback<DigitsSessionResponse> callback) {
+        authRequestQueue.addClientRequest(new CallbackWrapper<DigitsSessionResponse>(callback) {
+
+            @Override
+            public void success(Result<DigitsApiClient> result) {
+                result.data.getSdkService().verifyPin(requestId, userId, pin, callback);
+            }
+
+        });
+    }
+
+    static abstract class CallbackWrapper<T> extends Callback<DigitsApiClient> {
+        final Callback<T> callback;
+
+        public CallbackWrapper(Callback<T> callback) {
+            this.callback = callback;
+        }
+
+        @Override
+        public void failure(TwitterException exception) {
+            if (callback != null) {
+                callback.failure(exception);
+            }
+        }
+    }
+
+    DigitsApiClient getApiClient(Session session) {
+        if (digitsApiClient != null && digitsApiClient.getSession().equals(session)) {
+            return digitsApiClient;
+        }
+
+        digitsApiClient = new DigitsApiClient(session, twitterCore.getAuthConfig(),
+                twitterCore.getSSLSocketFactory(), digits.getExecutorService(),
+                new DigitsUserAgent(digits.getVersion(), Build.VERSION.RELEASE));
+
+        return digitsApiClient;
     }
 }

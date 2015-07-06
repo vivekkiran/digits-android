@@ -80,7 +80,7 @@ class PhoneNumberController extends DigitsControllerImpl {
             final int code = (Integer) countryCodeSpinner.getTag();
             final String number = editText.getText().toString();
             phoneNumber = getNumber(code, number);
-            digitsClient.authDevice(context, this, phoneNumber,
+            digitsClient.authDevice(phoneNumber,
                     new DigitsCallback<AuthResponse>(context, this) {
                         @Override
                         public void success(final Result<AuthResponse> result) {

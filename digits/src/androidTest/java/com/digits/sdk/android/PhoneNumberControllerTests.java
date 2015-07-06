@@ -61,8 +61,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         controller.executeRequest(context);
         verify(sendButton).showProgress();
 
-        verify(digitsClient).authDevice(eq(context), eq(controller),
-                eq(PHONE_WITH_COUNTRY_CODE), callbackCaptor.capture());
+        verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), callbackCaptor.capture());
         assertNotNull(callbackCaptor.getValue());
         assertEquals(PHONE_WITH_COUNTRY_CODE, controller.phoneNumber);
         return callbackCaptor.getValue();

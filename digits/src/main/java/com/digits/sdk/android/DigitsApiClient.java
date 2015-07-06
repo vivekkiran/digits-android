@@ -20,6 +20,7 @@ package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.AuthenticatedClient;
 import com.twitter.sdk.android.core.Callback;
+import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,11 +37,12 @@ import retrofit.http.POST;
 class DigitsApiClient {
     private final ConcurrentHashMap<Class, Object> services;
     private final RestAdapter restAdapter;
+    private final Session session;
 
-
-    DigitsApiClient(DigitsSession session, TwitterAuthConfig authConfig,
+    DigitsApiClient(Session session, TwitterAuthConfig authConfig,
             SSLSocketFactory sslFactory, ExecutorService executorService,
             DigitsUserAgent userAgent) {
+        this.session = session;
         this.services = new ConcurrentHashMap<>();
         this.restAdapter = new RestAdapter.Builder()
                 .setEndpoint(new DigitsApi().getBaseHostUrl())
@@ -50,6 +52,9 @@ class DigitsApiClient {
                 .build();
     }
 
+    public Session getSession() {
+        return session;
+    }
 
     public SdkService getSdkService() {
         return getService(SdkService.class);
