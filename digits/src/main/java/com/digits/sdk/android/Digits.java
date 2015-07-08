@@ -29,6 +29,7 @@ import com.twitter.sdk.android.core.PersistedSessionManager;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.internal.MigrationHelper;
 import com.twitter.sdk.android.core.internal.SessionMonitor;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 
@@ -45,6 +46,7 @@ public class Digits extends Kit<Void> {
 
     static final String PREF_KEY_ACTIVE_SESSION = "active_session";
     static final String PREF_KEY_SESSION = "session";
+    static final String SESSION_PREF_FILE_NAME = "session_store";
 
     private static final String KIT_SCRIBE_NAME = "Digits";
 
@@ -124,8 +126,13 @@ public class Digits extends Kit<Void> {
 
     @Override
     protected boolean onPreExecute() {
-        sessionManager = new PersistedSessionManager<>(new PreferenceStoreImpl(this),
-                new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION, PREF_KEY_SESSION);
+        final MigrationHelper migrationHelper = new MigrationHelper();
+        migrationHelper.migrateSessionStore(getContext(), getIdentifier(),
+                getIdentifier() + ":" + SESSION_PREF_FILE_NAME + ".xml");
+
+        sessionManager = new PersistedSessionManager<>(new PreferenceStoreImpl(getContext(),
+                SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
+                PREF_KEY_SESSION);
 
         sessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService());
         return super.onPreExecute();
