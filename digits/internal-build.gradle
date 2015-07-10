@@ -22,6 +22,7 @@ apply from: rootProject.sizeScript
 apply from: rootProject.deployScript
 apply plugin: io.fabric.gradle.weaving.FabricPropertiesPlugin
 apply plugin: io.fabric.gradle.release.FabricKitReleasePlugin
+apply plugin: io.fabric.gradle.weaving.DexMethodCountPlugin
 
 android {
     compileSdkVersion rootProject.compileSdkVersion
@@ -66,11 +67,12 @@ android {
         warningsAsErrors true
     }
 
-    productFlavors {
-    }
-
     jacoco {
         version = jacocoVersion
+    }
+
+    dexMethodCount {
+        packageFilter = "com.digits.sdk"
     }
 
     packagingOptions {
