@@ -34,10 +34,10 @@ import static org.mockito.Mockito.mock;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
-public class DigitsApiProviderTests {
+public class DigitsApiClientTests {
     private TwitterAuthConfig authConfig;
     private DigitsSession guestSession;
-    private DigitsApiProvider provider;
+    private DigitsApiClient digitsApiClient;
 
     @Before
     public void setUp() throws Exception {
@@ -47,7 +47,7 @@ public class DigitsApiProviderTests {
         guestSession = DigitsSession.create(DigitsSessionTests.getNewLoggedOutUser());
 
 
-        provider = new DigitsApiProvider(guestSession, authConfig,
+        digitsApiClient = new DigitsApiClient(guestSession, authConfig,
                 mock(SSLSocketFactory.class), mock(ExecutorService.class),
                 mock(DigitsUserAgent.class));
 
@@ -55,15 +55,15 @@ public class DigitsApiProviderTests {
 
     @Test
     public void testGetSdkService() throws Exception {
-        final DigitsApiProvider.SdkService sdkService = provider.getSdkService();
-        final DigitsApiProvider.SdkService newSdkService = provider.getSdkService();
+        final DigitsApiClient.SdkService sdkService = digitsApiClient.getSdkService();
+        final DigitsApiClient.SdkService newSdkService = digitsApiClient.getSdkService();
         assertTrue(sdkService == newSdkService);
     }
 
     @Test
     public void testGetDeviceService() throws Exception {
-        final DigitsApiProvider.DeviceService deviceService = provider.getDeviceService();
-        final DigitsApiProvider.DeviceService newDeviceService = provider.getDeviceService();
+        final DigitsApiClient.DeviceService deviceService = digitsApiClient.getDeviceService();
+        final DigitsApiClient.DeviceService newDeviceService = digitsApiClient.getDeviceService();
         assertTrue(deviceService == newDeviceService);
     }
 

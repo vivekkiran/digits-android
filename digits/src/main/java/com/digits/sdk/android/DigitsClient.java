@@ -45,7 +45,7 @@ public class DigitsClient {
     private final Digits digits;
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
-    protected DigitsApiProvider digitsApiProvider;
+    protected DigitsApiClient digitsApiClient;
 
 
     DigitsClient() {
@@ -55,7 +55,7 @@ public class DigitsClient {
     }
 
     DigitsClient(Digits digits, TwitterCore twitterCore, SessionManager<DigitsSession>
-            sessionManager, OAuth2Service authService, DigitsApiProvider digitsApiProvider) {
+            sessionManager, OAuth2Service authService, DigitsApiClient digitsApiClient) {
 
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
@@ -74,7 +74,7 @@ public class DigitsClient {
         this.digits = digits;
         this.sessionManager = sessionManager;
         this.authService = authService;
-        this.digitsApiProvider = digitsApiProvider;
+        this.digitsApiClient = digitsApiClient;
     }
 
     protected void authDevice(Context context, DigitsController controller,
@@ -86,10 +86,10 @@ public class DigitsClient {
             @Override
             public void success(Result<OAuth2Token> result) {
                 final DigitsSession session = setSession(result);
-                digitsApiProvider = new DigitsApiProvider(session, twitterCore.getAuthConfig(),
+                digitsApiClient = new DigitsApiClient(session, twitterCore.getAuthConfig(),
                         twitterCore.getSSLSocketFactory(), digits.getExecutorService(),
                         new DigitsUserAgent(digits.getVersion(), Build.VERSION.RELEASE));
-                digitsApiProvider.getSdkService().auth(phoneNumber, callback);
+                digitsApiClient.getSdkService().auth(phoneNumber, callback);
             }
 
         });
@@ -102,7 +102,7 @@ public class DigitsClient {
     }
 
     protected void createAccount(String pin, String phoneNumber, Callback<DigitsUser> listener) {
-        digitsApiProvider.getSdkService().account(phoneNumber, pin, listener);
+        digitsApiClient.getSdkService().account(phoneNumber, pin, listener);
     }
 
     protected void startSignUp(AuthCallback callback) {
@@ -147,17 +147,17 @@ public class DigitsClient {
 
     protected void loginDevice(String requestId, long userId, String code,
             Callback<DigitsSessionResponse> digitsCallback) {
-        digitsApiProvider.getSdkService().login(requestId, userId, code, digitsCallback);
+        digitsApiClient.getSdkService().login(requestId, userId, code, digitsCallback);
     }
 
     protected void registerDevice(String phoneNumber, Callback<DeviceRegistrationResponse>
             listener) {
-        digitsApiProvider.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
+        digitsApiClient.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
                 true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER, listener);
     }
 
     protected void verifyPin(String requestId, long userId, String pin,
             Callback<DigitsSessionResponse> digitsCallback) {
-        digitsApiProvider.getSdkService().verifyPin(requestId, userId, pin, digitsCallback);
+        digitsApiClient.getSdkService().verifyPin(requestId, userId, pin, digitsCallback);
     }
 }

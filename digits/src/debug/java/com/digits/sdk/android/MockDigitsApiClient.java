@@ -23,9 +23,9 @@ import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.SSLSocketFactory;
 
-public class MockDigitsApiProvider extends DigitsApiProvider {
+public class MockDigitsApiClient extends DigitsApiClient {
 
-    public MockDigitsApiProvider(DigitsSession session, TwitterAuthConfig authConfig,
+    public MockDigitsApiClient(DigitsSession session, TwitterAuthConfig authConfig,
             SSLSocketFactory sslFactory, ExecutorService executorService,
             DigitsUserAgent userAgent) {
         super(session, authConfig, sslFactory, executorService, userAgent);

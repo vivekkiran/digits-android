@@ -58,13 +58,13 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
     private Digits digits;
     private TwitterCore twitterCore;
     private SessionManager<DigitsSession> sessionManager;
-    private DigitsApiProvider.DeviceService deviceService;
-    private DigitsApiProvider.SdkService sdkService;
+    private DigitsApiClient.DeviceService deviceService;
+    private DigitsApiClient.SdkService sdkService;
     private DigitsController controller;
     private AuthCallback callback;
     private DigitsSession guestSession;
     private DigitsSession userSession;
-    private DigitsApiProvider digitsApiProvider;
+    private DigitsApiClient digitsApiClient;
     private DigitsScribeService scribeService;
 
     @Override
@@ -74,9 +74,9 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         digits = mock(Digits.class);
         sessionManager = mock(SessionManager.class);
         twitterCore = mock(TwitterCore.class);
-        digitsApiProvider = mock(MockDigitsApiProvider.class);
-        deviceService = mock(DigitsApiProvider.DeviceService.class);
-        sdkService = mock(DigitsApiProvider.SdkService.class);
+        digitsApiClient = mock(MockDigitsApiClient.class);
+        deviceService = mock(DigitsApiClient.DeviceService.class);
+        sdkService = mock(DigitsApiClient.SdkService.class);
         context = mock(MockContext.class);
         authService = mock(OAuth2Service.class);
         controller = mock(DigitsController.class);
@@ -86,8 +86,8 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         userSession = DigitsSession.create(TestConstants.DIGITS_USER);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER);
 
-        when(digitsApiProvider.getDeviceService()).thenReturn(deviceService);
-        when(digitsApiProvider.getSdkService()).thenReturn(sdkService);
+        when(digitsApiClient.getDeviceService()).thenReturn(deviceService);
+        when(digitsApiClient.getSdkService()).thenReturn(sdkService);
         when(twitterCore.getContext()).thenReturn(context);
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
         when(digits.getExecutorService()).thenReturn(mock(ExecutorService.class));
@@ -99,7 +99,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
                 .getPhoneNumberActivity());
 
         digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authService,
-                digitsApiProvider);
+                digitsApiClient);
     }
 
     @Override
@@ -115,7 +115,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         authCallback.success(result);
         verify(sessionManager).setSession(anyLong(), any(DigitsSession.class));
         verifyNoMoreInteractions(sdkService);
-        assertNotSame(digitsClient.digitsApiProvider, digitsApiProvider);
+        assertNotSame(digitsClient.digitsApiClient, digitsApiClient);
     }
 
     public void testAuthDevice_failure() throws Exception {
@@ -137,7 +137,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
 
     public void testConstructor_nullTwitter() throws Exception {
         try {
-            new DigitsClient(digits, null, sessionManager, authService, digitsApiProvider);
+            new DigitsClient(digits, null, sessionManager, authService, digitsApiClient);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("twitter must not be null", e.getMessage());
@@ -146,7 +146,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
 
     public void testConstructor_nullDigits() throws Exception {
         try {
-            new DigitsClient(null, twitterCore, sessionManager, authService, digitsApiProvider);
+            new DigitsClient(null, twitterCore, sessionManager, authService, digitsApiClient);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("digits must not be null", e.getMessage());
@@ -155,7 +155,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
 
     public void testConstructor_nullSessionManager() throws Exception {
         try {
-            new DigitsClient(digits, twitterCore, null, authService, digitsApiProvider);
+            new DigitsClient(digits, twitterCore, null, authService, digitsApiClient);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("sessionManager must not be null", e.getMessage());
@@ -164,7 +164,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
 
     public void testConstructor_nullAuthService() throws Exception {
         try {
-            new DigitsClient(digits, twitterCore, sessionManager, null, digitsApiProvider);
+            new DigitsClient(digits, twitterCore, sessionManager, null, digitsApiClient);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("authService must not be null", e.getMessage());

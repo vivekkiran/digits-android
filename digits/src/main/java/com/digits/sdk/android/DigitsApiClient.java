@@ -33,12 +33,12 @@ import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
 import retrofit.http.POST;
 
-class DigitsApiProvider {
+class DigitsApiClient {
     private final ConcurrentHashMap<Class, Object> services;
     private final RestAdapter restAdapter;
 
 
-    DigitsApiProvider(DigitsSession session, TwitterAuthConfig authConfig,
+    DigitsApiClient(DigitsSession session, TwitterAuthConfig authConfig,
             SSLSocketFactory sslFactory, ExecutorService executorService,
             DigitsUserAgent userAgent) {
         this.services = new ConcurrentHashMap<>();
