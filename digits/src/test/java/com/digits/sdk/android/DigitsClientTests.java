@@ -21,8 +21,6 @@ import android.content.ComponentName;
 import android.content.Intent;
 import android.test.mock.MockContext;
 
-import io.fabric.sdk.android.FabricTestUtils;
-
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
@@ -31,13 +29,22 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Service;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
 
 import javax.net.ssl.SSLSocketFactory;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotSame;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
@@ -46,7 +53,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class DigitsClientTests extends DigitsAndroidTestCase {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, emulateSdk = 21)
+public class DigitsClientTests {
     private static final String TYPE = "typetoken";
     private static final String ANY_REQUEST_ID = "1";
     private static final String ANY_CODE = "1";
@@ -67,14 +76,12 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
     private DigitsApiClient digitsApiClient;
     private DigitsScribeService scribeService;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
-
         digits = mock(Digits.class);
         sessionManager = mock(SessionManager.class);
         twitterCore = mock(TwitterCore.class);
-        digitsApiClient = mock(MockDigitsApiClient.class);
+        digitsApiClient = mock(DigitsApiClient.class);
         deviceService = mock(DigitsApiClient.DeviceService.class);
         sdkService = mock(DigitsApiClient.SdkService.class);
         context = mock(MockContext.class);
@@ -102,15 +109,11 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
                 digitsApiClient);
     }
 
-    @Override
-    protected void tearDown() throws Exception {
-        FabricTestUtils.resetFabric();
-        super.tearDown();
-    }
-
+    @Test
     public void testAuthDevice_success() throws Exception {
         final Callback callback = mock(Callback.class);
-        final Result<OAuth2Token> result = new Result<>(new OAuth2Token(TYPE, TOKEN), null);
+        final Result<OAuth2Token> result =
+                new Result<>(new OAuth2Token(TYPE, TestConstants.TOKEN), null);
         final DigitsCallback authCallback = authDevice(callback);
         authCallback.success(result);
         verify(sessionManager).setSession(anyLong(), any(DigitsSession.class));
@@ -118,6 +121,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         assertNotSame(digitsClient.digitsApiClient, digitsApiClient);
     }
 
+    @Test
     public void testAuthDevice_failure() throws Exception {
         final Callback callback = mock(Callback.class);
         final DigitsCallback authCallback = authDevice(callback);
@@ -130,11 +134,12 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         final ArgumentCaptor<DigitsCallback> argumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
 
-        digitsClient.authDevice(context, controller, PHONE, callback);
+        digitsClient.authDevice(context, controller, TestConstants.PHONE, callback);
         verify(authService).requestGuestOrAppAuthToken(argumentCaptor.capture());
         return argumentCaptor.getValue();
     }
 
+    @Test
     public void testConstructor_nullTwitter() throws Exception {
         try {
             new DigitsClient(digits, null, sessionManager, authService, digitsApiClient);
@@ -144,6 +149,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         }
     }
 
+    @Test
     public void testConstructor_nullDigits() throws Exception {
         try {
             new DigitsClient(null, twitterCore, sessionManager, authService, digitsApiClient);
@@ -153,6 +159,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         }
     }
 
+    @Test
     public void testConstructor_nullSessionManager() throws Exception {
         try {
             new DigitsClient(digits, twitterCore, null, authService, digitsApiClient);
@@ -162,6 +169,7 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         }
     }
 
+    @Test
     public void testConstructor_nullAuthService() throws Exception {
         try {
             new DigitsClient(digits, twitterCore, sessionManager, null, digitsApiClient);
@@ -171,73 +179,87 @@ public class DigitsClientTests extends DigitsAndroidTestCase {
         }
     }
 
+    @Test
     public void testStartSignUp() throws Exception {
         verifySignUp(callback);
         verifyCallbackInReceiver(callback);
     }
 
+    @Test
     public void testStartSignUp_withPhone() throws Exception {
-        verifySignUpWithProvidedPhone(callback, PHONE);
+        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE);
         verifyCallbackInReceiver(callback);
     }
 
+    @Test
     public void testStartSignUp_withNullPhone() throws Exception {
         verifySignUpWithProvidedPhone(callback, null);
         verifyCallbackInReceiver(callback);
     }
 
+    @Test
     public void testStartSignUp_nullListener() throws Exception {
         verifySignUp(null);
         verifyCallbackInReceiver(null);
     }
 
+    @Test
     public void testStartSignUp_nullListenerWithPhone() throws Exception {
-        verifySignUpWithProvidedPhone(null, PHONE);
+        verifySignUpWithProvidedPhone(null, TestConstants.PHONE);
         verifyCallbackInReceiver(null);
     }
 
+    @Test
     public void testStartSignUp_callbackSuccess() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback);
         verify(callback).success(userSession, null);
     }
 
+    @Test
     public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(callback, PHONE);
+        digitsClient.startSignUp(callback, TestConstants.PHONE);
         verify(callback).success(userSession, null);
     }
 
+    @Test
     public void testStartSignUp_loggedOutUser() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(guestSession);
         verifySignUp(callback);
         verifyCallbackInReceiver(callback);
     }
 
+    @Test
     public void testStartSignUp_loggedOutUserWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(guestSession);
-        verifySignUpWithProvidedPhone(callback, PHONE);
+        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE);
         verifyCallbackInReceiver(callback);
     }
 
+    @Test
     public void testRegisterDevice() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.registerDevice(PHONE, listener);
-        verify(deviceService).register(PHONE, DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true,
-                Locale.getDefault().getLanguage(), DigitsClient.CLIENT_IDENTIFIER, listener);
+        digitsClient.registerDevice(TestConstants.PHONE, listener);
+        verify(deviceService).register(TestConstants.PHONE,
+                DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
+                DigitsClient.CLIENT_IDENTIFIER, listener);
     }
 
+    @Test
     public void testLoginDevice() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.loginDevice(ANY_REQUEST_ID, USER_ID, ANY_CODE, listener);
-        verify(sdkService).login(eq(ANY_REQUEST_ID), eq(USER_ID), eq(ANY_CODE), eq(listener));
+        digitsClient.loginDevice(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
+        verify(sdkService).login(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
+                eq(listener));
     }
 
-
+    @Test
     public void testVerifyPin() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.verifyPin(ANY_REQUEST_ID, USER_ID, ANY_CODE, listener);
-        verify(sdkService).verifyPin(eq(ANY_REQUEST_ID), eq(USER_ID), eq(ANY_CODE), eq(listener));
+        digitsClient.verifyPin(ANY_REQUEST_ID, TestConstants.USER_ID, ANY_CODE, listener);
+        verify(sdkService).verifyPin(eq(ANY_REQUEST_ID), eq(TestConstants.USER_ID), eq(ANY_CODE),
+                eq(listener));
     }
 
     private void verifyCallbackInReceiver(AuthCallback expected) {

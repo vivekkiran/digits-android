@@ -24,19 +24,8 @@ import static org.mockito.Mockito.verifyZeroInteractions;
 public class DigitsAndroidTestCase extends FabricAndroidTestCase {
 
     protected static final String TWITTER_URL = "http://twitter.com";
-    protected static final String CONSUMER_KEY = "testKey";
-    protected static final String CONSUMER_SECRET = "testSecret";
-    protected static final String TOKEN = "token";
-    protected static final String SECRET = "secret";
-    protected static final long USER_ID = 11;
-
-    protected static final String RAW_PHONE = "+123456789";
-    protected static final String PHONE = "123456789";
-    protected static final String PHONE_NO_COUNTRY_CODE = "23456789";
-    protected static final String PHONE_PLUS_SYMBOL_NO_COUNTRY_CODE = "23456789";
     protected static final String US_COUNTRY_CODE = "1";
     protected static final String US_ISO2 = "us";
-    protected static final String US_ISO3 = "usa";
 
     protected void verifyNoInteractions(Object... objects) {
         for (Object object : objects) {
