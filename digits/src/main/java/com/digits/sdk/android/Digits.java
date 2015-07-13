@@ -28,6 +28,7 @@ import io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
 import com.twitter.sdk.android.core.PersistedSessionManager;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.internal.MigrationHelper;
 import com.twitter.sdk.android.core.internal.SessionMonitor;
@@ -222,5 +223,12 @@ public class Digits extends Kit<Void> {
     protected void createActivityClassManager() {
         final ActivityClassManagerFactory factory = new ActivityClassManagerFactory();
         activityClassManager = factory.createActivityClassManager(getContext(), themeResId);
+    }
+
+    /**
+     * Exposes the AuthConfig used in this instance of Digits kit
+     */
+    public TwitterAuthConfig getAuthConfig() {
+        return TwitterCore.getInstance().getAuthConfig();
     }
 }
