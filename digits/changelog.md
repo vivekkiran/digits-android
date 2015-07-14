@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+## v1.6.2
+
 * (EF) Use AuthRequestQueue for all API request to ensure we always have a valid guest auth token
 * (EF) Fixed critical issue where Digits sessions are lost when using Proguard.
 
