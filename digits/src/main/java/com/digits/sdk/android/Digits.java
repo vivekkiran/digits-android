@@ -32,6 +32,7 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.internal.MigrationHelper;
 import com.twitter.sdk.android.core.internal.SessionMonitor;
+import com.twitter.sdk.android.core.internal.TwitterSessionVerifier;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 
 import java.util.ArrayList;
@@ -135,7 +136,8 @@ public class Digits extends Kit<Void> {
                 SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
                 PREF_KEY_SESSION);
 
-        sessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService());
+        sessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService(),
+                new TwitterSessionVerifier());
         return super.onPreExecute();
     }
 
