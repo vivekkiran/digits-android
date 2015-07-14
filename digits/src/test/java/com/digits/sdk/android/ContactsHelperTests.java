@@ -17,24 +17,34 @@
 
 package com.digits.sdk.android;
 
+import android.content.ContentResolver;
+import android.content.Context;
 import android.database.Cursor;
 import android.database.MatrixCursor;
 import android.net.Uri;
-import android.provider.ContactsContract;
-import android.test.MoreAsserts;
-import android.test.mock.MockContentProvider;
-import android.test.mock.MockContentResolver;
 import android.test.mock.MockContext;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
+
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertEquals;
+import static org.mockito.AdditionalMatchers.aryEq;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.isNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-public class ContactsHelperTests extends DigitsAndroidTestCase {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, emulateSdk = 21)
+public class ContactsHelperTests {
     // Sample rows for matrix cursor
     private static final String[] COLUMNS = {"data1", "data2", "data3", "lookup", "mimetype",
             "is_primary"};
@@ -50,31 +60,18 @@ public class ContactsHelperTests extends DigitsAndroidTestCase {
             "\r\nFN:nene goose\r\nTEL;TYPE=CELL:555-555-5555\r\nEMAIL;TYPE=PREF:support@digits" +
             ".com\r\nEND:VCARD\r\n";
 
-    private MockContext context;
-    private MockContentResolver contentResolver;
-    private MockContentProvider provider;
+    private Context context;
+    private ContentResolver contentResolver;
     private Cursor cursor;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
-
         context = mock(MockContext.class);
-        contentResolver = new MockContentResolver();
+        contentResolver = mock(ContentResolver.class);
         cursor = createCursor();
-        provider = new MockContentProvider() {
-            @Override
-            public Cursor query(Uri uri, String[] projection, String selection,
-                                String[] selectionArgs, String sortOrder) {
-                assertEquals(ContactsContract.AUTHORITY, uri.getAuthority());
-                MoreAsserts.assertContentsInAnyOrder(Arrays.asList(COLUMNS), (Object[]) projection);
-                assertEquals(null, sortOrder);
 
-                return cursor;
-            }
-        };
-        contentResolver.addProvider(ContactsContract.AUTHORITY, provider);
-
+        when(contentResolver.query(any(Uri.class), any(String[].class), any(String.class), any
+                (String[].class), any(String.class))).thenReturn(cursor);
         when(context.getContentResolver()).thenReturn(contentResolver);
     }
 
@@ -92,21 +89,24 @@ public class ContactsHelperTests extends DigitsAndroidTestCase {
         return vCards;
     }
 
+    @Test
     public void testGetContactsCursor() {
         final ContactsHelper contactsHelper = new ContactsHelper(context);
         final Cursor cursor = contactsHelper.getContactsCursor();
 
         verify(context).getContentResolver();
-
-        assertEquals(COLUMNS, cursor.getColumnNames());
+        verify(contentResolver).query(any(Uri.class), aryEq(COLUMNS), any(String.class),
+                any(String[].class), isNull(String.class));
+        assertArrayEquals(COLUMNS, cursor.getColumnNames());
     }
 
+    @Test
     public void testCreateContactList() {
         final ContactsHelper contactsHelper = new ContactsHelper(context);
 
         final List<String> cards = contactsHelper.createContactList(cursor);
 
         assertEquals(1, cards.size());
-        MoreAsserts.assertEquals(createCardList().toArray(), cards.toArray());
+        assertArrayEquals(createCardList().toArray(), cards.toArray());
     }
 }

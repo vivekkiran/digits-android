@@ -17,52 +17,62 @@
 
 package com.digits.sdk.android;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
 import io.fabric.sdk.android.services.concurrency.internal.RetryThreadPoolExecutor;
 
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.ArrayList;
 import java.util.concurrent.TimeUnit;
 
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
-public class ContactsUploadServiceTests extends DigitsAndroidTestCase {
+@RunWith(RobolectricGradleTestRunner.class)
+@Config(constants = BuildConfig.class, emulateSdk = 21)
+public class ContactsUploadServiceTests {
     private Cursor cursor;
     private ContactsHelper helper;
     private RetryThreadPoolExecutor executor;
     private ContactsClient contactsClient;
     private ContactsPreferenceManager perfManager;
     private ArrayList<String> cradList;
-    private StubContractsService service;
+    private ContactsUploadService service;
+    private ArgumentCaptor<Intent> intentCaptor;
 
-    @Override
+    @Before
     public void setUp() throws Exception {
-        super.setUp();
-
         executor = mock(RetryThreadPoolExecutor.class);
         perfManager = mock(MockContactsPreferenceManager.class);
-        contactsClient = mock(StubContactsClient.class);
+        contactsClient = mock(ContactsClient.class);
         cursor = ContactsHelperTests.createCursor();
         cradList = ContactsHelperTests.createCardList();
+        intentCaptor = ArgumentCaptor.forClass(Intent.class);
 
-        helper = mock(StubContactsHelper.class);
+        helper = mock(ContactsHelper.class);
         when(helper.getContactsCursor()).thenReturn(cursor);
         when(helper.createContactList(cursor)).thenReturn(cradList);
 
-        service = new StubContractsService(contactsClient, helper, perfManager, executor);
+        service = spy(new ContactsUploadService(contactsClient, helper, perfManager, executor));
     }
 
+    @Test
     public void testOnHandleIntent() throws Exception {
         when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(true);
         doAnswer(new Answer() {
@@ -81,19 +91,20 @@ public class ContactsUploadServiceTests extends DigitsAndroidTestCase {
         verify(executor).shutdown();
         verify(executor).awaitTermination(anyLong(), any(TimeUnit.class));
 
-        assertTrue(service.sendBroadcastCalled);
-        assertEquals(ContactsUploadService.UPLOAD_COMPLETE, service.broadcastIntent.getAction());
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_COMPLETE, intentCaptor.getValue().getAction());
 
         verify(perfManager).setContactImportPermissionGranted();
         verify(perfManager).setContactsUploaded(cradList.size());
         verify(perfManager).setContactsReadTimestamp(anyLong());
 
-        final ContactsUploadResult result = service.broadcastIntent
+        final ContactsUploadResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA);
         assertEquals(cradList.size(), result.successCount);
         assertEquals(cradList.size(), result.totalCount);
     }
 
+    @Test
     public void testOnHandleIntent_uploadTimeout() throws Exception {
         when(executor.awaitTermination(anyLong(), any(TimeUnit.class))).thenReturn(false);
 
@@ -106,13 +117,14 @@ public class ContactsUploadServiceTests extends DigitsAndroidTestCase {
         verify(executor).awaitTermination(anyLong(), any(TimeUnit.class));
         verify(executor).shutdownNow();
 
-        assertTrue(service.sendBroadcastCalled);
-        assertEquals(ContactsUploadService.UPLOAD_FAILED, service.broadcastIntent.getAction());
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
 
         verify(perfManager).setContactImportPermissionGranted();
         verifyNoMoreInteractions(perfManager);
     }
 
+    @Test
     public void testGetNumberOfPages() {
         assertEquals(1, service.getNumberOfPages(100));
         assertEquals(1, service.getNumberOfPages(50));
@@ -120,50 +132,23 @@ public class ContactsUploadServiceTests extends DigitsAndroidTestCase {
         assertEquals(2, service.getNumberOfPages(199));
     }
 
+    @Test
     public void testSendFailureBroadcast() {
         service.sendFailureBroadcast();
 
-        assertTrue(service.sendBroadcastCalled);
-        assertEquals(ContactsUploadService.UPLOAD_FAILED, service.broadcastIntent.getAction());
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_FAILED, intentCaptor.getValue().getAction());
     }
 
+    @Test
     public void testSendSuccessBroadcast() {
         service.sendSuccessBroadcast(new ContactsUploadResult(1, 1));
 
-        assertTrue(service.sendBroadcastCalled);
-        assertEquals(ContactsUploadService.UPLOAD_COMPLETE, service.broadcastIntent.getAction());
-        final ContactsUploadResult result = service.broadcastIntent
+        verify(service).sendBroadcast(intentCaptor.capture());
+        assertEquals(ContactsUploadService.UPLOAD_COMPLETE, intentCaptor.getValue().getAction());
+        final ContactsUploadResult result = intentCaptor.getValue()
                 .getParcelableExtra(ContactsUploadService.UPLOAD_COMPLETE_EXTRA);
         assertEquals(1, result.successCount);
         assertEquals(1, result.totalCount);
-    }
-
-    public class StubContactsHelper extends ContactsHelper {
-
-        public StubContactsHelper(Context context) {
-            super(context);
-        }
-    }
-
-    public class StubContractsService extends ContactsUploadService {
-        boolean sendBroadcastCalled = false;
-        Intent broadcastIntent;
-
-        StubContractsService(ContactsClient contactsClient, ContactsHelper helper,
-                ContactsPreferenceManager perfManager, RetryThreadPoolExecutor executor) {
-            super(contactsClient, helper, perfManager, executor);
-        }
-
-        @Override
-        public void sendBroadcast(Intent intent) {
-            sendBroadcastCalled = true;
-            broadcastIntent = intent;
-        }
-    }
-
-    public class StubContactsClient extends ContactsClient {
-        public UploadResponse uploadContacts(Vcards vcards) {
-            return null;
-        }
     }
 }
