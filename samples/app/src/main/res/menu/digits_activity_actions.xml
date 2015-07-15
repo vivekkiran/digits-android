@@ -16,6 +16,8 @@
   ~
   -->
 
-<resources>
-    <dimen name="padding_container">16dp</dimen>
-</resources>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+      xmlns:tools="http://schemas.android.com/tools"
+      tools:ignore="UnusedResources">
+
+</menu>

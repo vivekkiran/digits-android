@@ -1,15 +1,3 @@
-buildscript {
-    repositories {
-        mavenCentral()
-        maven { url 'https://maven.fabric.io/public' }
-    }
-
-    dependencies {
-        classpath 'com.android.tools.build:gradle:1.2.3'
-        classpath 'io.fabric.tools:gradle:1.19.0'
-    }
-}
-
 /*
  * Copyright (C) 2015 Twitter, Inc.
  *
@@ -27,6 +15,19 @@ buildscript {
  *
  */
 
+buildscript {
+    repositories {
+        mavenCentral()
+        maven { url 'https://maven.fabric.io/public' }
+    }
+
+    dependencies {
+        classpath 'com.stanfy.spoon:spoon-gradle-plugin:0.14.1'
+        classpath 'com.android.tools.build:gradle:1.2.3'
+        classpath 'io.fabric.tools:gradle:1.19.0'
+    }
+}
+
 //Load API Key information in from property file
 Properties props = new Properties()
 try {
@@ -37,6 +38,7 @@ try {
 
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
+apply plugin: 'spoon'
 
 
 repositories {
@@ -54,6 +56,7 @@ android {
         versionName "1.0"
         minSdkVersion 9
         targetSdkVersion rootProject.targetSdkVersion
+        testInstrumentationRunner "com.example.app.SpoonInstrumentationTestRunner"
     }
 
     buildTypes {
@@ -66,6 +69,16 @@ android {
             buildConfigField "String", "CONSUMER_SECRET", "\"${props.getProperty("twitterConsumerSecret")}\""
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt')
+        }
+    }
+
+    packagingOptions {
+        exclude 'LICENSE.txt'
+    }
+
+    spoon {
+        if (project.hasProperty('spoonClassName')) {
+            className = project.spoonClassName
         }
     }
 
@@ -82,6 +95,11 @@ android {
 dependencies {
     compile project(':digits')
     compile rootProject.appCompat
-    debugCompile 'com.squareup.leakcanary:leakcanary-android:1.3'
-    releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
+
+    debugCompile rootProject.leakCanary
+    releaseCompile rootProject.leakCanaryNoOp
+
+    androidTestCompile rootProject.spoon
+    androidTestCompile rootProject.espresso
+    androidTestCompile rootProject.androidTestingSupport
 }

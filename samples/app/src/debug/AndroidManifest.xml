@@ -16,7 +16,15 @@
   ~
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android"
-      xmlns:tools="http://schemas.android.com/tools">
+<manifest
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
-</menu>
+    <!-- For instrumentation tests -->
+    <uses-permission android:name="android.permission.DISABLE_KEYGUARD"/>
+    <uses-permission android:name="android.permission.WAKE_LOCK"/>
+
+    <application>
+        <activity android:name="com.digits.sdk.android.PhoneNumberActivityWrapper" />
+    </application>
+</manifest>

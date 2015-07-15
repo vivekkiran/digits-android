@@ -17,13 +17,10 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <string name="app_name">DigitsSampleApp</string>
-
-
+    <string name="digits_app_name"
+        tools:ignore="UnusedResources">DigitsSampleApp</string>
     <string name="kit_digits">Digits</string>
 
-
-    <!-- Digits strings -->
     <string name="user_id">User Id: %d</string>
     <string name="token">Token: %s</string>
     <string name="secret">Secret: %s</string>
@@ -33,5 +30,4 @@
     <string name="you_have_new_friends">You have new friends</string>
     <string name="clear_session">Clear Session</string>
     <string name="verify_credentials">Verify Credentials</string>
-
 </resources>

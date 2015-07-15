@@ -28,12 +28,12 @@
     <application
         android:name=".SampleApplication"
         android:allowBackup="true"
-        android:icon="@drawable/ic_launcher"
-        android:label="@string/app_name">
+        android:icon="@drawable/digits_ic_launcher"
+        android:label="@string/digits_app_name">
 
         <activity
             android:name=".MainActivity"
-            android:label="@string/app_name">
+            android:label="@string/digits_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
