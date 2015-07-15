@@ -69,7 +69,8 @@ class LoginCodeController extends DigitsControllerImpl {
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
                             } else {
-                                final DigitsSession session = DigitsSession.create(result.data);
+                                final DigitsSession session = DigitsSession.create(result.data,
+                                        phoneNumber);
                                 loginSuccess(context, session, phoneNumber);
                             }
                         }

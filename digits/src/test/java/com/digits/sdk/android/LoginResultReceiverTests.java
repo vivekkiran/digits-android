@@ -52,8 +52,7 @@ public class LoginResultReceiverTests {
     public void setUp() throws Exception {
 
         session = new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN,
-                TestConstants.SECRET),
-                TestConstants.USER_ID);
+                TestConstants.SECRET), TestConstants.USER_ID, TestConstants.PHONE);
         mockSessionManager = mock(SessionManager.class);
         when(mockSessionManager.getActiveSession()).thenReturn(session);
         callback = mock(AuthCallback.class);

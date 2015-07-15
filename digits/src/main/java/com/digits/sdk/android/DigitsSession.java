@@ -19,22 +19,20 @@ package com.digits.sdk.android;
 
 import android.text.TextUtils;
 
-import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.services.persistence.SerializationStrategy;
-
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.annotations.SerializedName;
 import com.twitter.sdk.android.core.AuthToken;
 import com.twitter.sdk.android.core.AuthTokenAdapter;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterAuthToken;
-import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import java.util.List;
 
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.services.persistence.SerializationStrategy;
 import retrofit.client.Header;
 
 /**
@@ -44,32 +42,43 @@ import retrofit.client.Header;
 public class DigitsSession extends Session<AuthToken> {
     public static final long UNKNOWN_USER_ID = -1L;
     public static final long LOGGED_OUT_USER_ID = 0L;
+    public static final String DEFAULT_PHONE_NUMBER = "";
 
     static final String TOKEN_HEADER = "x-twitter-new-account-oauth-access-token";
     static final String SECRET_HEADER = "x-twitter-new-account-oauth-secret";
 
+    @SerializedName("phone_number")
+    private final String phoneNumber;
 
     public DigitsSession(AuthToken authToken, long id) {
+        this(authToken, id, DEFAULT_PHONE_NUMBER);
+    }
+
+    public DigitsSession(AuthToken authToken, long id, String phoneNumber) {
         super(authToken, id);
+        this.phoneNumber = phoneNumber;
     }
 
     public DigitsSession(OAuth2Token token) {
-        this(token, DigitsSession.LOGGED_OUT_USER_ID);
+        this(token, DigitsSession.LOGGED_OUT_USER_ID, DEFAULT_PHONE_NUMBER);
     }
 
     public boolean isLoggedOutUser() {
         return getId() == DigitsSession.LOGGED_OUT_USER_ID;
     }
 
-    static DigitsSession create(Result<DigitsUser> result) {
+    static DigitsSession create(Result<DigitsUser> result, String phoneNumber) {
         if (result == null) {
-            throw new IllegalArgumentException("result must not be null");
+            throw new NullPointerException("result must not be null");
         }
         if (result.data == null) {
-            throw new IllegalArgumentException("result.data must not be null");
+            throw new NullPointerException("result.data must not be null");
         }
         if (result.response == null) {
-            throw new IllegalArgumentException("result.response must not be null");
+            throw new NullPointerException("result.response must not be null");
+        }
+        if (phoneNumber == null) {
+            throw new NullPointerException("phoneNumber must not be null");
         }
 
         final List<Header> headers = result.response.getHeaders();
@@ -86,19 +95,19 @@ public class DigitsSession extends Session<AuthToken> {
             }
         }
 
-        return new DigitsSession(new TwitterAuthToken(token, secret), result.data.id);
+        return new DigitsSession(new TwitterAuthToken(token, secret), result.data.id, phoneNumber);
     }
 
-    static DigitsSession create(DigitsSessionResponse result) {
+    static DigitsSession create(DigitsSessionResponse result, String phoneNumber) {
         if (result == null) {
-            throw new IllegalArgumentException("result must not be null");
+            throw new NullPointerException("result must not be null");
+        }
+        if (phoneNumber == null) {
+            throw new NullPointerException("phoneNumber must not be null");
         }
 
-        return new DigitsSession(new TwitterAuthToken(result.token, result.secret), result.userId);
-    }
-
-    public static DigitsSession create(TwitterSession session) {
-        return new DigitsSession(session.getAuthToken(), session.getUserId());
+        return new DigitsSession(new TwitterAuthToken(result.token, result.secret), result
+                .userId, phoneNumber);
     }
 
     public static class Serializer implements SerializationStrategy<DigitsSession> {
@@ -128,7 +137,13 @@ public class DigitsSession extends Session<AuthToken> {
         public DigitsSession deserialize(String serializedSession) {
             if (!TextUtils.isEmpty(serializedSession)) {
                 try {
-                    return gson.fromJson(serializedSession, DigitsSession.class);
+                    final DigitsSession deserializeSession = gson.fromJson(serializedSession,
+                            DigitsSession.class);
+                    if (deserializeSession.phoneNumber == null) {
+                        return new DigitsSession(deserializeSession.getAuthToken(),
+                                deserializeSession.getId(), DEFAULT_PHONE_NUMBER);
+                    }
+                    return deserializeSession;
                 } catch (Exception e) {
                     Fabric.getLogger().d(TAG, e.getMessage());
                 }
@@ -136,5 +151,34 @@ public class DigitsSession extends Session<AuthToken> {
             return null;
         }
 
+    }
+
+    /**
+     * Returns the phone number tied to this session
+     *
+     * @return null or the user phone number
+     */
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        final DigitsSession that = (DigitsSession) o;
+
+        return phoneNumber == null ? (that.phoneNumber == null) :
+                phoneNumber.equals(that.phoneNumber);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (phoneNumber != null ? phoneNumber.hashCode() : 0);
+        return result;
     }
 }

@@ -31,7 +31,10 @@ import java.util.ArrayList;
 import retrofit.client.Header;
 import retrofit.client.Response;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
@@ -49,21 +52,23 @@ public class DigitsSessionTests {
 
         final Response response = new Response(TestConstants.TWITTER_URL, HttpStatus.SC_ACCEPTED,
                 "", headers, null);
-        final DigitsUser user = new DigitsUser(TestConstants.USER_ID, "");
-        final DigitsSession session = DigitsSession.create(new Result<>(user, response));
+        final DigitsUser user = new DigitsUser(TestConstants.USER_ID,
+                DigitsSession.DEFAULT_PHONE_NUMBER);
+        final DigitsSession session = DigitsSession.create(new Result<>(user, response),
+                TestConstants.PHONE);
         final DigitsSession newSession = new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN,
                 TestConstants.SECRET),
-                TestConstants.USER_ID);
+                TestConstants.USER_ID, TestConstants.PHONE);
         assertEquals(session, newSession);
     }
 
     @Test
     public void testCreate_digitsUser() throws Exception {
         final DigitsSessionResponse response = getNewDigitsSessionResponse();
-        final DigitsSession session = DigitsSession.create(response);
+        final DigitsSession session = DigitsSession.create(response, TestConstants.PHONE);
         final DigitsSession newSession = new DigitsSession(
                 new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET),
-                TestConstants.USER_ID);
+                TestConstants.USER_ID, TestConstants.PHONE);
         assertEquals(session, newSession);
     }
 
@@ -78,7 +83,7 @@ public class DigitsSessionTests {
     }
 
     private static DigitsSessionResponse getDigitsSessionResponse(String token, String secret,
-            long userId) {
+                                                                  long userId) {
         final DigitsSessionResponse response = new DigitsSessionResponse();
         response.token = token;
         response.secret = secret;
@@ -90,9 +95,9 @@ public class DigitsSessionTests {
     public void testCreate_nullDigitsSessionResponse() throws Exception {
         try {
             final DigitsSessionResponse response = null;
-            DigitsSession.create(response);
+            DigitsSession.create(response, TestConstants.PHONE);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (NullPointerException ex) {
             assertEquals("result must not be null", ex.getMessage());
         }
     }
@@ -101,9 +106,9 @@ public class DigitsSessionTests {
     public void testCreate_nullResult() throws Exception {
         try {
             final Result result = null;
-            DigitsSession.create(result);
+            DigitsSession.create(result, TestConstants.PHONE);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (NullPointerException ex) {
             assertEquals("result must not be null", ex.getMessage());
         }
     }
@@ -112,11 +117,11 @@ public class DigitsSessionTests {
     public void testCreate_nullResultData() throws Exception {
         try {
             final Response response = new Response(TestConstants.TWITTER_URL,
-                    HttpStatus.SC_ACCEPTED, "",
+                    HttpStatus.SC_ACCEPTED, DigitsSession.DEFAULT_PHONE_NUMBER,
                     new ArrayList<Header>(), null);
-            DigitsSession.create(new Result<DigitsUser>(null, response));
+            DigitsSession.create(new Result<DigitsUser>(null, response), TestConstants.PHONE);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (NullPointerException ex) {
             assertEquals("result.data must not be null", ex.getMessage());
         }
     }
@@ -124,22 +129,26 @@ public class DigitsSessionTests {
     @Test
     public void testCreate_nullResultResponse() throws Exception {
         try {
-            DigitsSession.create(new Result<>(new DigitsUser(TestConstants.USER_ID, ""), null));
+            DigitsSession.create(new Result<>(new DigitsUser(TestConstants.USER_ID,
+                            DigitsSession.DEFAULT_PHONE_NUMBER), null),
+                    TestConstants.PHONE);
             fail();
-        } catch (IllegalArgumentException ex) {
+        } catch (NullPointerException ex) {
             assertEquals("result.response must not be null", ex.getMessage());
         }
     }
 
     @Test
     public void testIsLoggedOutUser_false() throws Exception {
-        final DigitsSession session = DigitsSession.create(getNewDigitsSessionResponse());
+        final DigitsSession session = DigitsSession.create(getNewDigitsSessionResponse(),
+                TestConstants.PHONE);
         assertFalse(session.isLoggedOutUser());
     }
 
     @Test
     public void testIsLoggedOutUser_true() throws Exception {
-        final DigitsSession session = DigitsSession.create(getNewLoggedOutUser());
+        final DigitsSession session = DigitsSession.create(getNewLoggedOutUser(), TestConstants
+                .PHONE);
         assertTrue(session.isLoggedOutUser());
     }
 }

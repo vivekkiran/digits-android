@@ -61,7 +61,7 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsUser>(context, this) {
                         @Override
                         public void success(Result<DigitsUser> result) {
-                            final DigitsSession session = DigitsSession.create(result);
+                            final DigitsSession session = DigitsSession.create(result, phoneNumber);
                             loginSuccess(context, session, phoneNumber);
                         }
 

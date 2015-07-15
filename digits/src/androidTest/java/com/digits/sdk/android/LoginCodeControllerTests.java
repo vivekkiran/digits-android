@@ -47,7 +47,8 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
 
         callback.success(result);
 
-        verify(sessionManager).setActiveSession(DigitsSession.create(response));
+        verify(sessionManager).setActiveSession(DigitsSession.create(response,
+                PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);

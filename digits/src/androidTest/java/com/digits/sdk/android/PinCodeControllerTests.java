@@ -48,7 +48,8 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
         callback.success(result);
-        verify(sessionManager).setActiveSession(DigitsSession.create(response));
+        verify(sessionManager).setActiveSession(DigitsSession.create(response,
+                PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
                 (Runnable.class);

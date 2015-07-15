@@ -30,10 +30,10 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.robolectric.RobolectricGradleTestRunner;
-import org.robolectric.annotation.Config;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.stubbing.Answer;
+import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.annotation.Config;
 
 import java.util.Locale;
 import java.util.concurrent.ExecutorService;
@@ -87,8 +87,8 @@ public class DigitsClientTests {
         scribeService = mock(DigitsScribeService.class);
         authRequestQueue = createAuthRequestQueue();
 
-        userSession = DigitsSession.create(TestConstants.DIGITS_USER);
-        guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER);
+        userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
+        guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
 
         when(digitsApiClient.getDeviceService()).thenReturn(deviceService);
         when(digitsApiClient.getSdkService()).thenReturn(sdkService);

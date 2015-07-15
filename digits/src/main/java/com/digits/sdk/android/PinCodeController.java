@@ -73,7 +73,8 @@ class PinCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {
-                            final DigitsSession session = DigitsSession.create(result.data);
+                            final DigitsSession session = DigitsSession.create(result.data,
+                                    phoneNumber);
                             loginSuccess(context, session, phoneNumber);
                         }
                     });

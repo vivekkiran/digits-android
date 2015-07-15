@@ -41,16 +41,14 @@ public class DigitsApiClientTests {
 
     @Before
     public void setUp() throws Exception {
-
         authConfig = new TwitterAuthConfig(TestConstants.CONSUMER_SECRET,
                 TestConstants.CONSUMER_KEY);
-        guestSession = DigitsSession.create(DigitsSessionTests.getNewLoggedOutUser());
-
+        guestSession = DigitsSession.create(DigitsSessionTests.getNewLoggedOutUser(),
+                TestConstants.PHONE);
 
         digitsApiClient = new DigitsApiClient(guestSession, authConfig,
                 mock(SSLSocketFactory.class), mock(ExecutorService.class),
                 mock(DigitsUserAgent.class));
-
     }
 
     @Test
@@ -68,3 +66,4 @@ public class DigitsApiClientTests {
     }
 
 }
+
