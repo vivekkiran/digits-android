@@ -110,6 +110,16 @@ public class DigitsSession extends Session<AuthToken> {
                 .userId, phoneNumber);
     }
 
+    public static DigitsSession create(VerifyAccountResponse verifyAccountResponse) {
+        if (verifyAccountResponse == null) {
+            throw new NullPointerException("verifyAccountResponse must not be null");
+        }
+
+        return new DigitsSession(new TwitterAuthToken(verifyAccountResponse.token,
+                verifyAccountResponse.secret), verifyAccountResponse.userId,
+                verifyAccountResponse.phoneNumber);
+    }
+
     public static class Serializer implements SerializationStrategy<DigitsSession> {
 
         private static final String TAG = "Digits";

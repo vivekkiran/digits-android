@@ -20,11 +20,6 @@ package com.digits.sdk.android;
 import android.annotation.TargetApi;
 import android.os.Build;
 
-import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.Kit;
-import io.fabric.sdk.android.services.concurrency.DependsOn;
-import io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
-
 import com.twitter.sdk.android.core.PersistedSessionManager;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.SessionManager;
@@ -32,12 +27,16 @@ import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.internal.MigrationHelper;
 import com.twitter.sdk.android.core.internal.SessionMonitor;
-import com.twitter.sdk.android.core.internal.TwitterSessionVerifier;
 import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
+
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.Kit;
+import io.fabric.sdk.android.services.concurrency.DependsOn;
+import io.fabric.sdk.android.services.persistence.PreferenceStoreImpl;
 
 /**
  * Digits allows authentication based on a phone number.
@@ -55,7 +54,7 @@ public class Digits extends Kit<Void> {
     private volatile DigitsClient digitsClient;
     private volatile ContactsClient contactsClient;
     private SessionManager<DigitsSession> sessionManager;
-    private SessionMonitor<DigitsSession> sessionMonitor;
+    private SessionMonitor<DigitsSession> userSessionMonitor;
     private ActivityClassManager activityClassManager;
     private DigitsScribeService scribeService;
 
@@ -140,8 +139,14 @@ public class Digits extends Kit<Void> {
                 SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
                 PREF_KEY_SESSION);
 
-        sessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService(),
-                new TwitterSessionVerifier());
+        userSessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService(),
+                new DigitsSessionVerifier(new SessionListener() {
+                    @Override
+                    public void changed(DigitsSession newSession) {
+                        //TODO IC: delegate this call to developer
+                    }
+                }));
+
         return super.onPreExecute();
     }
 
@@ -152,10 +157,10 @@ public class Digits extends Kit<Void> {
         createDigitsClient();
         createContactsClient();
         scribeService = new DigitsScribeServiceImp(setUpScribing());
-        sessionMonitor.triggerVerificationIfNecessary();
+        userSessionMonitor.triggerVerificationIfNecessary();
         // Monitor activity lifecycle after sessions have been restored. Otherwise we would not
         // have any sessions to monitor anyways.
-        sessionMonitor.monitorActivityLifecycle(getFabric().getActivityLifecycleManager());
+        userSessionMonitor.monitorActivityLifecycle(getFabric().getActivityLifecycleManager());
         return null;
     }
 

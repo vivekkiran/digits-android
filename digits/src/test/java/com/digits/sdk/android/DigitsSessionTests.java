@@ -130,8 +130,7 @@ public class DigitsSessionTests {
     public void testCreate_nullResultResponse() throws Exception {
         try {
             DigitsSession.create(new Result<>(new DigitsUser(TestConstants.USER_ID,
-                            DigitsSession.DEFAULT_PHONE_NUMBER), null),
-                    TestConstants.PHONE);
+                    DigitsSession.DEFAULT_PHONE_NUMBER), null), TestConstants.PHONE);
             fail();
         } catch (NullPointerException ex) {
             assertEquals("result.response must not be null", ex.getMessage());
@@ -150,5 +149,25 @@ public class DigitsSessionTests {
         final DigitsSession session = DigitsSession.create(getNewLoggedOutUser(), TestConstants
                 .PHONE);
         assertTrue(session.isLoggedOutUser());
+    }
+
+    @Test
+    public void testCreate_fromVerifyAccountResponse() throws Exception {
+        final DigitsSession digitsSession =
+                DigitsSession.create(TestConstants.getVerifyAccountResponse());
+        final DigitsSession expectedSession = new DigitsSession(new TwitterAuthToken
+                (TestConstants.TOKEN, TestConstants.SECRET), TestConstants.USER_ID,
+                TestConstants.PHONE);
+        assertEquals(expectedSession, digitsSession);
+    }
+
+    @Test
+    public void testCreate_nullVerifyAccountResponse() throws Exception {
+        try {
+            DigitsSession.create(null);
+            fail();
+        } catch (NullPointerException ex) {
+            assertEquals("verifyAccountResponse must not be null", ex.getMessage());
+        }
     }
 }

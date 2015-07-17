@@ -65,5 +65,12 @@ public class DigitsApiClientTests {
         assertTrue(deviceService == newDeviceService);
     }
 
+    @Test
+    public void testGetAccountService() throws Exception {
+        final DigitsApiClient.AccountService accountService = digitsApiClient.getAccountService();
+        final DigitsApiClient.AccountService newAccountService = digitsApiClient
+                .getAccountService();
+        assertTrue(accountService == newAccountService);
+    }
 }
 

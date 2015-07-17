@@ -18,10 +18,13 @@
 package com.digits.sdk.android;
 
 
+import android.os.Build;
+
 import com.twitter.sdk.android.core.AuthenticatedClient;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Session;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
@@ -32,12 +35,20 @@ import retrofit.RestAdapter;
 import retrofit.android.MainThreadExecutor;
 import retrofit.http.Field;
 import retrofit.http.FormUrlEncoded;
+import retrofit.http.GET;
 import retrofit.http.POST;
 
 class DigitsApiClient {
     private final ConcurrentHashMap<Class, Object> services;
     private final RestAdapter restAdapter;
     private final Session session;
+
+    DigitsApiClient(Session session) {
+        this(session, TwitterCore.getInstance().getAuthConfig(),
+                TwitterCore.getInstance().getSSLSocketFactory(), Digits.getInstance()
+                        .getExecutorService(),
+                new DigitsUserAgent(Digits.getInstance().getVersion(), Build.VERSION.RELEASE));
+    }
 
     DigitsApiClient(Session session, TwitterAuthConfig authConfig,
             SSLSocketFactory sslFactory, ExecutorService executorService,
@@ -63,6 +74,11 @@ class DigitsApiClient {
     public DeviceService getDeviceService() {
         return getService(DeviceService.class);
     }
+
+    public AccountService getAccountService() {
+        return getService(AccountService.class);
+    }
+
 
     @SuppressWarnings("unchecked")
     private <T> T getService(Class<T> cls) {
@@ -109,5 +125,10 @@ class DigitsApiClient {
                        @Field("login_verification_user_id") long userId,
                        @Field("pin") String pin,
                        Callback<DigitsSessionResponse> cb);
+    }
+
+    public interface AccountService {
+        @GET("/1.1/sdk/account.json")
+        void verifyAccount(Callback<VerifyAccountResponse> cb);
     }
 }

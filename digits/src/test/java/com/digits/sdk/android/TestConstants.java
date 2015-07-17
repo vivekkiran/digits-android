@@ -51,4 +51,13 @@ public class TestConstants {
         response.userId = userId;
         return response;
     }
+
+    public static VerifyAccountResponse getVerifyAccountResponse() {
+        final VerifyAccountResponse response = new VerifyAccountResponse();
+        response.phoneNumber = TestConstants.PHONE;
+        response.secret = TestConstants.SECRET;
+        response.token = TestConstants.TOKEN;
+        response.userId = TestConstants.USER_ID;
+        return response;
+    }
 }
