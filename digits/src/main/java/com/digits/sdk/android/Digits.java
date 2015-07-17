@@ -69,8 +69,10 @@ public class Digits extends Kit<Void> {
     /**
      * Starts the authentication flow
      *
-     * @param callback will get the success or failure callback. It can be null,
-     * but the developer will not get any callback.
+     * @param callback {@link AuthCallback} to be called with the authentication result, or <code>null</code> if no callback is needed.
+     *                 Digits holds a weak reference to this object, therefore the caller should
+     *                 <strong>have a strong reference to this object</strong> or it will never receive
+     *                 the result.
      */
     public static void authenticate(AuthCallback callback) {
         authenticate(callback, ThemeUtils.DEFAULT_THEME);
@@ -79,8 +81,10 @@ public class Digits extends Kit<Void> {
     /**
      * Starts the authentication flow with the provided phone number.
      *
-     * @param callback will get the success or failure callback. It can be null,
-     * but the developer will not get any callback.
+     * @param callback {@link AuthCallback} to be called with the authentication result, or <code>null</code> if no callback is needed.
+     *                 Digits holds a weak reference to this object, therefore the caller should
+     *                 <strong>have a strong reference to this object</strong> or it will never receive
+     *                 the result.
      * @param phoneNumber the phone number to authenticate
      */
     public static void authenticate(AuthCallback callback, String phoneNumber) {
