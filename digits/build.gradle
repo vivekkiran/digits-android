@@ -61,8 +61,13 @@ android {
         test.java.srcDirs += "src/debug"
     }
 
-    testOptions {
-        unitTests.returnDefaultValues = true
+    testOptions.unitTests {
+        returnDefaultValues = true
+        all {
+            testLogging {
+                events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+            }
+        }
     }
 }
 

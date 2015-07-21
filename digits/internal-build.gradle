@@ -34,6 +34,7 @@ android {
         consumerProguardFiles 'proguard.txt'
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         debug {
             buildConfigField "String", "GROUP", "\"${pom_group_id}\""
@@ -95,8 +96,13 @@ android {
         test.java.srcDirs += "src/debug"
     }
 
-    testOptions {
-        unitTests.returnDefaultValues = true
+    testOptions.unitTests {
+        returnDefaultValues = true
+        all {
+            testLogging {
+                events 'passed', 'skipped', 'failed', 'standardOut', 'standardError'
+            }
+        }
     }
 }
 
