@@ -97,9 +97,10 @@ android {
 }
 
 dependencies {
-    compile project(':sdk:digits:digits')
-    compile rootProject.appCompat
+    debugCompile project(path: ':sdk:digits:digits', configuration: 'debug')
+    releaseCompile project(path: ':sdk:digits:digits', configuration: 'release')
 
+    compile rootProject.appCompat
     debugCompile rootProject.leakCanary
     releaseCompile rootProject.leakCanaryNoOp
 
