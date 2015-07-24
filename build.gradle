@@ -43,21 +43,23 @@ ext {
     buildToolsVersion = '22.0.1'
     buildNumber = 'dev'
 
-    junit = 'junit:junit:4.12'
-    junitAddons = 'junit-addons:junit-addons:1.4'
-    robolectric = 'org.robolectric:robolectric:3.0-rc2'
-    leakCanary = 'com.squareup.leakcanary:leakcanary-android:1.3'
-    leakCanaryNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
-
+    // Fabric
     fabric = 'io.fabric.sdk.android:fabric:1.3.+@aar'
     fabricTest = 'io.fabric.sdk.android:fabric-test:0.0.+@aar'
     twitterCore = 'com.twitter.sdk.android:twitter-core:1.4.+@aar'
 
+    // Sample App
+    leakCanary = 'com.squareup.leakcanary:leakcanary-android:1.3'
+    leakCanaryNoOp = 'com.squareup.leakcanary:leakcanary-android-no-op:1.3'
+    appCompat = 'com.android.support:appcompat-v7:21.0.2'
+
+    // Tests
+    junit = 'junit:junit:4.12'
+    junitAddons = 'junit-addons:junit-addons:1.4'
+    robolectric = 'org.robolectric:robolectric:3.0-rc2'
     spoon = 'com.squareup.spoon:spoon-client:1.1.10'
     espresso = 'com.android.support.test.espresso:espresso-core:2.0'
     androidTestingSupport = 'com.android.support.test:testing-support-lib:0.1'
-    appCompat = 'com.android.support:appcompat-v7:21.0.2'
-
     mockito = 'org.mockito:mockito-core:1.9.5'
     dexmakerMockito = 'com.google.dexmaker:dexmaker-mockito:1.2'
 }
