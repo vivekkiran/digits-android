@@ -24,23 +24,25 @@ import com.twitter.sdk.android.core.SessionManager;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.internal.SessionVerifier;
 
-class DigitsSessionVerifier implements SessionVerifier {
-    private final VerificationHandler verificationHandler;
+import java.util.concurrent.ConcurrentHashMap;
 
-    DigitsSessionVerifier(SessionListener sessionListener) {
-        this(new VerificationHandler(sessionListener));
+class DigitsSessionVerifier implements SessionVerifier {
+    private final VerificationCallback verificationCallback;
+
+    DigitsSessionVerifier() {
+        this(new VerificationCallback(new ConcurrentHashMap<SessionListener, Boolean>(),
+                Digits.getSessionManager()));
     }
 
-    DigitsSessionVerifier(VerificationHandler verificationHandler) {
-        this.verificationHandler = verificationHandler;
+    DigitsSessionVerifier(VerificationCallback verificationCallback) {
+        this.verificationCallback = verificationCallback;
     }
 
     @Override
     public void verifySession(final Session session) {
         if (session instanceof DigitsSession && !((DigitsSession) session).isLoggedOutUser()) {
             final DigitsApiClient.AccountService service = getAccountService(session);
-            verificationHandler.setSession((DigitsSession) session);
-            service.verifyAccount(verificationHandler);
+            service.verifyAccount(verificationCallback);
         }
     }
 
@@ -48,24 +50,25 @@ class DigitsSessionVerifier implements SessionVerifier {
         return new DigitsApiClient(session).getAccountService();
     }
 
+    public void addSessionListener(SessionListener sessionListener) {
+        verificationCallback.addSessionListener(sessionListener);
+    }
 
-    static class VerificationHandler extends Callback<VerifyAccountResponse> {
-        private final SessionListener sessionListener;
+    public void removeSessionListener(SessionListener sessionListener) {
+        verificationCallback.removeSession(sessionListener);
+    }
+
+
+    static class VerificationCallback extends Callback<VerifyAccountResponse> {
+        private final ConcurrentHashMap<SessionListener, Boolean> sessionListenerMap;
         private final SessionManager<DigitsSession> sessionManager;
-        private DigitsSession session;
 
-        public VerificationHandler(SessionListener sessionListener) {
-            this(sessionListener, Digits.getSessionManager());
-        }
 
-        public VerificationHandler(SessionListener sessionListener,
-                                   SessionManager<DigitsSession> sessionManager) {
-            this.sessionListener = sessionListener;
+        VerificationCallback(ConcurrentHashMap<SessionListener, Boolean>
+                                     sessionListenerMap, SessionManager<DigitsSession>
+                                     sessionManager) {
+            this.sessionListenerMap = sessionListenerMap;
             this.sessionManager = sessionManager;
-        }
-
-        public void setSession(DigitsSession session) {
-            this.session = session;
         }
 
         @Override
@@ -73,13 +76,31 @@ class DigitsSessionVerifier implements SessionVerifier {
             if (result.data != null) {
                 final DigitsSession newSession = DigitsSession.create(result.data);
                 sessionManager.setActiveSession(newSession);
-                sessionListener.changed(newSession);
+                for (SessionListener listener : sessionListenerMap.keySet()) {
+                    if (listener != null) {
+                        listener.changed(newSession);
+                    }
+                }
             }
         }
 
         @Override
         public void failure(TwitterException exception) {
             //Ignore failure
+        }
+
+        void addSessionListener(SessionListener sessionListener) {
+            if (sessionListener == null) {
+                throw new NullPointerException("sessionListener must not be null");
+            }
+            sessionListenerMap.put(sessionListener, Boolean.TRUE);
+        }
+
+        public void removeSession(SessionListener sessionListener) {
+            if (sessionListener == null) {
+                throw new NullPointerException("sessionListener must not be null");
+            }
+            sessionListenerMap.remove(sessionListener);
         }
     }
 

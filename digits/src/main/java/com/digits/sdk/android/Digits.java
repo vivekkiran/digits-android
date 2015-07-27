@@ -57,9 +57,10 @@ public class Digits extends Kit<Void> {
     private SessionMonitor<DigitsSession> userSessionMonitor;
     private ActivityClassManager activityClassManager;
     private DigitsScribeService scribeService;
-
+    private DigitsSessionVerifier digitsSessionVerifier;
 
     private int themeResId;
+
 
     public static Digits getInstance() {
         return Fabric.getKit(Digits.class);
@@ -119,6 +120,34 @@ public class Digits extends Kit<Void> {
         return getInstance().sessionManager;
     }
 
+    /**
+     * Adds a {@link SessionListener} to the list of notifiers when the session changes.
+     *
+     * Internally a strong reference is held to this sessionListener. In case this
+     * sessionListener is instantiated inside an Activity context, when the Activity is being
+     * destroyed, the sessionListener must be remove from the list {@see removeSessionListener}
+     *
+     * @param sessionListener element to add to the list of notifiers.
+     */
+    public void addSessionListener(SessionListener sessionListener) {
+        if (sessionListener == null) {
+            throw new NullPointerException("sessionListener must not be null");
+        }
+        digitsSessionVerifier.addSessionListener(sessionListener);
+    }
+
+    /**
+     * Removes the {@link SessionListener} from the list of notifiers.
+     *
+     * @param sessionListener element to be removed
+     */
+    public void removeSessionListener(SessionListener sessionListener) {
+        if (sessionListener == null) {
+            throw new NullPointerException("sessionListener must not be null");
+        }
+        digitsSessionVerifier.removeSessionListener(sessionListener);
+    }
+
     public Digits() {
         super();
         scribeService = new NoOpScribeService();
@@ -131,22 +160,13 @@ public class Digits extends Kit<Void> {
 
     @Override
     protected boolean onPreExecute() {
+        digitsSessionVerifier = new DigitsSessionVerifier();
         final MigrationHelper migrationHelper = new MigrationHelper();
         migrationHelper.migrateSessionStore(getContext(), getIdentifier(),
                 getIdentifier() + ":" + SESSION_PREF_FILE_NAME + ".xml");
-
         sessionManager = new PersistedSessionManager<>(new PreferenceStoreImpl(getContext(),
                 SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
                 PREF_KEY_SESSION);
-
-        userSessionMonitor = new SessionMonitor<>(sessionManager, getExecutorService(),
-                new DigitsSessionVerifier(new SessionListener() {
-                    @Override
-                    public void changed(DigitsSession newSession) {
-                        //TODO IC: delegate this call to developer
-                    }
-                }));
-
         return super.onPreExecute();
     }
 
@@ -157,6 +177,8 @@ public class Digits extends Kit<Void> {
         createDigitsClient();
         createContactsClient();
         scribeService = new DigitsScribeServiceImp(setUpScribing());
+        userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
+                digitsSessionVerifier);
         userSessionMonitor.triggerVerificationIfNecessary();
         // Monitor activity lifecycle after sessions have been restored. Otherwise we would not
         // have any sessions to monitor anyways.

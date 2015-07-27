@@ -35,15 +35,17 @@ import static org.mockito.Mockito.when;
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, emulateSdk = 21)
 public class DigitsSessionVerifierTest {
-    private DigitsSessionVerifier.VerificationHandler verificationHandler;
+    private DigitsSessionVerifier.VerificationCallback verificationCallback;
     private DigitsSessionVerifier verifier;
     private DigitsApiClient.AccountService accountService;
+    private SessionListener listener;
 
     @Before
     public void setUp() throws Exception {
-        verificationHandler = mock(DigitsSessionVerifier.VerificationHandler.class);
-        verifier = spy(new DigitsSessionVerifier(verificationHandler));
+        verificationCallback = mock(DigitsSessionVerifier.VerificationCallback.class);
+        verifier = spy(new DigitsSessionVerifier(verificationCallback));
         accountService = mock(DigitsApiClient.AccountService.class);
+        listener = mock(SessionListener.class);
     }
 
     @Test
@@ -52,8 +54,7 @@ public class DigitsSessionVerifierTest {
         doReturn(accountService).when(verifier).getAccountService(session);
         when(session.isLoggedOutUser()).thenReturn(false);
         verifier.verifySession(session);
-        verify(verificationHandler).setSession(session);
-        verify(accountService).verifyAccount(verificationHandler);
+        verify(accountService).verifyAccount(verificationCallback);
     }
 
     @Test
@@ -63,7 +64,7 @@ public class DigitsSessionVerifierTest {
         when(session.isLoggedOutUser()).thenReturn(true);
         verifier.verifySession(session);
         verifyZeroInteractions(accountService);
-        verifyZeroInteractions(verificationHandler);
+        verifyZeroInteractions(verificationCallback);
     }
 
     @Test
@@ -72,6 +73,30 @@ public class DigitsSessionVerifierTest {
         doReturn(accountService).when(verifier).getAccountService(session);
         verifier.verifySession(session);
         verifyZeroInteractions(accountService);
-        verifyZeroInteractions(verificationHandler);
+        verifyZeroInteractions(verificationCallback);
+    }
+
+    @Test
+    public void testAddSessionListener() throws Exception {
+        verifier.addSessionListener(listener);
+        verify(verificationCallback).addSessionListener(listener);
+    }
+
+    @Test
+    public void testRemoveSessionListener() throws Exception {
+        verifier.removeSessionListener(listener);
+        verify(verificationCallback).removeSession(listener);
+    }
+
+    @Test
+    public void testAddSessionListener_nullObject() throws Exception {
+        verifier.addSessionListener(null);
+        verify(verificationCallback).addSessionListener(null);
+    }
+
+    @Test
+    public void testRemoveSessionListener_nullObject() throws Exception {
+        verifier.removeSessionListener(null);
+        verify(verificationCallback).removeSession(null);
     }
 }

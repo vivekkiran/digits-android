@@ -19,8 +19,10 @@ package com.digits.sdk.android;
 
 /**
  * Represents a listener for session changes.
+ * Since these listeners are stored in a Map, you may want to implement {@link Object#equals
+ * (Object)} and {@link Object#hashCode()}
  */
-interface SessionListener {
+public interface SessionListener {
     /**
      * Notifies when the access token and secret, or the phone number for the current user have
      * changed.
