@@ -144,7 +144,7 @@ fabricKitRelease {
     artifactUrl = "https://maven.fabric.io/repo/com/digits/sdk/android/digits/${project.version}/digits-${project.version}.pom"
     releaseNotesUrl = "https://s3.amazonaws.com/kits-crashlytics-com/android/com/digits/sdk/android/digits/${project.version}/digits-${project.version}-release-notes.html"
     createdAt = System.currentTimeMillis()
-    learnMoreUrl = "https://dev.twitter.com/twitter-kit/android/digits"
+    learnMoreUrl = "http://docs.fabric.io/android/digits/index.html"
     price {
         plan = "free"
     }
