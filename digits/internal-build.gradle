@@ -68,10 +68,6 @@ android {
         warningsAsErrors true
     }
 
-    jacoco {
-        version = jacocoVersion
-    }
-
     dexMethodCount {
         packageFilter = "com.digits.sdk"
     }
