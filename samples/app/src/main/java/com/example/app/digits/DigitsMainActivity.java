@@ -27,11 +27,13 @@ import android.widget.Toast;
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
 import com.digits.sdk.android.DigitsAuthButton;
+import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.digits.sdk.android.SessionListener;
 import com.example.app.R;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 import com.twitter.sdk.android.core.TwitterCore;
 import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.User;
@@ -60,6 +62,25 @@ public class DigitsMainActivity extends Activity {
             }
         });
 
+        callback = new AuthCallback() {
+            @Override
+            public void success(DigitsSession session, String phoneNumber) {
+                Toast.makeText(DigitsMainActivity.this,
+                        "Authentication Successful for " + phoneNumber, Toast.LENGTH_SHORT).show();
+                userIdView.setText(getString(R.string.user_id, session.getId()));
+                if (session.getAuthToken() instanceof TwitterAuthToken) {
+                    final TwitterAuthToken authToken = (TwitterAuthToken) session.getAuthToken();
+                    tokenView.setText(getString(R.string.token, authToken.token));
+                    secretView.setText(getString(R.string.secret, authToken.secret));
+                }
+            }
+
+            @Override
+            public void failure(DigitsException error) {
+                Toast.makeText(DigitsMainActivity.this, error.getMessage(),
+                        Toast.LENGTH_SHORT).show();
+            }
+        };
 
         //Example of how the Digits button works
         digitsAuthButton = (DigitsAuthButton) findViewById(R.id.signup_button);
