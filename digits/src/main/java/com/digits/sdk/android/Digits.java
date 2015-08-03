@@ -160,13 +160,13 @@ public class Digits extends Kit<Void> {
 
     @Override
     protected boolean onPreExecute() {
-        digitsSessionVerifier = new DigitsSessionVerifier();
         final MigrationHelper migrationHelper = new MigrationHelper();
         migrationHelper.migrateSessionStore(getContext(), getIdentifier(),
                 getIdentifier() + ":" + SESSION_PREF_FILE_NAME + ".xml");
         sessionManager = new PersistedSessionManager<>(new PreferenceStoreImpl(getContext(),
                 SESSION_PREF_FILE_NAME), new DigitsSession.Serializer(), PREF_KEY_ACTIVE_SESSION,
                 PREF_KEY_SESSION);
+        digitsSessionVerifier = new DigitsSessionVerifier();
         return super.onPreExecute();
     }
 
