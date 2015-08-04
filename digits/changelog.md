@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.7.0
+
+* (IC) Added SessionListener to receive session changes.
+
 ## v1.6.2
 
 * (EF) Use AuthRequestQueue for all API request to ensure we always have a valid guest auth token
