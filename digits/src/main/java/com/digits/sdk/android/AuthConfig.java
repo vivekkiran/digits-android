@@ -17,9 +17,62 @@
 
 package com.digits.sdk.android;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
-class AuthConfig {
+class AuthConfig implements Parcelable {
     @SerializedName("tos_update")
     public boolean tosUpdate;
+    @SerializedName("voice_enabled")
+    public boolean isVoiceEnabled;
+
+    public AuthConfig() {
+    }
+
+    protected AuthConfig(Parcel in) {
+        tosUpdate = in.readInt() == 1;
+        isVoiceEnabled = in.readInt() == 1;
+    }
+
+    public static final Creator<AuthConfig> CREATOR = new Creator<AuthConfig>() {
+        @Override
+        public AuthConfig createFromParcel(Parcel in) {
+            return new AuthConfig(in);
+        }
+
+        @Override
+        public AuthConfig[] newArray(int size) {
+            return new AuthConfig[size];
+        }
+    };
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(tosUpdate ? 1 : 0);
+        dest.writeInt(isVoiceEnabled ? 1 : 0);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        final AuthConfig that = (AuthConfig) o;
+
+        return tosUpdate == that.tosUpdate && isVoiceEnabled == that.isVoiceEnabled;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (tosUpdate ? 1 : 0);
+        result = 31 * result + (isVoiceEnabled ? 1 : 0);
+        return result;
+    }
 }
