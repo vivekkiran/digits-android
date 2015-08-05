@@ -35,7 +35,6 @@ import static org.mockito.Mockito.when;
 
 public class LoginCodeActivityDelegateTests extends
         DigitsActivityDelegateTests<LoginCodeActivityDelegate> {
-
     @Override
     public LoginCodeActivityDelegate getDelegate() {
         return spy(new DummyLoginCodeActivityDelegate());
@@ -93,7 +92,8 @@ public class LoginCodeActivityDelegateTests extends
 
     @Override
     public void testSetUpTermsText() throws Exception {
-        delegate.tosUpdated = false;
+        delegate.config = new AuthConfig();
+        delegate.config.tosUpdate = Boolean.FALSE;
         delegate.setUpTermsText(activity, controller, textView);
 
         verify(textView).setVisibility(View.GONE);
@@ -101,7 +101,8 @@ public class LoginCodeActivityDelegateTests extends
 
     public void testSetUpTermsText_tosUpdated() throws Exception {
         doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
-        delegate.tosUpdated = true;
+        delegate.config = new AuthConfig();
+        delegate.config.tosUpdate = Boolean.TRUE;
         delegate.setUpTermsText(activity, controller, textView);
 
         verify(delegate).getFormattedTerms(any(Activity.class),

@@ -25,12 +25,12 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.widget.EditText;
 
-import io.fabric.sdk.android.services.common.CommonUtils;
-
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
 
 import java.util.Locale;
+
+import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PhoneNumberController extends DigitsControllerImpl {
     final CountryListSpinner countryCodeSpinner;
@@ -129,9 +129,7 @@ class PhoneNumberController extends DigitsControllerImpl {
         final Bundle bundle = getBundle();
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
         bundle.putLong(DigitsClient.EXTRA_USER_ID, response.userId);
-        if (response.authConfig != null) {
-            bundle.putBoolean(DigitsClient.EXTRA_TOS_UPDATED, response.authConfig.tosUpdate);
-        }
+        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
     }

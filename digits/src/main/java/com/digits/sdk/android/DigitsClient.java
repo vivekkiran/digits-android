@@ -40,7 +40,7 @@ public class DigitsClient {
     public static final String EXTRA_USER_ID = "user_id";
     public static final String THIRD_PARTY_CONFIRMATION_CODE = "third_party_confirmation_code";
     public static final String EXTRA_FALLBACK_REASON = "fallback_reason";
-    public static final String EXTRA_TOS_UPDATED = "tos_updated";
+    public static final String EXTRA_AUTH_CONFIG = "auth_config";
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
     private final Digits digits;

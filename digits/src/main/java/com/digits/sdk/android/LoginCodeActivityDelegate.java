@@ -34,7 +34,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsController controller;
     SmsBroadcastReceiver receiver;
     Activity activity;
-    boolean tosUpdated;
+    AuthConfig config;
 
     @Override
     public void init(Activity activity, Bundle bundle) {
@@ -43,7 +43,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
         final TextView resendText = (TextView) activity.findViewById(R.id.dgts__resendConfirmation);
-        tosUpdated = bundle.getBoolean(DigitsClient.EXTRA_TOS_UPDATED, false);
+        config = bundle.getParcelable(DigitsClient.EXTRA_AUTH_CONFIG);
 
         controller = initController(bundle);
 
@@ -66,7 +66,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
-        if (tosUpdated) {
+        if (config != null && config.tosUpdate) {
             termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_text_sign_in));
             super.setUpTermsText(activity, controller, termsText);
         } else {

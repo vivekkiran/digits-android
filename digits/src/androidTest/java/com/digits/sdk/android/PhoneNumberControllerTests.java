@@ -107,7 +107,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final Intent intent = intentCaptor.getValue();
         assertEquals(REQUEST_ID, intent.getStringExtra(DigitsClient.EXTRA_REQUEST_ID));
         assertEquals(USER_ID, intent.getLongExtra(DigitsClient.EXTRA_USER_ID, 0));
-        assertEquals(true, intent.getBooleanExtra(DigitsClient.EXTRA_TOS_UPDATED, false));
+        assertEquals(true,
+                ((AuthConfig) intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG)).tosUpdate);
     }
 
     public void testValidateInput_valid() throws Exception {
