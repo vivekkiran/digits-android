@@ -17,6 +17,8 @@
 
 package com.digits.sdk.android;
 
+import android.annotation.SuppressLint;
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Build;
@@ -52,6 +54,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void testVerifyMaterialDarkTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Material);
         final Activity activity = getActivity();
@@ -60,6 +63,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void testVerifyMaterialLightTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Material_Light);
         final Activity activity = getActivity();
@@ -68,6 +72,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.LOLLIPOP)
+    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
     public void testVerifyMaterialLightDarkActionBarTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Material_Light_DarkActionBar);
         final Activity activity = getActivity();
@@ -76,6 +81,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void testVerifyHoloDarkTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Holo);
         final Activity activity = getActivity();
@@ -84,6 +90,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void testVerifyHoloLightTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Holo_Light);
         final Activity activity = getActivity();
@@ -92,6 +99,7 @@ public class PhoneNumberActivityThemeTests extends
     }
 
     @SdkSuppress(minSdkVersion = Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
     public void testVerifyHoloLightDarkActionBarTheme() {
         Digits.getInstance().setTheme(android.R.style.Theme_Holo_Light_DarkActionBar);
         final Activity activity = getActivity();
