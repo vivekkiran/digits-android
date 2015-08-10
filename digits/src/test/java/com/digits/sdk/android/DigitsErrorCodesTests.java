@@ -31,7 +31,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class DigitsErrorCodesTests {
     //all the API codes are positive integers
     private static final int UNKNOWN_ERROR = -10;

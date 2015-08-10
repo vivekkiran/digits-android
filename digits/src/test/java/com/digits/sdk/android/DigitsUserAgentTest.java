@@ -25,7 +25,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class DigitsUserAgentTest {
     private static final String ANY_ANDROID_VERSION = "5.0";
     private static final String ANY_KIT_VERSION = "1.3.0";

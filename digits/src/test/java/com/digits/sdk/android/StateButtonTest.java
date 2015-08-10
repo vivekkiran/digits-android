@@ -37,7 +37,7 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class StateButtonTest {
     private static final String SEND_TEXT = "Send confirmation code";
     private static final String PROGRESS_TEXT = "Sending confirmation code";

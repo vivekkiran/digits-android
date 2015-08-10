@@ -40,7 +40,7 @@ import static org.junit.Assert.assertTrue;
  */
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class VCardBuilderTest {
     private static final String EMAIL_CARD_1 = "BEGIN:VCARD\r\nVERSION:3" +
             ".0\r\nEMAIL:support@digits.com\r\nEND:VCARD\r\n";

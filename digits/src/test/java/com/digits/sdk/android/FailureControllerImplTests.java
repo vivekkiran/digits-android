@@ -37,7 +37,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class FailureControllerImplTests {
     private static final String RANDOM_ERROR_MSG = "Random error message";
     FailureControllerImpl controller;

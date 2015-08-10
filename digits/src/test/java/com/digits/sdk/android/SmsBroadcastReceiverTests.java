@@ -33,7 +33,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class SmsBroadcastReceiverTests {
     final String TEST_CODE = "635589";
     final String TEST_MESSAGE =

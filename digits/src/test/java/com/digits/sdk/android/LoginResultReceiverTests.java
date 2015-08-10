@@ -35,7 +35,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class LoginResultReceiverTests {
     private static final String ERROR = "Big Error on login";
     static final String PHONE = "+17071234567";

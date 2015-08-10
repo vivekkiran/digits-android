@@ -32,7 +32,7 @@ import org.robolectric.annotation.Config;
 import static org.mockito.Mockito.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class ContactsActivityDelegateImplTests {
 
     Activity activity;

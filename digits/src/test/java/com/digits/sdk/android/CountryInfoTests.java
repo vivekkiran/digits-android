@@ -25,7 +25,7 @@ import org.robolectric.annotation.Config;
 import static org.junit.Assert.*;
 
 @RunWith(RobolectricGradleTestRunner.class)
-@Config(constants = BuildConfig.class, emulateSdk = 21)
+@Config(constants = BuildConfig.class, sdk = 21)
 public class CountryInfoTests {
     private static final String COUNTRY_NAME_US = "United States";
     private static final int COUNTRY_CODE_US = 1;
