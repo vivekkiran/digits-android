@@ -87,6 +87,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         resendText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
                 activity.finish();
             }
         });

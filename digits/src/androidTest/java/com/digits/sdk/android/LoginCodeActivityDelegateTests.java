@@ -117,7 +117,7 @@ public class LoginCodeActivityDelegateTests extends
         verify(button).showStart();
     }
 
-    public void testSetUpResendText() {
+    public void testSetUpResendText() throws NoSuchFieldException, IllegalAccessException {
         delegate.controller = controller;
         delegate.setUpResendText(activity, editText);
 
@@ -125,6 +125,7 @@ public class LoginCodeActivityDelegateTests extends
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(activity).finish();
+        verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
     }
 
     public void testOnResume() {

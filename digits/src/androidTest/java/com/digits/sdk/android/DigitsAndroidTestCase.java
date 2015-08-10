@@ -17,6 +17,10 @@
 
 package com.digits.sdk.android;
 
+import android.app.Activity;
+
+import java.lang.reflect.Field;
+
 import io.fabric.sdk.android.FabricAndroidTestCase;
 
 import static org.mockito.Mockito.verifyZeroInteractions;
@@ -31,5 +35,20 @@ public class DigitsAndroidTestCase extends FabricAndroidTestCase {
         for (Object object : objects) {
             verifyZeroInteractions(object);
         }
+    }
+
+    /**
+     * Verifies resultCode is set on the activity by using reflection. This is handy since {@link
+     * Activity#setResult(int)} is final method and can't be mock.
+     *
+     * @throws NoSuchFieldException
+     * @throws IllegalAccessException
+     */
+    protected void verifyResultCode(Activity activity, int resultCode) throws NoSuchFieldException,
+            IllegalAccessException {
+        final Field field = Activity.class.getDeclaredField("mResultCode");
+        field.setAccessible(true);
+        final int actualResultCode = (Integer) field.get(activity);
+        assertEquals(resultCode, actualResultCode);
     }
 }

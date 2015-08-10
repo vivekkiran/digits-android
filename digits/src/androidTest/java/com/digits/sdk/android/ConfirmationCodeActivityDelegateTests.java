@@ -66,7 +66,7 @@ public class ConfirmationCodeActivityDelegateTests extends
         assertEquals(R.layout.dgts__activity_confirmation, delegate.getLayoutId());
     }
 
-    public void testSetUpResendText() {
+    public void testSetUpResendText() throws NoSuchFieldException, IllegalAccessException {
         delegate.controller = controller;
         delegate.setUpResendText(activity, editText);
 
@@ -74,6 +74,7 @@ public class ConfirmationCodeActivityDelegateTests extends
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(activity).finish();
+        verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
     }
 
 

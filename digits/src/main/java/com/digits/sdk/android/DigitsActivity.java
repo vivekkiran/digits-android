@@ -23,8 +23,9 @@ import android.os.Bundle;
 
 public abstract class DigitsActivity extends Activity {
 
-    static final int RESULT_FINISH_DIGITS = 200;
     static final int REQUEST_CODE = 140;
+    static final int RESULT_FINISH_DIGITS = 200;
+    static final int RESULT_RESEND_CONFIRMATION = 300;
 
     DigitsActivityDelegate delegate;
 
@@ -45,13 +46,13 @@ public abstract class DigitsActivity extends Activity {
     }
 
     @Override
-    public void onResume(){
+    public void onResume() {
         super.onResume();
         delegate.onResume();
     }
 
     @Override
-    public void onDestroy(){
+    public void onDestroy() {
         delegate.onDestroy();
         super.onDestroy();
     }
