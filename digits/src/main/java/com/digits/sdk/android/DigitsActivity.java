@@ -61,6 +61,7 @@ public abstract class DigitsActivity extends Activity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        delegate.onActivityResult(requestCode, resultCode, this);
         if (resultCode == RESULT_FINISH_DIGITS && requestCode == REQUEST_CODE) {
             finish();
         }

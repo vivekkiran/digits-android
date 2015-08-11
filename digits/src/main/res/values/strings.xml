@@ -37,6 +37,8 @@
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
     <!--suppress MissingTranslation -->
     <string name="dgts__terms_text">By tapping %1$sSend confirmation code%1$s above, <u>Digits by Twitter</u>, will send you a SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__terms_text_call_me">By tapping %1$sCall me%1$s above, <u>Digits by Twitter</u>, will call your phone to confirm your number. Call and data rates may apply.</string>
 
     <!-- Confirmation code screen -->
     <string name="dgts__confirmation_edit_hint">Enter confirmation code</string>
@@ -115,6 +117,9 @@
     <string name="dgts__digits_logo_name_desc">digits logo name</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__verification_code">Verification code</string>
-
+    <!--suppress MissingTranslation -->
+    <string name="dgts__call_me">Call me</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__calling">Calling…</string>
 
 </resources>

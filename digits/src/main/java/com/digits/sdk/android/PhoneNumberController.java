@@ -23,6 +23,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.support.annotation.NonNull;
 import android.widget.EditText;
 
 import com.twitter.sdk.android.core.Result;
@@ -32,30 +33,39 @@ import java.util.Locale;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
 
-class PhoneNumberController extends DigitsControllerImpl {
+class PhoneNumberController extends DigitsControllerImpl implements
+        PhoneNumberTask.Listener {
+    private final TosView tosView;
     final CountryListSpinner countryCodeSpinner;
     String phoneNumber;
+    boolean voiceEnabled;
+    boolean resendState;
 
-    PhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
-            EditText phoneEditText, CountryListSpinner countryCodeSpinner) {
+    PhoneNumberController(ResultReceiver resultReceiver,
+                          StateButton stateButton, EditText phoneEditText,
+                          CountryListSpinner countryCodeSpinner, TosView tosView) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), Digits.getSessionManager());
-
+                Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
+                tosView);
+        voiceEnabled = false;
+        resendState = false;
     }
 
     /**
      * Only for test
      */
-    PhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
-            EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-            DigitsClient client, ErrorCodes errors,
-            ActivityClassManager activityClassManager,
-            SessionManager<DigitsSession> sessionManager) {
+    PhoneNumberController(ResultReceiver resultReceiver,
+                          StateButton stateButton, EditText phoneEditText,
+                          CountryListSpinner countryCodeSpinner,
+                          DigitsClient client, ErrorCodes errors,
+                          ActivityClassManager activityClassManager,
+                          SessionManager<DigitsSession> sessionManager, TosView tosView) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
                 sessionManager);
         this.countryCodeSpinner = countryCodeSpinner;
+        this.tosView = tosView;
     }
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
@@ -80,11 +90,15 @@ class PhoneNumberController extends DigitsControllerImpl {
             final int code = (Integer) countryCodeSpinner.getTag();
             final String number = editText.getText().toString();
             phoneNumber = getNumber(code, number);
-            digitsClient.authDevice(phoneNumber,
+            digitsClient.authDevice(phoneNumber, getVerificationType(),
                     new DigitsCallback<AuthResponse>(context, this) {
                         @Override
                         public void success(final Result<AuthResponse> result) {
                             sendButton.showFinish();
+                            final AuthConfig config = result.data.authConfig;
+                            if (config != null) {
+                                voiceEnabled = config.isVoiceEnabled;
+                            }
                             editText.postDelayed(new Runnable() {
                                 @Override
                                 public void run() {
@@ -97,23 +111,34 @@ class PhoneNumberController extends DigitsControllerImpl {
                         }
                     }
             );
+
         }
+    }
+
+    @NonNull
+    private Verification getVerificationType() {
+        return resendState && voiceEnabled ? Verification.voicecall : Verification.sms;
     }
 
     @Override
     public void handleError(final Context context, DigitsException digitsException) {
         if (digitsException instanceof CouldNotAuthenticateException) {
-            digitsClient.registerDevice(phoneNumber, new
-                    DigitsCallback<DeviceRegistrationResponse>(context, this) {
-                        @Override
-                        public void success(Result<DeviceRegistrationResponse> result) {
-                            final DeviceRegistrationResponse response = result.data;
-                            phoneNumber = response.normalizedPhoneNumber == null ? phoneNumber :
-                                    response.normalizedPhoneNumber;
-                            sendButton.showFinish();
-                            startNextStep(context);
-                        }
-                    });
+                digitsClient.registerDevice(phoneNumber, getVerificationType(),
+                        new
+                        DigitsCallback<DeviceRegistrationResponse>(context, this) {
+                            @Override
+                            public void success(Result<DeviceRegistrationResponse> result) {
+                                final DeviceRegistrationResponse response = result.data;
+                                final AuthConfig config = response.authConfig;
+                                if (config != null) {
+                                    voiceEnabled = config.isVoiceEnabled;
+                                }
+                                phoneNumber = response.normalizedPhoneNumber == null ?
+                                        phoneNumber :response.normalizedPhoneNumber;
+                                sendButton.showFinish();
+                                startNextStep(context, result.data);
+                            }
+                        });
         } else {
             super.handleError(context, digitsException);
         }
@@ -134,9 +159,13 @@ class PhoneNumberController extends DigitsControllerImpl {
         startActivityForResult((Activity) context, intent);
     }
 
-    private void startNextStep(Context context) {
+    private void startNextStep(Context context, DeviceRegistrationResponse response) {
         final Intent intent = new Intent(context, activityClassManager.getConfirmationActivity());
-        intent.putExtras(getBundle());
+        final Bundle bundle = getBundle();
+        if (response.authConfig != null) {
+            bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
+        }
+        intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
     }
 
@@ -152,4 +181,31 @@ class PhoneNumberController extends DigitsControllerImpl {
         return "+" + String.valueOf(countryCode) + numberTextView;
     }
 
+    public void onLoadComplete(PhoneNumber phoneNumber) {
+        setPhoneNumber(phoneNumber);
+        setCountryCode(phoneNumber);
+    }
+
+
+    public void resend() {
+        resendState = true;
+        if (voiceEnabled) {
+            sendButton.setStatesText(R.string.dgts__call_me, R.string.dgts__calling,
+                    R.string.dgts__calling);
+            tosView.setText(R.string.dgts__terms_text_call_me);
+        }
+    }
+
+    @Override
+    public void onTextChanged(CharSequence s, int start, int before, int count) {
+        super.onTextChanged(s, start, before, count);
+        if (Verification.voicecall.equals(getVerificationType())) {
+            resendState = false;
+            sendButton.setStatesText(R.string.dgts__confirmation_send_text,
+                    R.string.dgts__confirmation_sending_text,
+                    R.string.dgts__confirmation_sent_text);
+            sendButton.showStart();
+            tosView.setText(R.string.dgts__terms_text);
+        }
+    }
 }

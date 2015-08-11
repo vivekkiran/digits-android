@@ -82,17 +82,33 @@ public class PhoneNumberActivityDelegateTests extends
 
     @Override
     public void testSetUpTermsText() throws Exception {
-      doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
-      super.testSetUpTermsText();
-      verify(delegate).getFormattedTerms(activity, R.string.dgts__terms_text);
-      verify(textView).setText("");
+        doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
+        delegate.setUpTermsText(activity, controller, textView);
+        verify(delegate).getFormattedTerms(activity, R.string.dgts__terms_text);
+        verify(textView).setText("");
     }
+
     public void testOnLoadComplete() {
-      final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
-      delegate.controller = controller;
-      delegate.onLoadComplete(PhoneNumber.emptyPhone());
-      verify(controller).setPhoneNumber(PhoneNumber.emptyPhone());
-      verify(controller).setCountryCode(PhoneNumber.emptyPhone());
+        final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
+        delegate.controller = controller;
+        delegate.onLoadComplete(PhoneNumber.emptyPhone());
+        verify(controller).setPhoneNumber(PhoneNumber.emptyPhone());
+        verify(controller).setCountryCode(PhoneNumber.emptyPhone());
+    }
+
+    public void testOnActivityResult_resendResult() throws Exception {
+        final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
+        delegate.controller = controller;
+        delegate.onActivityResult(DigitsActivity.REQUEST_CODE,
+                DigitsActivity.RESULT_RESEND_CONFIRMATION, activity);
+        verify(controller).resend();
+    }
+
+    public void testOnActivityResult_notResendResult() throws Exception {
+        final PhoneNumberController controller = mock(DummyPhoneNumberController.class);
+        delegate.controller = controller;
+        delegate.onActivityResult(ANY_REQUEST, ANY_RESULT, activity);
+        verifyNoInteractions(controller);
     }
 
     public class DummyPhoneNumberActivityDelegate extends PhoneNumberActivityDelegate {
@@ -102,8 +118,10 @@ public class PhoneNumberActivityDelegateTests extends
     public class DummyPhoneNumberController extends PhoneNumberController {
 
         DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
-                                   EditText phoneEditText, CountryListSpinner countryCodeSpinner) {
-            super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner);
+                                   EditText phoneEditText, CountryListSpinner countryCodeSpinner,
+                                   TosView tosView) {
+            super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
+                    tosView);
         }
     }
 }

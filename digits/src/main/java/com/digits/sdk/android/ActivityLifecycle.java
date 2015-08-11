@@ -17,8 +17,12 @@
 
 package com.digits.sdk.android;
 
+import android.app.Activity;
+
 interface ActivityLifecycle {
     void onDestroy();
 
     void onResume();
+
+    void onActivityResult(int requestCode, int resultCode, Activity activity);
 }

@@ -26,6 +26,8 @@ import io.fabric.sdk.android.FabricAndroidTestCase;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class DigitsAndroidTestCase extends FabricAndroidTestCase {
+    static final int ANY_REQUEST = 1010;
+    static final int ANY_RESULT = Activity.RESULT_OK;
 
     protected static final String TWITTER_URL = "http://twitter.com";
     protected static final String US_COUNTRY_CODE = "1";

@@ -28,7 +28,9 @@ import android.widget.TextView;
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
-        PhoneNumberTask.Listener {
+        PhoneNumberTask.Listener, TosView {
+    private Activity activity;
+
     CountryListSpinner countryCodeSpinner;
     StateButton sendButton;
     EditText phoneEditText;
@@ -47,12 +49,11 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void init(Activity activity, Bundle bundle) {
-
+        this.activity = activity;
         countryCodeSpinner = (CountryListSpinner) activity.findViewById(R.id.dgts__countryCode);
         sendButton = (StateButton) activity.findViewById(R.id.dgts__sendCodeButton);
         phoneEditText = (EditText) activity.findViewById(R.id.dgts__phoneNumberEditText);
         termsTextView = (TextView) activity.findViewById(R.id.dgts__termsText);
-
         controller = initController(bundle);
 
         setUpEditText(activity, controller, phoneEditText);
@@ -84,7 +85,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     PhoneNumberController initController(Bundle bundle) {
         return new PhoneNumberController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
-                phoneEditText, countryCodeSpinner);
+                phoneEditText, countryCodeSpinner, this);
     }
 
     @Override
@@ -110,5 +111,18 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     public void onLoadComplete(PhoneNumber phoneNumber) {
         controller.setPhoneNumber(phoneNumber);
         controller.setCountryCode(phoneNumber);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Activity activity) {
+        if (resultCode == DigitsActivity.RESULT_RESEND_CONFIRMATION &&
+                requestCode == DigitsActivity.REQUEST_CODE) {
+            controller.resend();
+        }
+    }
+
+    @Override
+    public void setText(int resourceId) {
+        termsTextView.setText(getFormattedTerms(activity, resourceId));
     }
 }

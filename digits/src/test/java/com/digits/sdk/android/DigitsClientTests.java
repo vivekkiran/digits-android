@@ -206,20 +206,38 @@ public class DigitsClientTests {
     }
 
     @Test
-    public void testAuthDevice() throws Exception {
+    public void testAuthDevice_withSmsVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.authDevice(TestConstants.PHONE, listener);
+        digitsClient.authDevice(TestConstants.PHONE, Verification.sms, listener);
 
-        verify(sdkService).auth(eq(TestConstants.PHONE), eq(listener));
+        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.sms.name()), eq(listener));
     }
 
     @Test
-    public void testRegisterDevice() throws Exception {
+    public void testAuthDevice_withVoiceVerification() throws Exception {
         final Callback listener = mock(Callback.class);
-        digitsClient.registerDevice(TestConstants.PHONE, listener);
+        digitsClient.authDevice(TestConstants.PHONE, Verification.voicecall, listener);
+
+        verify(sdkService).auth(eq(TestConstants.PHONE), eq(Verification.voicecall.name()),
+                eq(listener));
+    }
+
+    @Test
+    public void testRegisterDevice_withSmsVerification() throws Exception {
+        final Callback listener = mock(Callback.class);
+        digitsClient.registerDevice(TestConstants.PHONE, Verification.sms, listener);
         verify(deviceService).register(TestConstants.PHONE,
                 DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
-                DigitsClient.CLIENT_IDENTIFIER, listener);
+                DigitsClient.CLIENT_IDENTIFIER, Verification.sms.name(), listener);
+    }
+
+    @Test
+    public void testRegisterDevice_withVoiceVerification() throws Exception {
+        final Callback listener = mock(Callback.class);
+        digitsClient.registerDevice(TestConstants.PHONE, Verification.voicecall, listener);
+        verify(deviceService).register(TestConstants.PHONE,
+                DigitsClient.THIRD_PARTY_CONFIRMATION_CODE, true, Locale.getDefault().getLanguage(),
+                DigitsClient.CLIENT_IDENTIFIER, Verification.voicecall.name(), listener);
     }
 
     @Test

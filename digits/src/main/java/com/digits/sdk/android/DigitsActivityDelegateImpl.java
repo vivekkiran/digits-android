@@ -75,4 +75,9 @@ abstract class DigitsActivityDelegateImpl implements DigitsActivityDelegate {
     protected String getFormattedTerms(Activity activity, @StringRes int termsResId) {
         return activity.getString(termsResId, "\"");
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Activity activity) {
+        // no-op Not used by all the delegates
+    }
 }

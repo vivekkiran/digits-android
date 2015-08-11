@@ -23,11 +23,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.test.UiThreadTest;
 
-import io.fabric.sdk.android.FabricActivityTestCase;
-import io.fabric.sdk.android.FabricTestUtils;
-
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
+
+import io.fabric.sdk.android.FabricActivityTestCase;
+import io.fabric.sdk.android.FabricTestUtils;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
@@ -115,6 +115,8 @@ public class DigitsActivityTests extends
         activity.onActivityResult(DigitsActivity.REQUEST_CODE,
                 DigitsActivity.RESULT_FINISH_DIGITS, null);
         assertTrue(isFinishCalled());
+        verify(activity.delegate).onActivityResult(DigitsActivity.REQUEST_CODE,
+                DigitsActivity.RESULT_FINISH_DIGITS, activity);
     }
 
     @UiThreadTest
@@ -122,6 +124,8 @@ public class DigitsActivityTests extends
         final DigitsActivity activity = createDigitsActivityWithValidBundle();
         activity.onActivityResult(DigitsActivity.REQUEST_CODE, ANY_RESULT, null);
         assertFalse(isFinishCalled());
+        verify(activity.delegate).onActivityResult(DigitsActivity.REQUEST_CODE, ANY_RESULT,
+                activity);
     }
 
     @UiThreadTest
@@ -129,6 +133,7 @@ public class DigitsActivityTests extends
         final DigitsActivity activity = createDigitsActivityWithValidBundle();
         activity.onActivityResult(ANY_REQUEST, ANY_RESULT, null);
         assertFalse(isFinishCalled());
+        verify(activity.delegate).onActivityResult(ANY_REQUEST, ANY_RESULT, activity);
     }
 
     public static class DummyDigitsActivity extends DigitsActivity {

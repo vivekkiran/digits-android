@@ -125,13 +125,13 @@ public class DigitsClient {
         context.startActivity(intent);
     }
 
-    protected void authDevice(final String phoneNumber,
+    protected void authDevice(final String phoneNumber, final Verification verificationType,
             final Callback<AuthResponse> callback) {
         authRequestQueue.addClientRequest(new CallbackWrapper<AuthResponse>(callback) {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
-                result.data.getSdkService().auth(phoneNumber, callback);
+                result.data.getSdkService().auth(phoneNumber, verificationType.name(), callback);
             }
 
         });
@@ -161,15 +161,16 @@ public class DigitsClient {
         });
     }
 
-    protected void registerDevice(final String phoneNumber,
-            final Callback<DeviceRegistrationResponse> callback) {
+    protected void registerDevice(final String phoneNumber, final Verification verificationType,
+                                  final Callback<DeviceRegistrationResponse> callback) {
         authRequestQueue.addClientRequest(
                 new CallbackWrapper<DeviceRegistrationResponse>(callback) {
 
             @Override
             public void success(Result<DigitsApiClient> result) {
                 result.data.getDeviceService().register(phoneNumber, THIRD_PARTY_CONFIRMATION_CODE,
-                        true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER, callback);
+                        true, Locale.getDefault().getLanguage(), CLIENT_IDENTIFIER,
+                        verificationType.name(), callback);
             }
 
         });

@@ -97,6 +97,7 @@ class DigitsApiClient {
                 @Field("send_numeric_pin") Boolean sendNumericPin,
                 @Field("lang") String lang,
                 @Field("client_identifier_string") String id,
+                @Field("verification_type") String verificationType,
                 Callback<DeviceRegistrationResponse> cb);
     }
 
@@ -109,8 +110,8 @@ class DigitsApiClient {
 
         @FormUrlEncoded
         @POST("/1/sdk/login")
-        void auth(@Field("x_auth_phone_number") String phoneNumber,
-                         Callback<AuthResponse> cb);
+        void auth(@Field("x_auth_phone_number") String phoneNumber, @Field("verification_type")
+        String verificationType, Callback<AuthResponse> cb);
 
         @FormUrlEncoded
         @POST("/auth/1/xauth_challenge.json")
