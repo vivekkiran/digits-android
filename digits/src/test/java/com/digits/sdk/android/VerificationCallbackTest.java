@@ -42,6 +42,7 @@ public class VerificationCallbackTest {
     private Result<VerifyAccountResponse> result;
     private ConcurrentHashMap<SessionListener, Boolean> sessionListenerMap;
     private SessionListener sessionListener2;
+    private Result<VerifyAccountResponse> resultInvalidData;
 
     @Before
     public void setUp() throws Exception {
@@ -53,6 +54,7 @@ public class VerificationCallbackTest {
                 (sessionListenerMap, sessionManager);
         verificationCallback.addSessionListener(sessionListener);
         result = new Result<>(TestConstants.getVerifyAccountResponse(), null);
+        resultInvalidData = new Result<>(TestConstants.getInvalidVerifyAccountResponse(), null);
     }
 
     @Test
@@ -60,7 +62,8 @@ public class VerificationCallbackTest {
         verificationCallback.addSessionListener(sessionListener);
         verificationCallback.addSessionListener(sessionListener2);
         verificationCallback.success(result);
-        verify(sessionManager).setActiveSession(any(DigitsSession.class));
+        verify(sessionManager).setSession(TestConstants.USER_ID,
+                DigitsSession.create(result.data));
         verify(sessionListener).changed(any(DigitsSession.class));
         verify(sessionListener2).changed(any(DigitsSession.class));
     }
@@ -68,7 +71,8 @@ public class VerificationCallbackTest {
     public void testSuccess_nullListener() throws Exception {
         sessionListenerMap.put(null, Boolean.TRUE);
         verificationCallback.success(result);
-        verify(sessionManager).setActiveSession(any(DigitsSession.class));
+        verify(sessionManager).setSession(TestConstants.USER_ID,
+                DigitsSession.create(result.data));
         verifyZeroInteractions(sessionListener);
         verifyZeroInteractions(sessionManager);
     }
@@ -77,6 +81,14 @@ public class VerificationCallbackTest {
     public void testSuccess_nullResultData() throws Exception {
         verificationCallback.addSessionListener(sessionListener);
         verificationCallback.success(new Result<VerifyAccountResponse>(null, null));
+        verifyZeroInteractions(sessionListener);
+        verifyZeroInteractions(sessionManager);
+    }
+
+    @Test
+    public void testSuccess_invalidUser() throws Exception {
+        verificationCallback.addSessionListener(sessionListener);
+        verificationCallback.success(resultInvalidData);
         verifyZeroInteractions(sessionListener);
         verifyZeroInteractions(sessionManager);
     }

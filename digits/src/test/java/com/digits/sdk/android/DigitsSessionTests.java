@@ -170,4 +170,34 @@ public class DigitsSessionTests {
             assertEquals("verifyAccountResponse must not be null", ex.getMessage());
         }
     }
+
+    @Test
+    public void testIsValidUser() throws Exception {
+        final DigitsSession digitsSession =
+                DigitsSession.create(TestConstants.getVerifyAccountResponse());
+        assertTrue(digitsSession.isValidUser());
+    }
+
+    @Test
+    public void testIsNotValidUser_withLoggedOutUserId() throws Exception {
+        final DigitsSession session = DigitsSession.create(getNewLoggedOutUser(),
+                TestConstants.PHONE);
+        assertFalse(session.isValidUser());
+    }
+
+    @Test
+    public void testIsNotValidUser_withUnknownUserId() throws Exception {
+        final DigitsSession session = new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN,
+                TestConstants.SECRET), DigitsSession.UNKNOWN_USER_ID);
+        assertFalse(session.isValidUser());
+    }
+
+    @Test
+    public void testIsNotValidUser_withInvalidToken() throws Exception {
+        final DigitsSession session = new DigitsSession(new TwitterAuthToken(null,
+                null), TestConstants.USER_ID);
+        final DigitsSession session2 = new DigitsSession(null, TestConstants.USER_ID);
+        assertFalse(session.isValidUser());
+        assertFalse(session2.isValidUser());
+    }
 }

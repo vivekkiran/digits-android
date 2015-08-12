@@ -18,13 +18,12 @@
 package com.digits.sdk.android;
 
 import com.google.gson.annotations.SerializedName;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 
 public class VerifyAccountResponse {
-    @SerializedName("oauth_token")
-    public String token;
-    @SerializedName("oauth_token_secret")
-    public String secret;
-    @SerializedName("user_id")
+    @SerializedName("access_token")
+    TwitterAuthToken token;
+    @SerializedName("id_str")
     public long userId;
     @SerializedName("phone_number")
     public String phoneNumber;

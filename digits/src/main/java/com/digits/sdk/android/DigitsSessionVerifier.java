@@ -75,10 +75,12 @@ class DigitsSessionVerifier implements SessionVerifier {
         public void success(Result<VerifyAccountResponse> result) {
             if (result.data != null) {
                 final DigitsSession newSession = DigitsSession.create(result.data);
-                sessionManager.setActiveSession(newSession);
-                for (SessionListener listener : sessionListenerMap.keySet()) {
-                    if (listener != null) {
-                        listener.changed(newSession);
+                if (newSession.isValidUser()) {
+                    sessionManager.setSession(newSession.getId(), newSession);
+                    for (SessionListener listener : sessionListenerMap.keySet()) {
+                        if (listener != null) {
+                            listener.changed(newSession);
+                        }
                     }
                 }
             }

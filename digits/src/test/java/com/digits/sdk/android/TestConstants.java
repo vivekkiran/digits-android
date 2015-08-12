@@ -17,6 +17,8 @@
 
 package com.digits.sdk.android;
 
+import com.twitter.sdk.android.core.TwitterAuthToken;
+
 public class TestConstants {
 
     public static final String TWITTER_URL = "http://twitter.com";
@@ -55,9 +57,16 @@ public class TestConstants {
     public static VerifyAccountResponse getVerifyAccountResponse() {
         final VerifyAccountResponse response = new VerifyAccountResponse();
         response.phoneNumber = TestConstants.PHONE;
-        response.secret = TestConstants.SECRET;
-        response.token = TestConstants.TOKEN;
+        response.token = new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET);
         response.userId = TestConstants.USER_ID;
+        return response;
+    }
+
+    public static VerifyAccountResponse getInvalidVerifyAccountResponse() {
+        final VerifyAccountResponse response = new VerifyAccountResponse();
+        response.phoneNumber = TestConstants.PHONE;
+        response.token = new TwitterAuthToken(null, null);
+        response.userId = 0;
         return response;
     }
 }

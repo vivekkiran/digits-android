@@ -67,6 +67,19 @@ public class DigitsSession extends Session<AuthToken> {
         return getId() == DigitsSession.LOGGED_OUT_USER_ID;
     }
 
+    public boolean isValidUser() {
+        return isValidUserId(getId()) && isValidUserToken(getAuthToken());
+    }
+
+    private boolean isValidUserId(long id) {
+        return !isLoggedOutUser() && id != UNKNOWN_USER_ID;
+    }
+
+    private boolean isValidUserToken(AuthToken token) {
+        return (token instanceof TwitterAuthToken) && (((TwitterAuthToken) token).secret != null)
+                && (((TwitterAuthToken) token).token != null);
+    }
+
     static DigitsSession create(Result<DigitsUser> result, String phoneNumber) {
         if (result == null) {
             throw new NullPointerException("result must not be null");
@@ -115,8 +128,7 @@ public class DigitsSession extends Session<AuthToken> {
             throw new NullPointerException("verifyAccountResponse must not be null");
         }
 
-        return new DigitsSession(new TwitterAuthToken(verifyAccountResponse.token,
-                verifyAccountResponse.secret), verifyAccountResponse.userId,
+        return new DigitsSession(verifyAccountResponse.token, verifyAccountResponse.userId,
                 verifyAccountResponse.phoneNumber);
     }
 
