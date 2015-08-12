@@ -19,6 +19,7 @@ package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
+import com.twitter.sdk.android.core.TwitterAuthToken;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -31,7 +32,9 @@ import java.util.concurrent.ConcurrentHashMap;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.verifyZeroInteractions;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -58,14 +61,50 @@ public class VerificationCallbackTest {
     }
 
     @Test
-    public void testSuccess() throws Exception {
+    public void testSuccess_tokenChanged() throws Exception {
+        final DigitsSession changedSession = new DigitsSession(TestConstants.ANY_TOKEN,
+                TestConstants.USER_ID, TestConstants.PHONE);
+        when(sessionManager.getSession(TestConstants.USER_ID)).thenReturn(changedSession);
+
         verificationCallback.addSessionListener(sessionListener);
         verificationCallback.addSessionListener(sessionListener2);
         verificationCallback.success(result);
+
         verify(sessionManager).setSession(TestConstants.USER_ID,
                 DigitsSession.create(result.data));
         verify(sessionListener).changed(any(DigitsSession.class));
         verify(sessionListener2).changed(any(DigitsSession.class));
+    }
+
+    @Test
+    public void testSuccess_phoneChanged() throws Exception {
+        final DigitsSession changedSession =
+                new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET),
+                        TestConstants.USER_ID, TestConstants.ES_RAW_PHONE);
+        when(sessionManager.getSession(TestConstants.USER_ID)).thenReturn(changedSession);
+
+        verificationCallback.addSessionListener(sessionListener);
+        verificationCallback.addSessionListener(sessionListener2);
+        verificationCallback.success(result);
+
+        verify(sessionManager).setSession(TestConstants.USER_ID,
+                DigitsSession.create(result.data));
+        verify(sessionListener).changed(any(DigitsSession.class));
+        verify(sessionListener2).changed(any(DigitsSession.class));
+    }
+
+    @Test
+    public void testSuccess_noSessionChange() throws Exception {
+        when(sessionManager.getSession(TestConstants.USER_ID)).thenReturn(
+                DigitsSession.create(result.data));
+
+        verificationCallback.addSessionListener(sessionListener);
+        verificationCallback.addSessionListener(sessionListener2);
+        verificationCallback.success(result);
+
+        verifyZeroInteractions(sessionListener);
+        verify(sessionManager).getSession(TestConstants.USER_ID);
+        verifyNoMoreInteractions(sessionManager);
     }
 
     public void testSuccess_nullListener() throws Exception {

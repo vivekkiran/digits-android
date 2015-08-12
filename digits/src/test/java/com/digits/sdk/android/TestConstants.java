@@ -27,6 +27,8 @@ public class TestConstants {
     public static final String TOKEN = "token";
     public static final String SECRET = "secret";
     public static final long USER_ID = 11;
+    public static final TwitterAuthToken ANY_TOKEN = new TwitterAuthToken("", "");
+
 
     public static final String RAW_PHONE = "+123456789";
     public static final String ES_RAW_PHONE = "+3423456789";

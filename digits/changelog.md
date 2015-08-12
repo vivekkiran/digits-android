@@ -3,6 +3,8 @@
 
 ## Unreleased
 
+* (IC) Fixed issue that invalidates current session.
+
 ## v1.7.0
 
 * (IC) Added SessionListener to receive session changes.
