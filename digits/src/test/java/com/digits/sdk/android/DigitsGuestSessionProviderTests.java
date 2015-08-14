@@ -71,7 +71,7 @@ public class DigitsGuestSessionProviderTests {
 
         final ArgumentCaptor<DigitsGuestSessionProvider.GuestAuthCallback> captor =
                 ArgumentCaptor.forClass(DigitsGuestSessionProvider.GuestAuthCallback.class);
-        verify(oAuth2Service).requestGuestOrAppAuthToken(captor.capture());
+        verify(oAuth2Service).requestGuestAuthToken(captor.capture());
         final DigitsGuestSessionProvider.GuestAuthCallback callback = captor.getValue();
         assertEquals(sessionCallback, callback.callback);
         assertEquals(sessionManager, callback.sessionManager);

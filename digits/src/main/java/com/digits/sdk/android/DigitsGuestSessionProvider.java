@@ -49,11 +49,11 @@ class DigitsGuestSessionProvider extends SessionProvider {
 
     @Override
     public void requestAuth(Callback<Session> cb) {
-        oAuth2Service.requestGuestOrAppAuthToken(new GuestAuthCallback(defaultSessionManager, cb));
+        oAuth2Service.requestGuestAuthToken(new GuestAuthCallback(defaultSessionManager, cb));
     }
 
     /**
-     * Callback to OAuth2Service wrapping a developer's requestGuestOrAppAuthToken callback
+     * Callback to OAuth2Service wrapping a developer's requestGuestAuthToken callback
      */
     static class GuestAuthCallback extends Callback<OAuth2Token> {
         final SessionManager<DigitsSession> sessionManager;
