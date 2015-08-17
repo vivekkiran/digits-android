@@ -25,7 +25,7 @@ public class UnrecoverableException extends DigitsException {
         super(message);
     }
 
-    public UnrecoverableException(String message, int errorCode) {
-        super(message, errorCode);
+    public UnrecoverableException(String message, int error, AuthConfig config) {
+        super(message, error, config);
     }
 }

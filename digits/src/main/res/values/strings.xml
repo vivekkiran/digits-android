@@ -121,5 +121,6 @@
     <string name="dgts__call_me">Call me</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__calling">Calling…</string>
-
+    <!--suppress MissingTranslation -->
+    <string name="dgts__unsupported_operator_error">Unable to send this number an SMS message.</string>
 </resources>

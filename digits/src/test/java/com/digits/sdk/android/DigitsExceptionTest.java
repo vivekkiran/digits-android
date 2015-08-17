@@ -38,7 +38,7 @@ import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class DigitsExceptionTests {
+public class DigitsExceptionTest {
 
     private static final String RANDOM_ERROR = "Random error";
     private static final String KNOWN_ERROR_MESSAGE = "Something bad happened call batman";
@@ -57,6 +57,8 @@ public class DigitsExceptionTests {
         when(errorCodes.getMessage(TwitterApiErrorConstants.REGISTRATION_GENERAL_ERROR))
                 .thenReturn(KNOWN_ERROR_MESSAGE);
         when(errorCodes.getMessage(TwitterApiErrorConstants.COULD_NOT_AUTHENTICATE))
+                .thenReturn(KNOWN_ERROR_MESSAGE);
+        when(errorCodes.getMessage(TwitterApiErrorConstants.OPERATOR_UNSUPPORTED))
                 .thenReturn(KNOWN_ERROR_MESSAGE);
         when(errorCodes.getNetworkError()).thenReturn(NETWORK_ERROR_MESSAGE);
         when(errorCodes.getDefaultMessage()).thenReturn(DEFAULT_ERROR_MESSAGE);
@@ -120,7 +122,15 @@ public class DigitsExceptionTests {
 
     @Test
     public void testCreate_operatorUnsupported() throws Exception {
-        verifyUnrecoverableException(TwitterApiErrorConstants.OPERATOR_UNSUPPORTED);
+        final TwitterException exception = new MockDigitsApiException
+                (new ApiError("", TwitterApiErrorConstants.OPERATOR_UNSUPPORTED), null,
+                        retrofitError);
+        when(retrofitError.isNetworkError()).thenReturn(false);
+        final DigitsException digitsException = DigitsException.create(errorCodes, exception);
+        assertEquals(KNOWN_ERROR_MESSAGE, digitsException.getLocalizedMessage());
+        assertTrue(digitsException instanceof OperatorUnsupportedException);
+        assertEquals(TwitterApiErrorConstants.OPERATOR_UNSUPPORTED,
+                digitsException.getErrorCode());
     }
 
     @Test

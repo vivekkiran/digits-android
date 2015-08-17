@@ -14,18 +14,14 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
 /**
- * Exception for the phone numbers already registered on digits
+ * Exception for the unsupported operators
  */
-class CouldNotAuthenticateException extends DigitsException {
-    public CouldNotAuthenticateException(String message) {
-        super(message);
-    }
+public class OperatorUnsupportedException extends DigitsException {
 
-    public CouldNotAuthenticateException(String message, int error, AuthConfig config) {
+    public OperatorUnsupportedException(String message, int error, AuthConfig config) {
         super(message, error, config);
     }
 }

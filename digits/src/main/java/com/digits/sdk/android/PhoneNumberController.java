@@ -123,22 +123,25 @@ class PhoneNumberController extends DigitsControllerImpl implements
     @Override
     public void handleError(final Context context, DigitsException digitsException) {
         if (digitsException instanceof CouldNotAuthenticateException) {
-                digitsClient.registerDevice(phoneNumber, getVerificationType(),
-                        new
-                        DigitsCallback<DeviceRegistrationResponse>(context, this) {
-                            @Override
-                            public void success(Result<DeviceRegistrationResponse> result) {
-                                final DeviceRegistrationResponse response = result.data;
-                                final AuthConfig config = response.authConfig;
-                                if (config != null) {
-                                    voiceEnabled = config.isVoiceEnabled;
+            digitsClient.registerDevice(phoneNumber, getVerificationType(),
+                    new DigitsCallback<DeviceRegistrationResponse>(context, this) {
+                                @Override
+                                public void success(Result<DeviceRegistrationResponse> result) {
+                                    final DeviceRegistrationResponse response = result.data;
+                                    final AuthConfig config = response.authConfig;
+                                    if (config != null) {
+                                        voiceEnabled = config.isVoiceEnabled;
+                                    }
+                                    phoneNumber = response.normalizedPhoneNumber == null ?
+                                            phoneNumber : response.normalizedPhoneNumber;
+                                    sendButton.showFinish();
+                                    startNextStep(context, result.data);
                                 }
-                                phoneNumber = response.normalizedPhoneNumber == null ?
-                                        phoneNumber :response.normalizedPhoneNumber;
-                                sendButton.showFinish();
-                                startNextStep(context, result.data);
-                            }
-                        });
+                            });
+        } else if (digitsException instanceof OperatorUnsupportedException) {
+            voiceEnabled = digitsException.getConfig().isVoiceEnabled;
+            resend();
+            super.handleError(context, digitsException);
         } else {
             super.handleError(context, digitsException);
         }

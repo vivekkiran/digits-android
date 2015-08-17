@@ -22,7 +22,12 @@ import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
-class AuthConfig implements Parcelable {
+import java.io.Serializable;
+
+class AuthConfig implements Parcelable, Serializable {
+
+    private static final long serialVersionUID = -3846326068096145508L;
+
     @SerializedName("tos_update")
     public boolean tosUpdate;
     @SerializedName("voice_enabled")

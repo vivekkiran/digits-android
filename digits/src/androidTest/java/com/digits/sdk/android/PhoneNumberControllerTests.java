@@ -22,6 +22,7 @@ import android.text.Editable;
 
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
+import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 
 import java.util.Locale;
 
@@ -110,7 +111,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testHandleError_couldNotAuthenticateException() throws Exception {
         final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
         data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
-        data.authConfig = createAuthConfig();
+        data.authConfig = createAuthConfig(true, true);
         final Intent intent = handleErrorSuccess(data);
         assertTrue(controller.voiceEnabled);
         assertEquals(ConfirmationCodeActivity.class.getName(),
@@ -118,7 +119,6 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
         assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
-
     }
 
     public void testHandleError_couldNotAuthenticateExceptionNullData() throws Exception {
@@ -243,6 +243,10 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
         controller.resend();
 
+        assertResendWithVoiceEnabled();
+    }
+
+    private void assertResendWithVoiceEnabled() {
         assertTrue(controller.resendState);
         verify(sendButton).setStatesText(R.string.dgts__call_me, R.string.dgts__calling,
                 R.string.dgts__calling);
@@ -257,18 +261,37 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verifyNoInteractions(tosView);
     }
 
+    public void testHandleError_operatorUnsupportedWithVoiceEnabled() throws Exception {
+        assertFalse(controller.voiceEnabled);
+        controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
+                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, true)));
+        assertTrue(controller.voiceEnabled);
+        assertResendWithVoiceEnabled();
+        verify(phoneEditText).setError(ERROR_MESSAGE);
+        verify(sendButton).showError();
+    }
+
+    public void testHandleError_operatorUnsupportedWithVoiceDisable() throws Exception {
+        assertFalse(controller.voiceEnabled);
+        controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
+                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, false)));
+        assertFalse(controller.voiceEnabled);
+        verify(phoneEditText).setError(ERROR_MESSAGE);
+        verify(sendButton).showError();
+    }
+
     private AuthResponse createAuthResponse() {
         final AuthResponse authResponse = new AuthResponse();
         authResponse.requestId = REQUEST_ID;
         authResponse.userId = USER_ID;
-        authResponse.authConfig = createAuthConfig();
+        authResponse.authConfig = createAuthConfig(true, true);
         return authResponse;
     }
 
-    private AuthConfig createAuthConfig() {
+    private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled) {
         final AuthConfig authConfig = new AuthConfig();
-        authConfig.tosUpdate = true;
-        authConfig.isVoiceEnabled = true;
+        authConfig.tosUpdate = tosUpdate;
+        authConfig.isVoiceEnabled = isVoiceEnabled;
         return authConfig;
     }
 

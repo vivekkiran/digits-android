@@ -68,7 +68,8 @@ public class FailureActivityDelegateImplTests {
         textView = mock(TextView.class);
         bundle = new Bundle();
         resultReceiver = new ResultReceiver(null);
-        exception = new DigitsException("", TwitterApiErrorConstants.UNKNOWN_ERROR);
+        exception = new DigitsException("", TwitterApiErrorConstants.UNKNOWN_ERROR,
+                new AuthConfig());
 
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, exception);

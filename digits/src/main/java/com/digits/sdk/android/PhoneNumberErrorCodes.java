@@ -34,6 +34,6 @@ class PhoneNumberErrorCodes extends DigitsErrorCodes {
         codeIdMap.put(TwitterApiErrorConstants.DEVICE_ALREADY_REGISTERED,
                 R.string.dgts__confirmation_error_alternative);
         codeIdMap.put(TwitterApiErrorConstants.OPERATOR_UNSUPPORTED,
-                R.string.dgts__confirmation_error_alternative);
+                R.string.dgts__unsupported_operator_error);
     }
 }

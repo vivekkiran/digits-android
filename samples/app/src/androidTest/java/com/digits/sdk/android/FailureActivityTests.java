@@ -61,7 +61,7 @@ public class FailureActivityTests extends
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putSerializable(DigitsClient.EXTRA_FALLBACK_REASON, new DigitsException("",
-                TwitterApiErrorConstants.DEVICE_REGISTRATION_INVALID_INPUT));
+                TwitterApiErrorConstants.DEVICE_REGISTRATION_INVALID_INPUT, new AuthConfig()));
 
         return bundle;
     }

@@ -131,7 +131,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
     public void testStartFallback() throws Exception {
         controller.startFallback(context, resultReceiver, new DigitsException("",
-                TwitterApiErrorConstants.USER_IS_NOT_SDK_USER));
+                TwitterApiErrorConstants.USER_IS_NOT_SDK_USER, new AuthConfig()));
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();
         assertEquals(FailureActivity.class.getName(), intent.getComponent().getClassName());
