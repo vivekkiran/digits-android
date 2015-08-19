@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.7.2
+
+## v1.7.1
+
 * (IC) Fixed issue that invalidates current session.
 
 ## v1.7.0
