@@ -32,7 +32,7 @@
         android:label="@string/digits_app_name">
 
         <activity
-            android:name=".MainActivity"
+            android:name=".digits.DigitsMainActivity"
             android:label="@string/digits_app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
@@ -41,11 +41,6 @@
             </intent-filter>
         </activity>
 
-        <!-- Activities for testing Digits -->
-        <activity
-            android:name=".digits.DigitsMainActivity"
-            android:label="@string/kit_digits"
-            />
         <activity
             android:name=".digits.FoundFriendsActivity"
             android:label="@string/kit_digits"/>
