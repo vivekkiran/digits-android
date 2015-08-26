@@ -23,11 +23,15 @@ import android.test.AndroidTestCase;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
+import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowDrawable;
+
+import static org.robolectric.Shadows.shadowOf;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class ThemeUtilsTest  extends AndroidTestCase {
+public class ThemeUtilsTest extends AndroidTestCase {
 
     @Test
     public void testIsLightColor_blue() {
@@ -58,5 +62,20 @@ public class ThemeUtilsTest  extends AndroidTestCase {
     public void testCalculateOpacityTransform_returnsFullOpacity() {
         final int color = ThemeUtils.calculateOpacityTransform(0, Color.BLUE, Color.WHITE);
         assertEquals(0xFF000000, color & 0xFF000000);
+    }
+
+    @Test
+    public void testGetLogoDrawable() throws Exception {
+        if (BuildConfig.DEBUG) {
+            RuntimeEnvironment.application.setTheme(R.style.DigitsDebugLightTheme);
+            final ShadowDrawable drawable = shadowOf(ThemeUtils.getLogoDrawable(RuntimeEnvironment
+                    .application.getTheme()));
+            assertEquals(R.drawable.dgts__logo, drawable.getCreatedFromResId());
+        }
+    }
+
+    @Test
+    public void testGetLogoDrawable_null() throws Exception {
+        assertNull(ThemeUtils.getLogoDrawable(RuntimeEnvironment.application.getTheme()));
     }
 }

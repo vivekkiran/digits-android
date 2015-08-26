@@ -19,6 +19,7 @@
 <ScrollView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:digits="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -27,7 +28,15 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-
+        <com.digits.sdk.android.LogoImageView
+            tools:ignore="ContentDescription"
+            style="@style/dgts__HeaderMargin"
+            android:visibility="gone"
+            android:id="@+id/dgts__logo"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_gravity="center_horizontal"/>
         <TextView
             style="@style/dgts__Title"
             android:layout_width="match_parent"

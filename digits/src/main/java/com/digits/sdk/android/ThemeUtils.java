@@ -18,9 +18,11 @@
 package com.digits.sdk.android;
 
 import android.annotation.TargetApi;
-import android.content.res.Resources.Theme;
 import android.content.res.Resources;
+import android.content.res.Resources.Theme;
+import android.content.res.TypedArray;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.util.TypedValue;
 
@@ -120,5 +122,13 @@ class ThemeUtils {
         final int blueCalculated = (int) ((1 - opacity) * bluePrimary + opacity * blueOverlay);
 
         return Color.rgb(redCalculated, greenCalculated, blueCalculated);
+    }
+
+    static Drawable getLogoDrawable(Theme theme) {
+        final TypedValue typedValue = new TypedValue();
+        final int[] drawableAttr = new int[]{R.attr.dgts__logoDrawable};
+        final int indexOfAttr = 0;
+        final TypedArray a = theme.obtainStyledAttributes(typedValue.data, drawableAttr);
+        return a.getDrawable(indexOfAttr);
     }
 }

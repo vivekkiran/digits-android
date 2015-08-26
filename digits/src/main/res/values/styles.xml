@@ -28,10 +28,13 @@
         <item name="android:textSize">@dimen/dgts__terms_text_size</item>
     </style>
 
-    <style name="dgts__Title">
+    <style name="dgts__HeaderMargin">
+        <item name="android:layout_marginBottom">24dp</item>
+    </style>
+
+    <style name="dgts__Title" parent="dgts__HeaderMargin">
         <item name="android:textColor">?android:attr/textColorPrimary</item>
         <item name="android:textSize">@dimen/dgts__title_text_size</item>
-        <item name="android:layout_marginBottom">24dp</item>
     </style>
 
     <style name="dgts__Container">

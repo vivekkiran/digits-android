@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ Copyright (C) 2015 Twitter, Inc.
   ~
@@ -16,13 +16,8 @@
   ~
   -->
 
-<lint>
-    <issue id="IconMissingDensityFolder" severity="ignore"/>
-    <issue id="UnusedResources">
-        <ignore path="src/main/res/layout/tw__activity_login.xml"/>
-    </issue>
-    <issue id="WrongRegion" severity="ignore" />
-    <issue id="IconLocation"  severity="ignore">
-        <ignore path="src/debug/res/*"/>
-    </issue>
-</lint>
+<resources>
+    <style name="DigitsDebugLightTheme">
+        <item name="dgts__logoDrawable">@drawable/dgts__logo</item>
+    </style>
+</resources>
