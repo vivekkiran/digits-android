@@ -1,0 +1,54 @@
+<h2>Digits</h2>
+
+<h3>1.7.2</h3>
+- Updated for twitter-core 1.7.2 guest auth fixes.
+
+<h3>1.7.1</h3>
+- Fixed issue where DigitsSessionVerifier invalidated the current session.<br>
+
+<h3>1.7.0</h3>
+- Added SessionListener to receive session changes.<br>
+
+<h3>1.6.2</h3>
+- Use AuthRequestQueue for all API request to ensure we always have a valid DigitsAPIClient.<br>
+- Fixed critical issue where Digits sessions are lost when using Proguard.<br>
+<h3>1.6.1</h3>
+- Fixed a memory leak<br>
+<h3>1.6.0</h3>
+- Fixed crash on StateButton for multiple clicks<br>
+- Added a new public API for authenticate flow to allow developers provided a phone number<br>
+<h3>1.5.0</h3>
+<p>
+- Changed base host to api.digits.com.<br>
+- Changed Pin code edit text to password type.<br>
+- Return normalized phone number on signup and login.<br>
+</p>
+<h3>1.4.0</h3>
+<p>
+- CountrySpinner now sets the country based on SIM country.
+</p>
+<h3>1.3.0</h3>
+<p>
+- Find Friends service. <br>
+- Leverage Android intents if available to prefill phone number, and or/read SMS pin. <br>
+</p>
+<h3>1.2.0</h3>
+<p>
+- Removed Twitter login from fallback screen.<br>
+- Fixed Resources$NotFoundException on Gingerbread devices.<br>
+- Fixed theme detection when building with Eclipse.<br>
+- Fixed stale guest auth token not being updated.
+</p>
+<h3>1.1.0</h3>
+<p>
+- Min SDK version updated from 7 to 8.<br>
+- Included licensing information in pom.<br>
+- Fixed possible kit initialization error.<br>
+- Add theming support.<br>
+- Included licensing information in pom.
+</p>
+<h3>1.0.1</h3>
+<p>
+- Removed Apache 2.0 licenses from pom.xml<br>
+- Update of error strings for fallback
+</p>
