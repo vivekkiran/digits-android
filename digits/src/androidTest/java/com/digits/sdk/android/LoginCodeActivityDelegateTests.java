@@ -22,6 +22,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.SpannedString;
 import android.view.View;
 
 import static org.mockito.Matchers.any;
@@ -100,7 +101,8 @@ public class LoginCodeActivityDelegateTests extends
     }
 
     public void testSetUpTermsText_tosUpdated() throws Exception {
-        doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
+        doReturn(new SpannedString("")).when(delegate).getFormattedTerms(any(Activity.class),
+                anyInt());
         delegate.config = new AuthConfig();
         delegate.config.tosUpdate = Boolean.TRUE;
         delegate.setUpTermsText(activity, controller, textView);

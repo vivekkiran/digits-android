@@ -15,7 +15,7 @@
   ~
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <!-- button text for sign up -->
     <string name="dgts__login_digits_text">Use my phone number</string>
 
@@ -35,11 +35,12 @@
     <!-- Button text -->
     <string name="dgts__confirmation_sending_text">Sending confirmation code</string>
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
-    <!--suppress MissingTranslation -->
-    <string name="dgts__terms_text">By tapping %1$sSend confirmation code%1$s above, <u>Digits by Twitter</u> will send you an SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
-    <!--suppress MissingTranslation -->
-    <string name="dgts__terms_text_call_me">By tapping %1$sCall me%1$s above, <u>Digits by Twitter</u> will send you a voice call to confirm your phone number. Call &amp; data rates may apply.</string>
-
+    <!--suppress MissingTranslation StringFormatCount-->
+    <string name="dgts__terms_text">By tapping %1$sSend confirmation code%1$s above, %2$sDigits
+        by Twitter%3$s will send you an SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
+    <!--suppress MissingTranslation StringFormatCount-->
+    <string name="dgts__terms_text_call_me">By tapping %1$sCall
+    me%1$s above, %2$sDigits by Twitter%3$s will send you a voice call to confirm your phone number. Call &amp; data rates may apply.</string>
     <!-- Confirmation code screen -->
     <string name="dgts__confirmation_edit_hint">Enter confirmation code</string>
     <!--suppress MissingTranslation -->
@@ -51,10 +52,10 @@
     <string name="dgts__creating_account_text">Creating account</string>
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
     <!--suppress MissingTranslation -->
-    <string name="dgts__terms_text_create">By tapping %1$sCreate account%1$s above, you agree to the <u>Terms of Service</u>, <u>Privacy Policy</u>, and <u>Cookies Policy</u> of Digits by Twitter, and that other users of this app can discover you by phone number and/or email.</string>
+    <string name="dgts__terms_text_create">By tapping %1$sCreate account%1$s above, you agree to the %2$sTerms of Service%3$s, %2$sPrivacy Policy%3$s, and %2$sCookies Policy%3$s of Digits by Twitter, and that other users of this app can discover you by phone number and/or email.</string>
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
     <!--suppress UnusedResources MissingTranslation-->
-    <string name="dgts__terms_text_sign_in">By tapping %1$sSign in%1$s above, you agree to the updated <u>Terms of Service</u>, <u>Privacy Policy</u>, and <u>Cookies Policy</u> of Digits by Twitter, and that other users of %1$s can discover you by phone number and/or email.</string>
+    <string name="dgts__terms_text_sign_in">By tapping %1$sSign in%1$s above, you agree to the updated %2$sTerms of Service%3$s, %2$sPrivacy Policy%3$s, and %2$sCookies Policy%3$s of Digits by Twitter, and that other users of %1$s can discover you by phone number and/or email.</string>
     <!-- Button text -->
     <string name="dgts__resend_confirmation_text">Resend confirmation code</string>
     <!--suppress MissingTranslation -->

@@ -20,6 +20,7 @@ package com.digits.sdk.android;
 import android.app.Activity;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.SpannedString;
 import android.view.View;
 import android.widget.EditText;
 
@@ -82,10 +83,11 @@ public class PhoneNumberActivityDelegateTests extends
 
     @Override
     public void testSetUpTermsText() throws Exception {
-        doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
+        doReturn(new SpannedString("")).when(delegate).getFormattedTerms(any(Activity.class),
+                anyInt());
         delegate.setUpTermsText(activity, controller, textView);
         verify(delegate).getFormattedTerms(activity, R.string.dgts__terms_text);
-        verify(textView).setText("");
+        verify(textView).setText(new SpannedString(""));
     }
 
     public void testOnLoadComplete() {

@@ -22,6 +22,7 @@ import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.SpannedString;
 import android.view.View;
 
 import static org.mockito.Matchers.any;
@@ -106,10 +107,11 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     @Override
     public void testSetUpTermsText() throws Exception {
-        doReturn("").when(delegate).getFormattedTerms(any(Activity.class), anyInt());
+        doReturn(new SpannedString("")).when(delegate).getFormattedTerms(any(Activity.class),
+                anyInt());
         super.testSetUpTermsText();
         verify(delegate).getFormattedTerms(activity, R.string.dgts__terms_text_create);
-        verify(textView).setText("");
+        verify(textView).setText(new SpannedString(""));
     }
 
     public class DummyConfirmationCodeActivityDelegate extends ConfirmationCodeActivityDelegate {

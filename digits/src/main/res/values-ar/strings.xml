@@ -17,7 +17,7 @@
   ~
   -->
 
-<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2" xmlns:tools="http://schemas.android.com/tools">
     <string name="dgts__cancel">إلغاء</string>
     <string name="dgts__communication_error">خطأ اتصال</string>
     <string name="dgts__confirmation_code">رمز التأكيد</string>
@@ -50,11 +50,12 @@
     <string name="dgts__sign_in_twitter">تسجيل الدخول إلى تويتر</string>
     <string name="dgts__signing_in">تسجيل الدخول</string>
     <string name="dgts__success_desc">أيقونة النجاح</string>
-    <string name="dgts__terms_text">بالنقر على %1$sإرسال رمز التأكيد%1$s أعلاه، سيقوم Digits byTwitter، بإرسال رسالة نصّيّة قصيرة لتأكيد رقم هاتفك. قد يتم تطبيق رسوم الرسائل والبيانات.</string>
-    <string name="dgts__terms_text_create">بالنقر على %1$sإنشاء حساب%1$s أعلاه،\
+    <string name="dgts__terms_text"  tools:ignore="StringFormatCount">بالنقر على %1$sإرسال رمز التأكيد%1$s أعلاه، سيقوم Digits
+        byTwitter، بإرسال رسالة نصّيّة قصيرة لتأكيد رقم هاتفك. قد يتم تطبيق رسوم الرسائل والبيانات.</string>
+    <string name="dgts__terms_text_create" tools:ignore="StringFormatCount">بالنقر على %1$sإنشاء حساب%1$s أعلاه،\
 أنت توافق على شروط الخدمة، وسياسة الخصوصيّة، وسياسة\
 ملفات ارتباط Digits بواسطة تويتر، ويمكن لمستخدمي هذا التطبيق الآخرين الكشف عنك  بواسطة رقم هاتفك و/أو بريدك الإلكترونيّ.</string>
-    <string name="dgts__terms_text_sign_in">بالنقر على %1$sتسجيل الدخول%1$s أعلاه،\
+    <string name="dgts__terms_text_sign_in" tools:ignore="StringFormatCount">بالنقر على %1$sتسجيل الدخول%1$s أعلاه،\
 أنت توافق على تحديثات شروط الخدمة، سياسة الخصوصيّة، وسياسة\
 ملفات ارتباط Digits بواسطة تويتر، ويمكن لمستخدمي %1$s الآخرين الكشف عنك  بواسطة رقم الهاتف و/أو البريد الإلكترونيّ.</string>
     <string name="dgts__try_again">حاول مرّة أخرى</string>
