@@ -25,9 +25,14 @@ class DigitsScribeServiceImp implements DigitsScribeService {
     static final String EMPTY_SCRIBE_SECTION = "";
     static final String EMPTY_SCRIBE_COMPONENT = "";
     static final String EMPTY_SCRIBE_ELEMENT = "";
+
+    static final String IMPRESSION_ACTION = "impression";
+
+    static final String LOGGED_IN_ACTION = "logged_in";
+    static final String FAILURE_ACTION = "failure";
+
     static final String SCRIBE_CLIENT = "android";
     static final String SCRIBE_PAGE = "digits";
-    static final String IMPRESSION_ACTION = "impression";
 
     private final DefaultScribeClient scribeClient;
 
@@ -39,7 +44,7 @@ class DigitsScribeServiceImp implements DigitsScribeService {
     }
 
     @Override
-    public void dailyPing() {
+    public void authImpression() {
         final EventNamespace ns = new EventNamespace.Builder()
                 .setClient(SCRIBE_CLIENT)
                 .setPage(SCRIBE_PAGE)
@@ -47,6 +52,34 @@ class DigitsScribeServiceImp implements DigitsScribeService {
                 .setComponent(EMPTY_SCRIBE_COMPONENT)
                 .setElement(EMPTY_SCRIBE_ELEMENT)
                 .setAction(IMPRESSION_ACTION)
+                .builder();
+
+        scribe(ns);
+    }
+
+    @Override
+    public void authFailure() {
+        final EventNamespace ns = new EventNamespace.Builder()
+                .setClient(SCRIBE_CLIENT)
+                .setPage(SCRIBE_PAGE)
+                .setSection(EMPTY_SCRIBE_SECTION)
+                .setComponent(EMPTY_SCRIBE_COMPONENT)
+                .setElement(EMPTY_SCRIBE_ELEMENT)
+                .setAction(FAILURE_ACTION)
+                .builder();
+
+        scribe(ns);
+    }
+
+    @Override
+    public void authSuccess() {
+        final EventNamespace ns = new EventNamespace.Builder()
+                .setClient(SCRIBE_CLIENT)
+                .setPage(SCRIBE_PAGE)
+                .setSection(EMPTY_SCRIBE_SECTION)
+                .setComponent(EMPTY_SCRIBE_COMPONENT)
+                .setElement(EMPTY_SCRIBE_ELEMENT)
+                .setAction(LOGGED_IN_ACTION)
                 .builder();
 
         scribe(ns);

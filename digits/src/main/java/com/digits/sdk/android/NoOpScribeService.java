@@ -19,6 +19,17 @@ package com.digits.sdk.android;
 
 class NoOpScribeService implements DigitsScribeService {
     @Override
-    public void dailyPing() {
+    public void authImpression() {
+
+    }
+
+    @Override
+    public void authFailure() {
+
+    }
+
+    @Override
+    public void authSuccess() {
+
     }
 }

@@ -48,6 +48,7 @@ import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
 import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
@@ -102,7 +103,13 @@ public class DigitsClientTests {
         component = new ComponentName(context, new ActivityClassManagerImp()
                 .getPhoneNumberActivity());
 
-        digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authRequestQueue);
+        digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authRequestQueue) {
+            @Override
+            LoginResultReceiver createResultReceiver(AuthCallback callback) {
+                return new LoginResultReceiver(new WeakAuthCallback(callback,
+                        mock(DigitsScribeService.class)), sessionManager);
+            }
+        };
     }
 
     @Test
@@ -169,6 +176,8 @@ public class DigitsClientTests {
     public void testStartSignUp_callbackSuccess() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback);
+        verify(scribeService).authImpression();
+        verify(scribeService).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -176,6 +185,8 @@ public class DigitsClientTests {
     public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback, TestConstants.PHONE);
+        verify(scribeService).authImpression();
+        verify(scribeService).authSuccess();
         verify(callback).success(userSession, null);
     }
 
@@ -264,7 +275,8 @@ public class DigitsClientTests {
 
     private void verifySignUp(AuthCallback callback) {
         digitsClient.startSignUp(callback);
-        verify(scribeService).dailyPing();
+        verify(scribeService).authImpression();
+        verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
         // if it's correctly build
@@ -275,7 +287,8 @@ public class DigitsClientTests {
 
     private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone) {
         digitsClient.startSignUp(callback, phone);
-        verify(scribeService).dailyPing();
+        verify(scribeService).authImpression();
+        verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
         // if it's correctly build

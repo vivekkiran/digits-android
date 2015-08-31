@@ -95,10 +95,11 @@ public class DigitsClient {
     }
 
     private void startSignUpWithBundle(AuthCallback callback, Bundle bundle) {
+        digits.getScribeService().authImpression();
         final DigitsSession session = sessionManager.getActiveSession();
-        digits.getScribeService().dailyPing();
         if (session != null && !session.isLoggedOutUser()) {
             callback.success(session, null);
+            digits.getScribeService().authSuccess();
         } else {
             startPhoneNumberActivity(twitterCore.getContext(), bundle);
         }
@@ -113,8 +114,12 @@ public class DigitsClient {
     private Bundle createBundleForAuthFlow(AuthCallback callback) {
         final Bundle bundle = new Bundle();
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER,
-                new LoginResultReceiver(callback, sessionManager));
+                createResultReceiver(callback));
         return bundle;
+    }
+
+    LoginResultReceiver createResultReceiver(AuthCallback callback) {
+        return new LoginResultReceiver(callback, sessionManager);
     }
 
     private void startPhoneNumberActivity(Context context, Bundle bundle) {
