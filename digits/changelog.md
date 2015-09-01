@@ -3,6 +3,9 @@
 
 ## Unreleased
 
+## v1.8.0
+* Added dgts__logoDrawable to allow providing a custom logo
+* Added voice call verification to the auth flow
 * Raised Min SDK version from 8 to 9.
 
 ## v1.7.2
