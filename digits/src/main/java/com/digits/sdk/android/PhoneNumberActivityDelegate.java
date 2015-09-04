@@ -29,6 +29,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         PhoneNumberTask.Listener, TosView {
+    private final DigitsScribeService scribeService;
     private Activity activity;
 
     CountryListSpinner countryCodeSpinner;
@@ -36,6 +37,11 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     EditText phoneEditText;
     TextView termsTextView;
     PhoneNumberController controller;
+
+    public PhoneNumberActivityDelegate(DigitsScribeService scribeService) {
+        this.scribeService = scribeService;
+    }
+
 
     @Override
     public int getLayoutId() {
@@ -98,6 +104,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         countryCodeSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scribeService.phoneNumberActivityCountryCodeSpinnerClick();
                 controller.clearError();
             }
         });

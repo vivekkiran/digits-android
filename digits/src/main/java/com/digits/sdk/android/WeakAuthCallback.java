@@ -37,7 +37,7 @@ class WeakAuthCallback implements AuthCallback {
     public void success(DigitsSession session, String phoneNumber) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            scribeService.authSuccess();
+            scribeService.authLoggedIn();
             callback.success(session, phoneNumber);
         }
     }

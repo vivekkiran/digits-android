@@ -17,8 +17,37 @@
 
 package com.digits.sdk.android;
 
+/**
+ * Scribing events for Digits
+ */
 public interface DigitsScribeService {
+    /**
+     * Scribing event when authentication flow starts
+     */
     void authImpression();
+    /**
+     * Scribing event when authentication flow fails
+     */
     void authFailure();
-    void authSuccess();
+    /**
+     * Scribing event when authentication flow is successful
+     */
+    void authLoggedIn();
+    /**
+     * Scribing event for {@link PhoneNumberActivity} submit button click
+     */
+    void phoneNumberActivitySubmitClick();
+    /**
+     * Scribing event for {@link PhoneNumberActivity} when there is a retry to submit a phone
+     */
+    void phoneNumberActivityRetryClick();
+    /**
+     * Scribing events for {@link PhoneNumberActivity}  country code spinner click
+     */
+    void phoneNumberActivityCountryCodeSpinnerClick();
+    /**
+     * Scribing events for {@link PhoneNumberActivity} success. Success means that authentication
+     * flow moves to the challenge state.
+     */
+    void phoneNumberActivitySuccess();
 }

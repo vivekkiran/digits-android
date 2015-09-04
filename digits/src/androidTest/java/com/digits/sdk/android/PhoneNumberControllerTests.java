@@ -36,6 +36,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     private CountryListSpinner countrySpinner;
     private Verification verification;
     private TosView tosView;
+    private DigitsScribeService scribeService;
 
     @Override
     public void setUp() throws Exception {
@@ -43,9 +44,10 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         verification = Verification.sms;
         countrySpinner = mock(CountryListSpinner.class);
         tosView = mock(TosView.class);
+        scribeService = mock(DigitsScribeService.class);
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
-                new ActivityClassManagerImp(), sessionManager, tosView);
+                new ActivityClassManagerImp(), sessionManager, tosView, scribeService);
         assertFalse(controller.voiceEnabled);
         assertFalse(controller.resendState);
         when(countrySpinner.getTag()).thenReturn(COUNTRY_CODE);
@@ -98,7 +100,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         when(countrySpinner.getTag()).thenReturn(Integer.valueOf(COUNTRY_CODE));
 
         controller.executeRequest(context);
-
+        verify(scribeService).phoneNumberActivitySubmitClick();
         verify(sendButton).showProgress();
         verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
                 , callbackCaptor.capture());
@@ -141,6 +143,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final Result<DeviceRegistrationResponse> deviceResponse = new Result<>(data, null);
 
         callback.success(deviceResponse);
+        verify(scribeService).phoneNumberActivitySuccess();
         verify(context).startActivityForResult(intentCaptor.capture(),
                 eq(DigitsActivity.REQUEST_CODE));
         verify(sendButton).showFinish();
@@ -149,7 +152,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     public void testStartSignIn() {
         controller.startSignIn(context, createAuthResponse());
-
+        verify(scribeService).phoneNumberActivitySuccess();
         verify(context).startActivityForResult(intentCaptor.capture(),
                 eq(DigitsActivity.REQUEST_CODE));
         final Intent intent = intentCaptor.getValue();
@@ -278,6 +281,12 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertFalse(controller.voiceEnabled);
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
+    }
+
+    public void testRetryScribing() throws Exception {
+        controller.errorCount = 1;
+        controller.executeRequest(context);
+        verify(scribeService).phoneNumberActivityRetryClick();
     }
 
     private AuthResponse createAuthResponse() {

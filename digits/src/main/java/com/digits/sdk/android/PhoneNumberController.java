@@ -36,6 +36,7 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class PhoneNumberController extends DigitsControllerImpl implements
         PhoneNumberTask.Listener {
     private final TosView tosView;
+    private final DigitsScribeService scribeService;
     final CountryListSpinner countryCodeSpinner;
     String phoneNumber;
     boolean voiceEnabled;
@@ -48,7 +49,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
-                tosView);
+                tosView, Digits.getInstance().getScribeService());
         voiceEnabled = false;
         resendState = false;
     }
@@ -56,16 +57,17 @@ class PhoneNumberController extends DigitsControllerImpl implements
     /**
      * Only for test
      */
-    PhoneNumberController(ResultReceiver resultReceiver,
-                          StateButton stateButton, EditText phoneEditText,
-                          CountryListSpinner countryCodeSpinner,
+    PhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
+                          EditText phoneEditText, CountryListSpinner countryCodeSpinner,
                           DigitsClient client, ErrorCodes errors,
                           ActivityClassManager activityClassManager,
-                          SessionManager<DigitsSession> sessionManager, TosView tosView) {
+                          SessionManager<DigitsSession> sessionManager, TosView tosView,
+                          DigitsScribeService scribeService) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
                 sessionManager);
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
+        this.scribeService = scribeService;
     }
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
@@ -84,6 +86,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
 
     @Override
     public void executeRequest(final Context context) {
+        scribeRequest();
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -115,6 +118,18 @@ class PhoneNumberController extends DigitsControllerImpl implements
         }
     }
 
+    private void scribeRequest() {
+        if (isRetry()) {
+            scribeService.phoneNumberActivityRetryClick();
+        } else {
+            scribeService.phoneNumberActivitySubmitClick();
+        }
+    }
+
+    private boolean isRetry() {
+        return errorCount > 0;
+    }
+
     @NonNull
     private Verification getVerificationType() {
         return resendState && voiceEnabled ? Verification.voicecall : Verification.sms;
@@ -125,19 +140,19 @@ class PhoneNumberController extends DigitsControllerImpl implements
         if (digitsException instanceof CouldNotAuthenticateException) {
             digitsClient.registerDevice(phoneNumber, getVerificationType(),
                     new DigitsCallback<DeviceRegistrationResponse>(context, this) {
-                                @Override
-                                public void success(Result<DeviceRegistrationResponse> result) {
-                                    final DeviceRegistrationResponse response = result.data;
-                                    final AuthConfig config = response.authConfig;
-                                    if (config != null) {
-                                        voiceEnabled = config.isVoiceEnabled;
-                                    }
-                                    phoneNumber = response.normalizedPhoneNumber == null ?
-                                            phoneNumber : response.normalizedPhoneNumber;
-                                    sendButton.showFinish();
-                                    startNextStep(context, result.data);
-                                }
-                            });
+                        @Override
+                        public void success(Result<DeviceRegistrationResponse> result) {
+                            final DeviceRegistrationResponse response = result.data;
+                            final AuthConfig config = response.authConfig;
+                            if (config != null) {
+                                voiceEnabled = config.isVoiceEnabled;
+                            }
+                            phoneNumber = response.normalizedPhoneNumber == null ?
+                                    phoneNumber : response.normalizedPhoneNumber;
+                            sendButton.showFinish();
+                            startNextStep(context, result.data);
+                        }
+                    });
         } else if (digitsException instanceof OperatorUnsupportedException) {
             voiceEnabled = digitsException.getConfig().isVoiceEnabled;
             resend();
@@ -153,6 +168,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     void startSignIn(Context context, AuthResponse response) {
+        scribeService.phoneNumberActivitySuccess();
         final Intent intent = new Intent(context, activityClassManager.getLoginCodeActivity());
         final Bundle bundle = getBundle();
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
@@ -163,6 +179,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     private void startNextStep(Context context, DeviceRegistrationResponse response) {
+        scribeService.phoneNumberActivitySuccess();
         final Intent intent = new Intent(context, activityClassManager.getConfirmationActivity());
         final Bundle bundle = getBundle();
         if (response.authConfig != null) {

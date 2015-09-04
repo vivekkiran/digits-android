@@ -59,7 +59,7 @@ public class DigitsScribeServiceImplTest {
 
     @Test
     public void testAuthSuccess() throws Exception {
-        service.authSuccess();
+        service.authLoggedIn();
         verify(client).scribeSyndicatedSdkImpressionEvents(eventNamespaceArgumentCaptor.capture());
         final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
         final EventNamespace ns = createAuthSuccess();
@@ -76,10 +76,7 @@ public class DigitsScribeServiceImplTest {
     }
 
     private EventNamespace createAuthImpression() {
-        return new EventNamespace.Builder()
-                .setClient(DigitsScribeServiceImp.SCRIBE_CLIENT)
-                .setPage(DigitsScribeServiceImp.SCRIBE_PAGE)
-                .setSection(DigitsScribeServiceImp.EMPTY_SCRIBE_SECTION)
+        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
                 .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
                 .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeServiceImp.IMPRESSION_ACTION)
@@ -87,10 +84,7 @@ public class DigitsScribeServiceImplTest {
     }
 
     private EventNamespace createAuthSuccess() {
-        return new EventNamespace.Builder()
-                .setClient(DigitsScribeServiceImp.SCRIBE_CLIENT)
-                .setPage(DigitsScribeServiceImp.SCRIBE_PAGE)
-                .setSection(DigitsScribeServiceImp.EMPTY_SCRIBE_SECTION)
+        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
                 .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
                 .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeServiceImp.LOGGED_IN_ACTION)
@@ -98,10 +92,7 @@ public class DigitsScribeServiceImplTest {
     }
 
     private EventNamespace createAuthFailure() {
-        return new EventNamespace.Builder()
-                .setClient(DigitsScribeServiceImp.SCRIBE_CLIENT)
-                .setPage(DigitsScribeServiceImp.SCRIBE_PAGE)
-                .setSection(DigitsScribeServiceImp.EMPTY_SCRIBE_SECTION)
+        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
                 .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
                 .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeServiceImp.FAILURE_ACTION)

@@ -29,7 +29,27 @@ class NoOpScribeService implements DigitsScribeService {
     }
 
     @Override
-    public void authSuccess() {
+    public void authLoggedIn() {
+
+    }
+
+    @Override
+    public void phoneNumberActivitySubmitClick() {
+
+    }
+
+    @Override
+    public void phoneNumberActivityRetryClick() {
+
+    }
+
+    @Override
+    public void phoneNumberActivityCountryCodeSpinnerClick() {
+
+    }
+
+    @Override
+    public void phoneNumberActivitySuccess() {
 
     }
 }

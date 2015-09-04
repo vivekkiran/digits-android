@@ -177,7 +177,7 @@ public class DigitsClientTests {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback);
         verify(scribeService).authImpression();
-        verify(scribeService).authSuccess();
+        verify(scribeService).authLoggedIn();
         verify(callback).success(userSession, null);
     }
 
@@ -186,7 +186,7 @@ public class DigitsClientTests {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback, TestConstants.PHONE);
         verify(scribeService).authImpression();
-        verify(scribeService).authSuccess();
+        verify(scribeService).authLoggedIn();
         verify(callback).success(userSession, null);
     }
 

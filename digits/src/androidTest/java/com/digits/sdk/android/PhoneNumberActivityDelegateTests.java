@@ -33,17 +33,19 @@ import static org.mockito.Mockito.verify;
 
 public class PhoneNumberActivityDelegateTests extends
         DigitsActivityDelegateTests<PhoneNumberActivityDelegate> {
+    private DigitsScribeService scribeService;
     CountryListSpinner spinner;
 
     @Override
     public void setUp() throws Exception {
-        super.setUp();
         spinner = mock(CountryListSpinner.class);
+        scribeService = mock(DigitsScribeService.class);
+        super.setUp();
     }
 
     @Override
     public PhoneNumberActivityDelegate getDelegate() {
-        return spy(new DummyPhoneNumberActivityDelegate());
+        return spy(new DummyPhoneNumberActivityDelegate(scribeService));
     }
 
     public void testIsValid() {
@@ -72,6 +74,7 @@ public class PhoneNumberActivityDelegateTests extends
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(controller).clearError();
+        verify(scribeService).phoneNumberActivityCountryCodeSpinnerClick();
     }
 
     public void testOnResume() {
@@ -115,6 +118,9 @@ public class PhoneNumberActivityDelegateTests extends
 
     public class DummyPhoneNumberActivityDelegate extends PhoneNumberActivityDelegate {
 
+        public DummyPhoneNumberActivityDelegate(DigitsScribeService scribeService) {
+            super(scribeService);
+        }
     }
 
     public class DummyPhoneNumberController extends PhoneNumberController {

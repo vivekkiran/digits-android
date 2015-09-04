@@ -42,7 +42,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     final EditText editText;
     final StateButton sendButton;
     final SessionManager<DigitsSession> sessionManager;
-    private int errorCount;
+    int errorCount;
 
 
     DigitsControllerImpl(ResultReceiver resultReceiver, StateButton stateButton, EditText editText,

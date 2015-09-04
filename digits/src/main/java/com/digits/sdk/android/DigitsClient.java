@@ -99,7 +99,7 @@ public class DigitsClient {
         final DigitsSession session = sessionManager.getActiveSession();
         if (session != null && !session.isLoggedOutUser()) {
             callback.success(session, null);
-            digits.getScribeService().authSuccess();
+            digits.getScribeService().authLoggedIn();
         } else {
             startPhoneNumberActivity(twitterCore.getContext(), bundle);
         }
