@@ -17,15 +17,15 @@
 
 package com.digits.sdk.android;
 
-import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.FabricTestUtils;
-import io.fabric.sdk.android.Kit;
-
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
 import java.util.List;
 import java.util.concurrent.Callable;
+
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.FabricTestUtils;
+import io.fabric.sdk.android.Kit;
 
 public class DigitsTest extends DigitsAndroidTestCase {
 
@@ -61,6 +61,6 @@ public class DigitsTest extends DigitsAndroidTestCase {
 
     public void testDigits_constructor() throws Exception {
         final Digits digits = new Digits();
-        assertTrue(digits.getScribeService() instanceof NoOpScribeService);
+        assertNotNull(digits.getScribeClient());
     }
 }

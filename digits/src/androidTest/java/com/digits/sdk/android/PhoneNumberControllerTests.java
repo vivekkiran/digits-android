@@ -100,7 +100,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         when(countrySpinner.getTag()).thenReturn(Integer.valueOf(COUNTRY_CODE));
 
         controller.executeRequest(context);
-        verify(scribeService).phoneNumberActivitySubmitClick();
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
         verify(sendButton).showProgress();
         verify(digitsClient).authDevice(eq(PHONE_WITH_COUNTRY_CODE), eq(getVerification())
                 , callbackCaptor.capture());
@@ -143,7 +143,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final Result<DeviceRegistrationResponse> deviceResponse = new Result<>(data, null);
 
         callback.success(deviceResponse);
-        verify(scribeService).phoneNumberActivitySuccess();
+        verify(scribeService).success();
         verify(context).startActivityForResult(intentCaptor.capture(),
                 eq(DigitsActivity.REQUEST_CODE));
         verify(sendButton).showFinish();
@@ -152,7 +152,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
 
     public void testStartSignIn() {
         controller.startSignIn(context, createAuthResponse());
-        verify(scribeService).phoneNumberActivitySuccess();
+        verify(scribeService).success();
         verify(context).startActivityForResult(intentCaptor.capture(),
                 eq(DigitsActivity.REQUEST_CODE));
         final Intent intent = intentCaptor.getValue();
@@ -286,7 +286,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testRetryScribing() throws Exception {
         controller.errorCount = 1;
         controller.executeRequest(context);
-        verify(scribeService).phoneNumberActivityRetryClick();
+        verify(scribeService).click(DigitsScribeConstants.Element.RETRY);
     }
 
     private AuthResponse createAuthResponse() {

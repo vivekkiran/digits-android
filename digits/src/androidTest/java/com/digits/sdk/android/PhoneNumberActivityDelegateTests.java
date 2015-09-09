@@ -74,7 +74,7 @@ public class PhoneNumberActivityDelegateTests extends
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
         verify(controller).clearError();
-        verify(scribeService).phoneNumberActivityCountryCodeSpinnerClick();
+        verify(scribeService).click(DigitsScribeConstants.Element.COUNTRY_CODE);
     }
 
     public void testOnResume() {
@@ -127,9 +127,9 @@ public class PhoneNumberActivityDelegateTests extends
 
         DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                                    EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-                                   TosView tosView) {
+                                   TosView tosView, DigitsScribeService scribeService) {
             super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
-                    tosView);
+                    tosView, scribeService);
         }
     }
 }

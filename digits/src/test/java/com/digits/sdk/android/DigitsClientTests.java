@@ -71,8 +71,9 @@ public class DigitsClientTests {
     private DigitsSession guestSession;
     private DigitsSession userSession;
     private DigitsApiClient digitsApiClient;
-    private DigitsScribeService scribeService;
+    private DigitsScribeClient scribeClient;
     private DigitsAuthRequestQueue authRequestQueue;
+    private DigitsScribeService scribeService;
 
     @Before
     public void setUp() throws Exception {
@@ -85,6 +86,7 @@ public class DigitsClientTests {
         context = mock(MockContext.class);
         controller = mock(DigitsController.class);
         callback = mock(AuthCallback.class);
+        scribeClient = mock(DigitsScribeClient.class);
         scribeService = mock(DigitsScribeService.class);
         authRequestQueue = createAuthRequestQueue();
 
@@ -97,13 +99,14 @@ public class DigitsClientTests {
         when(twitterCore.getSSLSocketFactory()).thenReturn(mock(SSLSocketFactory.class));
         when(digits.getExecutorService()).thenReturn(mock(ExecutorService.class));
         when(digits.getActivityClassManager()).thenReturn(new ActivityClassManagerImp());
-        when(digits.getScribeService()).thenReturn(scribeService);
+        when(digits.getScribeClient()).thenReturn(scribeClient);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
         when(controller.getErrors()).thenReturn(mock(ErrorCodes.class));
         component = new ComponentName(context, new ActivityClassManagerImp()
                 .getPhoneNumberActivity());
 
-        digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authRequestQueue) {
+        digitsClient = new DigitsClient(digits, twitterCore, sessionManager, authRequestQueue,
+                scribeService) {
             @Override
             LoginResultReceiver createResultReceiver(AuthCallback callback) {
                 return new LoginResultReceiver(new WeakAuthCallback(callback,
@@ -115,7 +118,7 @@ public class DigitsClientTests {
     @Test
     public void testConstructor_nullTwitter() throws Exception {
         try {
-            new DigitsClient(digits, null, sessionManager, authRequestQueue);
+            new DigitsClient(digits, null, sessionManager, authRequestQueue, scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("twitter must not be null", e.getMessage());
@@ -125,7 +128,7 @@ public class DigitsClientTests {
     @Test
     public void testConstructor_nullDigits() throws Exception {
         try {
-            new DigitsClient(null, twitterCore, sessionManager, authRequestQueue);
+            new DigitsClient(null, twitterCore, sessionManager, authRequestQueue, scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("digits must not be null", e.getMessage());
@@ -135,7 +138,7 @@ public class DigitsClientTests {
     @Test
     public void testConstructor_nullSessionManager() throws Exception {
         try {
-            new DigitsClient(digits, twitterCore, null, authRequestQueue);
+            new DigitsClient(digits, twitterCore, null, authRequestQueue, scribeService);
             fail("Expected IllegalArgumentException to be thrown");
         } catch (IllegalArgumentException e) {
             assertEquals("sessionManager must not be null", e.getMessage());
@@ -176,8 +179,8 @@ public class DigitsClientTests {
     public void testStartSignUp_callbackSuccess() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback);
-        verify(scribeService).authImpression();
-        verify(scribeService).authLoggedIn();
+        verify(scribeService).impression();
+        verify(scribeService).success();
         verify(callback).success(userSession, null);
     }
 
@@ -185,8 +188,8 @@ public class DigitsClientTests {
     public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
         digitsClient.startSignUp(callback, TestConstants.PHONE);
-        verify(scribeService).authImpression();
-        verify(scribeService).authLoggedIn();
+        verify(scribeService).impression();
+        verify(scribeService).success();
         verify(callback).success(userSession, null);
     }
 
@@ -275,7 +278,7 @@ public class DigitsClientTests {
 
     private void verifySignUp(AuthCallback callback) {
         digitsClient.startSignUp(callback);
-        verify(scribeService).authImpression();
+        verify(scribeService).impression();
         verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check
@@ -287,7 +290,7 @@ public class DigitsClientTests {
 
     private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone) {
         digitsClient.startSignUp(callback, phone);
-        verify(scribeService).authImpression();
+        verify(scribeService).impression();
         verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
         //verify start activity is called, passing an ArgumentCaptor to get the intent and check

@@ -17,12 +17,8 @@
 
 package com.digits.sdk.android;
 
-interface DigitsScribeService {
-    void impression();
+import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
-    void failure();
-
-    void click(DigitsScribeConstants.Element element);
-
-    void success();
+public interface DigitsScribeClient {
+    void scribe(EventNamespace ns);
 }

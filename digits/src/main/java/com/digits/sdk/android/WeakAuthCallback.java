@@ -24,7 +24,7 @@ class WeakAuthCallback implements AuthCallback {
     private final DigitsScribeService scribeService;
 
     public WeakAuthCallback(AuthCallback callback) {
-        this(callback, Digits.getInstance().getScribeService());
+        this(callback, new AuthScribeService(Digits.getInstance().getScribeClient()));
     }
 
     WeakAuthCallback(AuthCallback callback,
@@ -37,7 +37,7 @@ class WeakAuthCallback implements AuthCallback {
     public void success(DigitsSession session, String phoneNumber) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            scribeService.authLoggedIn();
+            scribeService.success();
             callback.success(session, phoneNumber);
         }
     }
@@ -46,7 +46,7 @@ class WeakAuthCallback implements AuthCallback {
     public void failure(DigitsException error) {
         final AuthCallback callback = callbackWeakReference.get();
         if (callback != null) {
-            scribeService.authFailure();
+            scribeService.failure();
             callback.failure(error);
         }
     }

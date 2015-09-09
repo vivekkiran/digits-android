@@ -56,7 +56,7 @@ public class Digits extends Kit<Void> {
     private SessionManager<DigitsSession> sessionManager;
     private SessionMonitor<DigitsSession> userSessionMonitor;
     private ActivityClassManager activityClassManager;
-    private DigitsScribeService scribeService;
+    private DigitsScribeClient scribeClient;
     private DigitsSessionVerifier digitsSessionVerifier;
 
     private int themeResId;
@@ -150,7 +150,7 @@ public class Digits extends Kit<Void> {
 
     public Digits() {
         super();
-        scribeService = new NoOpScribeService();
+        scribeClient = new DigitsScribeClientImpl(null);
     }
 
     @Override
@@ -176,7 +176,7 @@ public class Digits extends Kit<Void> {
         sessionManager.getActiveSession();
         createDigitsClient();
         createContactsClient();
-        scribeService = new DigitsScribeServiceImp(setUpScribing());
+        scribeClient = setUpScribing();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
                 digitsSessionVerifier);
         userSessionMonitor.triggerVerificationIfNecessary();
@@ -212,8 +212,8 @@ public class Digits extends Kit<Void> {
         return digitsClient;
     }
 
-    protected DigitsScribeService getScribeService() {
-        return scribeService;
+    protected DigitsScribeClient getScribeClient() {
+        return scribeClient;
     }
 
     private synchronized void createDigitsClient() {
@@ -239,11 +239,11 @@ public class Digits extends Kit<Void> {
         return getFabric().getExecutorService();
     }
 
-    private DefaultScribeClient setUpScribing() {
+    private DigitsScribeClient setUpScribing() {
         final List<SessionManager<? extends Session>> sessionManagers = new ArrayList<>();
         sessionManagers.add(sessionManager);
-        return new DefaultScribeClient(this, KIT_SCRIBE_NAME,
-                sessionManagers, getIdManager());
+        return new DigitsScribeClientImpl(new DefaultScribeClient(this, KIT_SCRIBE_NAME,
+                sessionManagers, getIdManager()));
     }
 
     protected ActivityClassManager getActivityClassManager() {

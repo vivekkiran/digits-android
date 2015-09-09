@@ -14,42 +14,22 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
-class NoOpScribeService implements DigitsScribeService {
-    @Override
-    public void authImpression() {
+import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
+import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
+public class DigitsScribeClientImpl implements DigitsScribeClient {
+    private final DefaultScribeClient scribeClient;
+
+    public DigitsScribeClientImpl(DefaultScribeClient scribeClient) {
+        this.scribeClient = scribeClient;
     }
 
     @Override
-    public void authFailure() {
-
-    }
-
-    @Override
-    public void authLoggedIn() {
-
-    }
-
-    @Override
-    public void phoneNumberActivitySubmitClick() {
-
-    }
-
-    @Override
-    public void phoneNumberActivityRetryClick() {
-
-    }
-
-    @Override
-    public void phoneNumberActivityCountryCodeSpinnerClick() {
-
-    }
-
-    @Override
-    public void phoneNumberActivitySuccess() {
-
+    public void scribe(EventNamespace ns) {
+        if (scribeClient != null) {
+            scribeClient.scribeSyndicatedSdkImpressionEvents(ns);
+        }
     }
 }

@@ -91,7 +91,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     PhoneNumberController initController(Bundle bundle) {
         return new PhoneNumberController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
-                phoneEditText, countryCodeSpinner, this);
+                phoneEditText, countryCodeSpinner, this, scribeService);
     }
 
     @Override
@@ -104,7 +104,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         countryCodeSpinner.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                scribeService.phoneNumberActivityCountryCodeSpinnerClick();
+                scribeService.click(DigitsScribeConstants.Element.COUNTRY_CODE);
                 controller.clearError();
             }
         });

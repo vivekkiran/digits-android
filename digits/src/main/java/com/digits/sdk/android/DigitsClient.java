@@ -47,14 +47,17 @@ public class DigitsClient {
     private final SessionManager<DigitsSession> sessionManager;
     private final TwitterCore twitterCore;
     private final DigitsAuthRequestQueue authRequestQueue;
+    private final DigitsScribeService scribeService;
     private DigitsApiClient digitsApiClient;
 
     DigitsClient() {
-        this(Digits.getInstance(), TwitterCore.getInstance(), Digits.getSessionManager(), null);
+        this(Digits.getInstance(), TwitterCore.getInstance(), Digits.getSessionManager(), null,
+                new AuthScribeService(Digits.getInstance().getScribeClient()));
     }
 
     DigitsClient(Digits digits, TwitterCore twitterCore, SessionManager<DigitsSession>
-            sessionManager, DigitsAuthRequestQueue authRequestQueue) {
+            sessionManager, DigitsAuthRequestQueue authRequestQueue,
+                 DigitsScribeService scribeService) {
         if (twitterCore == null) {
             throw new IllegalArgumentException("twitter must not be null");
         }
@@ -75,6 +78,7 @@ public class DigitsClient {
         } else {
             this.authRequestQueue = authRequestQueue;
         }
+        this.scribeService = scribeService;
     }
 
     protected DigitsAuthRequestQueue createAuthRequestQueue(SessionManager sessionManager) {
@@ -95,11 +99,11 @@ public class DigitsClient {
     }
 
     private void startSignUpWithBundle(AuthCallback callback, Bundle bundle) {
-        digits.getScribeService().authImpression();
+        scribeService.impression();
         final DigitsSession session = sessionManager.getActiveSession();
         if (session != null && !session.isLoggedOutUser()) {
             callback.success(session, null);
-            digits.getScribeService().authLoggedIn();
+            scribeService.success();
         } else {
             startPhoneNumberActivity(twitterCore.getContext(), bundle);
         }

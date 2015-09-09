@@ -44,14 +44,13 @@ class PhoneNumberController extends DigitsControllerImpl implements
 
     PhoneNumberController(ResultReceiver resultReceiver,
                           StateButton stateButton, EditText phoneEditText,
-                          CountryListSpinner countryCodeSpinner, TosView tosView) {
+                          CountryListSpinner countryCodeSpinner, TosView tosView,
+                          DigitsScribeService scribeService) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
-                tosView, Digits.getInstance().getScribeService());
-        voiceEnabled = false;
-        resendState = false;
+                tosView, scribeService);
     }
 
     /**
@@ -68,6 +67,8 @@ class PhoneNumberController extends DigitsControllerImpl implements
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
         this.scribeService = scribeService;
+        voiceEnabled = false;
+        resendState = false;
     }
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
@@ -120,9 +121,9 @@ class PhoneNumberController extends DigitsControllerImpl implements
 
     private void scribeRequest() {
         if (isRetry()) {
-            scribeService.phoneNumberActivityRetryClick();
+            scribeService.click(DigitsScribeConstants.Element.RETRY);
         } else {
-            scribeService.phoneNumberActivitySubmitClick();
+            scribeService.click(DigitsScribeConstants.Element.SUBMIT);
         }
     }
 
@@ -168,7 +169,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     void startSignIn(Context context, AuthResponse response) {
-        scribeService.phoneNumberActivitySuccess();
+        scribeService.success();
         final Intent intent = new Intent(context, activityClassManager.getLoginCodeActivity());
         final Bundle bundle = getBundle();
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
@@ -179,7 +180,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
     }
 
     private void startNextStep(Context context, DeviceRegistrationResponse response) {
-        scribeService.phoneNumberActivitySuccess();
+        scribeService.success();
         final Intent intent = new Intent(context, activityClassManager.getConfirmationActivity());
         final Bundle bundle = getBundle();
         if (response.authConfig != null) {

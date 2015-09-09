@@ -17,7 +17,6 @@
 
 package com.digits.sdk.android;
 
-import com.twitter.sdk.android.core.internal.scribe.DefaultScribeClient;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
 import org.junit.Before;
@@ -35,23 +34,23 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class DigitsScribeServiceImplTest {
-    private DigitsScribeServiceImp service;
+public class PhoneNumberScribeServiceTest {
+    private PhoneNumberScribeService service;
     @Mock
-    private DefaultScribeClient client;
+    private DigitsScribeClient client;
     @Captor
     private ArgumentCaptor<EventNamespace> eventNamespaceArgumentCaptor;
 
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new DigitsScribeServiceImp(client);
+        service = new PhoneNumberScribeService(client);
     }
 
     @Test
     public void testAuthImpression() throws Exception {
-        service.authImpression();
-        verify(client).scribeSyndicatedSdkImpressionEvents(eventNamespaceArgumentCaptor.capture());
+        service.impression();
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
         final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
         final EventNamespace ns = createAuthImpression();
         assertEquals(ns, eventNamespace);
@@ -59,48 +58,66 @@ public class DigitsScribeServiceImplTest {
 
     @Test
     public void testAuthSuccess() throws Exception {
-        service.authLoggedIn();
-        verify(client).scribeSyndicatedSdkImpressionEvents(eventNamespaceArgumentCaptor.capture());
+        service.success();
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
         final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
         final EventNamespace ns = createAuthSuccess();
         assertEquals(ns, eventNamespace);
     }
 
     @Test
+    public void testClick() throws Exception {
+        service.click(DigitsScribeConstants.Element.SUBMIT);
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
+        final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
+        final EventNamespace ns = createClick();
+        assertEquals(ns, eventNamespace);
+
+    }
+
+    @Test
     public void testAuthFailure() throws Exception {
-        service.authFailure();
-        verify(client).scribeSyndicatedSdkImpressionEvents(eventNamespaceArgumentCaptor.capture());
+        service.failure();
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
         final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
         final EventNamespace ns = createAuthFailure();
         assertEquals(ns, eventNamespace);
     }
 
+    @Test(expected = NullPointerException.class)
+    public void testConstructor_withNullScribeClient() throws Exception {
+        new PhoneNumberScribeService(null);
+    }
+
     private EventNamespace createAuthImpression() {
-        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
-                .setAction(DigitsScribeServiceImp.IMPRESSION_ACTION)
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.IMPRESSION_ACTION)
                 .builder();
     }
 
     private EventNamespace createAuthSuccess() {
-        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
-                .setAction(DigitsScribeServiceImp.LOGGED_IN_ACTION)
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.SUCCESS_ACTION)
                 .builder();
     }
 
     private EventNamespace createAuthFailure() {
-        return DigitsScribeServiceImp.DIGITS_EVENT_BUILDER
-                .setComponent(DigitsScribeServiceImp.EMPTY_SCRIBE_COMPONENT)
-                .setElement(DigitsScribeServiceImp.EMPTY_SCRIBE_ELEMENT)
-                .setAction(DigitsScribeServiceImp.FAILURE_ACTION)
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.FAILURE_ACTION)
                 .builder();
     }
 
-    @Test(expected = NullPointerException.class)
-    public void testConstructor_withNullScribeClient() throws Exception {
-        new DigitsScribeServiceImp(null);
+    private EventNamespace createClick() {
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setElement(DigitsScribeConstants.Element.SUBMIT.getElement())
+                .setAction(DigitsScribeConstants.CLICK_ACTION)
+                .builder();
     }
 }
