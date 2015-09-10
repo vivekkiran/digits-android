@@ -30,6 +30,7 @@ class DigitsScribeConstants {
     static final String FAILURE_ACTION = "failure";
     static final String SUCCESS_ACTION = "success";
     static final String CLICK_ACTION = "click";
+    static final String ERROR_ACTION = "error";
 
     static final EventNamespace.Builder DIGITS_EVENT_BUILDER = new EventNamespace.Builder()
             .setClient(SCRIBE_CLIENT)

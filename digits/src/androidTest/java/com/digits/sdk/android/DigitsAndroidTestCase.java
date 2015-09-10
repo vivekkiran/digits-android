@@ -26,6 +26,10 @@ import io.fabric.sdk.android.FabricAndroidTestCase;
 import static org.mockito.Mockito.verifyZeroInteractions;
 
 public class DigitsAndroidTestCase extends FabricAndroidTestCase {
+    static final String ERROR_MESSAGE = "random error";
+    static final DigitsException EXCEPTION = new DigitsException(ERROR_MESSAGE);
+    static final UnrecoverableException UNRECOVERABLE_EXCEPTION =
+            new UnrecoverableException(ERROR_MESSAGE);
     static final int ANY_REQUEST = 1010;
     static final int ANY_RESULT = Activity.RESULT_OK;
 

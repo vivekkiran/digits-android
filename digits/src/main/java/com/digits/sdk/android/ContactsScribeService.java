@@ -59,4 +59,14 @@ class ContactsScribeService implements DigitsScribeService {
     public void success() {
         //nothing to do
     }
+
+    @Override
+    public void error(DigitsException exception) {
+        final EventNamespace ns = DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(CONTACTS_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.ERROR_ACTION)
+                .builder();
+        scribeClient.scribe(ns);
+    }
 }

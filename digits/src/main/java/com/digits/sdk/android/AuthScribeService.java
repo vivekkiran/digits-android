@@ -63,4 +63,9 @@ class AuthScribeService implements DigitsScribeService {
                 .builder();
         scribeClient.scribe(ns);
     }
+
+    @Override
+    public void error(DigitsException exception) {
+        //nothing to do
+    }
 }

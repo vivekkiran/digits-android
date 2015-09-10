@@ -64,7 +64,6 @@ public class LoginCodeScribeServiceTest {
         assertEquals(ns, eventNamespace);
     }
 
-
     @Test
     public void testClick() throws Exception {
         service.click(DigitsScribeConstants.Element.SUBMIT);
@@ -83,9 +82,26 @@ public class LoginCodeScribeServiceTest {
         assertEquals(ns, eventNamespace);
     }
 
+    @Test
+    public void testError() throws Exception {
+        service.error(TestConstants.ANY_EXCEPTION);
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
+        final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
+        final EventNamespace ns = createException();
+        assertEquals(ns, eventNamespace);
+    }
+
     @Test(expected = NullPointerException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
         new LoginCodeScribeService(null);
+    }
+
+    private EventNamespace createException() {
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(LoginCodeScribeService.LOGIN_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.ERROR_ACTION)
+                .builder();
     }
 
     private EventNamespace createImpression() {

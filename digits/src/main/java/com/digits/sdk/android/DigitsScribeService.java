@@ -17,12 +17,32 @@
 
 package com.digits.sdk.android;
 
+/**
+ * Interface that represents all the scribe events of a single screen.
+ */
 interface DigitsScribeService {
+    /**
+     * scribe event when the screen is rendered
+     */
     void impression();
 
+    /**
+     * scribe event when the use case of the screen has failed
+     */
     void failure();
 
+    /**
+     * scribe event when a screen component is clicked
+     */
     void click(DigitsScribeConstants.Element element);
 
+    /**
+     * scribe event when the use case of the screen has succeeded
+     */
     void success();
+
+    /**
+     * scribe event for any API exception
+     */
+    void error(DigitsException exception);
 }

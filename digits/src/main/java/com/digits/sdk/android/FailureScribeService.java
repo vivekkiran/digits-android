@@ -59,4 +59,9 @@ class FailureScribeService implements DigitsScribeService {
     public void success() {
         //nothing to do
     }
+
+    @Override
+    public void error(DigitsException exception) {
+        //nothing to do
+    }
 }

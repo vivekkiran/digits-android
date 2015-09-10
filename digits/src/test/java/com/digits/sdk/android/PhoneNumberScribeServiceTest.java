@@ -83,9 +83,26 @@ public class PhoneNumberScribeServiceTest {
         assertEquals(ns, eventNamespace);
     }
 
+    @Test
+    public void testError() throws Exception {
+        service.error(TestConstants.ANY_EXCEPTION);
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
+        final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
+        final EventNamespace ns = createException();
+        assertEquals(ns, eventNamespace);
+    }
+
     @Test(expected = NullPointerException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
         new PhoneNumberScribeService(null);
+    }
+
+    private EventNamespace createException() {
+        return DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.ERROR_ACTION)
+                .builder();
     }
 
     private EventNamespace createImpression() {

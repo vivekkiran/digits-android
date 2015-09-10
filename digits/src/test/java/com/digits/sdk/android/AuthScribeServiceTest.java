@@ -81,6 +81,12 @@ public class AuthScribeServiceTest {
         verifyNoMoreInteractions(client);
     }
 
+    @Test
+    public void testError() throws Exception {
+        service.error(null);
+        verifyNoMoreInteractions(client);
+    }
+
     private EventNamespace createAuthImpression() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
                 .setComponent(DigitsScribeConstants.EMPTY_SCRIBE_COMPONENT)

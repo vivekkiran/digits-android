@@ -68,4 +68,14 @@ class ConfirmationCodeScribeService implements DigitsScribeService {
                 .builder();
         scribeClient.scribe(ns);
     }
+
+    @Override
+    public void error(DigitsException exception) {
+        final EventNamespace ns = DigitsScribeConstants.DIGITS_EVENT_BUILDER
+                .setComponent(SIGNUP_COMPONENT)
+                .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
+                .setAction(DigitsScribeConstants.ERROR_ACTION)
+                .builder();
+        scribeClient.scribe(ns);
+    }
 }

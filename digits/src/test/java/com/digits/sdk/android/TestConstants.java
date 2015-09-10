@@ -40,6 +40,7 @@ public class TestConstants {
     public static final String US_ISO3 = "usa";
     public static final String ES_COUNTRY_CODE = "34";
     public static final String ES_ISO2 = "es";
+    public static final DigitsException ANY_EXCEPTION = new DigitsException("");
 
     public static DigitsSessionResponse LOGGED_OUT_USER = getDigitsSessionResponse(
             TestConstants.TOKEN, TestConstants.SECRET, DigitsSession.LOGGED_OUT_USER_ID);

@@ -72,6 +72,7 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
     @Override
     public void handleError(Context context, DigitsException exception) {
         errorCount++;
+        scribeService.error(exception);
         if (isUnrecoverable(exception)) {
             scribeService.failure();
             startFallback(context, resultReceiver, exception);

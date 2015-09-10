@@ -78,6 +78,12 @@ public class FailureScribeServiceTest {
         verifyNoMoreInteractions(client);
     }
 
+    @Test
+    public void testError() throws Exception {
+        service.error(null);
+        verifyNoMoreInteractions(client);
+    }
+
     @Test(expected = NullPointerException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
         new FailureScribeService(null);

@@ -33,13 +33,13 @@ import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.atMost;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.verifyZeroInteractions;
 import static org.mockito.Mockito.when;
 
 public abstract class DigitsControllerTests<T extends DigitsControllerImpl> extends
         DigitsAndroidTestCase {
-    static final String ERROR_MESSAGE = "random error";
     static final Integer COUNTRY_CODE = 123;
     static final String PHONE = "123456789";
     static final String PHONE_WITH_COUNTRY_CODE = "+" + COUNTRY_CODE + "123456789";
@@ -88,7 +88,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     }
 
     public void testHandleError() throws Exception {
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
+        controller.handleError(context, EXCEPTION);
+        verify(scribeService).error(EXCEPTION);
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
         verifyNoInteractions(scribeService);
@@ -97,12 +98,13 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     public void testShowError_fiveTimesStartFallback() throws Exception {
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
-        controller.handleError(context, new DigitsException(ERROR_MESSAGE));
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
+        controller.handleError(context, EXCEPTION);
 
+        verify(scribeService, times(5)).error(EXCEPTION);
         verify(scribeService).failure();
         verify(phoneEditText, atMost(4)).setError(ERROR_MESSAGE);
         verify(sendButton, atMost(4)).showError();
@@ -119,7 +121,8 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     }
 
     public void testHandleError_unrecoverableExceptionStartFallback() throws Exception {
-        controller.handleError(context, new UnrecoverableException(ERROR_MESSAGE));
+        controller.handleError(context, UNRECOVERABLE_EXCEPTION);
+        verify(scribeService).error(UNRECOVERABLE_EXCEPTION);
         verify(scribeService).failure();
         verifyNoInteractions(sendButton, phoneEditText);
         verify(context).startActivity(intentCaptor.capture());
