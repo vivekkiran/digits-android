@@ -25,10 +25,10 @@ import android.os.Bundle;
 import android.os.ResultReceiver;
 import android.widget.EditText;
 
-import io.fabric.sdk.android.services.common.CommonUtils;
-
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
+
+import io.fabric.sdk.android.services.common.CommonUtils;
 
 
 class LoginCodeController extends DigitsControllerImpl {
@@ -37,20 +37,22 @@ class LoginCodeController extends DigitsControllerImpl {
     private final String phoneNumber;
 
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
-                        EditText phoneEditText, String requestId, long userId, String phoneNumber) {
+                        EditText phoneEditText, String requestId, long userId, String
+                                phoneNumber, DigitsScribeService scribeService) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager());
+                Digits.getInstance().getActivityClassManager(), scribeService);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
                         StateButton stateButton, EditText loginEditText,
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
-                        ActivityClassManager activityClassManager) {
+                        ActivityClassManager activityClassManager,
+                        DigitsScribeService scribeService) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
-                sessionManager);
+                sessionManager, scribeService);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -59,6 +61,7 @@ class LoginCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
+        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -66,6 +69,7 @@ class LoginCodeController extends DigitsControllerImpl {
             digitsClient.loginDevice(requestId, userId, code,
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         public void success(Result<DigitsSessionResponse> result) {
+                            scribeService.success();
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
                             } else {

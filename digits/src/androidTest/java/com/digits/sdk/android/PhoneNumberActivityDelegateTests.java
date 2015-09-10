@@ -33,13 +33,11 @@ import static org.mockito.Mockito.verify;
 
 public class PhoneNumberActivityDelegateTests extends
         DigitsActivityDelegateTests<PhoneNumberActivityDelegate> {
-    private DigitsScribeService scribeService;
     CountryListSpinner spinner;
 
     @Override
     public void setUp() throws Exception {
         spinner = mock(CountryListSpinner.class);
-        scribeService = mock(DigitsScribeService.class);
         super.setUp();
     }
 
@@ -82,6 +80,7 @@ public class PhoneNumberActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
+        verify(scribeService).impression();
     }
 
     @Override

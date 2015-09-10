@@ -26,10 +26,15 @@ import android.widget.TextView;
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
+    private final DigitsScribeService scribeService;
     EditText editText;
     StateButton stateButton;
     TextView termsText;
     DigitsController controller;
+
+    PinCodeActivityDelegate(DigitsScribeService scribeService) {
+        this.scribeService = scribeService;
+    }
 
     @Override
     public int getLayoutId() {
@@ -56,7 +61,7 @@ class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
                 stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE));
+                .EXTRA_PHONE), scribeService);
     }
 
     @Override
@@ -68,6 +73,7 @@ class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
+        scribeService.impression();
         controller.onResume();
     }
 }

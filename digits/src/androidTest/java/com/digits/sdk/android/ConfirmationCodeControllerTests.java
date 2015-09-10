@@ -35,13 +35,12 @@ import static org.mockito.Mockito.when;
 
 public class ConfirmationCodeControllerTests extends
         DigitsControllerTests<ConfirmationCodeController> {
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
         controller = new ConfirmationCodeController(resultReceiver, sendButton,
                 phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager, digitsClient, errors,
-                new ActivityClassManagerImp());
+                new ActivityClassManagerImp(), scribeService);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -50,6 +49,7 @@ public class ConfirmationCodeControllerTests extends
                 new ArrayList<Header>(), null);
         final DigitsUser user = new DigitsUser(USER_ID, "");
         callback.success(user, response);
+        verify(scribeService).success();
         verify(sessionManager).setActiveSession(any(DigitsSession.class));
         verify(sendButton).showFinish();
         final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
@@ -70,6 +70,7 @@ public class ConfirmationCodeControllerTests extends
         when(phoneEditText.getText()).thenReturn(Editable.Factory.getInstance().newEditable
                 (CODE));
         controller.executeRequest(context);
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
         verify(sendButton).showProgress();
         final ArgumentCaptor<DigitsCallback> argumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);

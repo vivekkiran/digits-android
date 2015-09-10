@@ -38,7 +38,7 @@ class DigitsScribeConstants {
 
     enum Element {
         COUNTRY_CODE("contry_code"), SUBMIT("submit"), RETRY("retry"), CALL("call"), CANCEL
-                ("cancel");
+                ("cancel"), RESEND("resend"), DISMISS("dismiss");
 
         private final String element;
 

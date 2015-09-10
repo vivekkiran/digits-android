@@ -42,7 +42,6 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
         this.scribeService = scribeService;
     }
 
-
     @Override
     public int getLayoutId() {
         return R.layout.dgts__activity_phone_number;
@@ -112,6 +111,7 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
 
     @Override
     public void onResume() {
+        scribeService.impression();
         controller.onResume();
     }
 

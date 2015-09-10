@@ -27,17 +27,18 @@ import com.twitter.sdk.android.core.Result;
 import org.mockito.ArgumentCaptor;
 
 import static org.mockito.Mockito.eq;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeController> {
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        scribeService = mock(DigitsScribeService.class);
         controller = new LoginCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
-                new ActivityClassManagerImp());
+                new ActivityClassManagerImp(), scribeService);
     }
 
     public void testExecuteRequest_success() throws Exception {
@@ -46,7 +47,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> result = new Result(response, null);
 
         callback.success(result);
-
+        verify(scribeService).success();
         verify(sessionManager).setActiveSession(DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
@@ -72,6 +73,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final Result<DigitsSessionResponse> response =
                 new Result<>(new DigitsSessionResponse(), null);
         callback.success(response);
+        verify(scribeService).success();
         verify(context).startActivityForResult(intentArgumentCaptor.capture(), eq(DigitsActivity
                 .REQUEST_CODE));
         final Intent intent = intentArgumentCaptor.getValue();
@@ -87,6 +89,7 @@ public class LoginCodeControllerTests extends DigitsControllerTests<LoginCodeCon
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
         verify(sendButton).showProgress();
         verify(digitsClient).loginDevice(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());

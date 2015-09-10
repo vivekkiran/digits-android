@@ -26,6 +26,7 @@ package com.digits.sdk.android;
 public class LoginCodeActionBarActivity extends DigitsActionBarActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new LoginCodeActivityDelegate();
+        return new LoginCodeActivityDelegate(new LoginCodeScribeService(
+                Digits.getInstance().getScribeClient()));
     }
 }

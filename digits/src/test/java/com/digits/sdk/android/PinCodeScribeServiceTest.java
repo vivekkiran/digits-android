@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
@@ -34,8 +33,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class PhoneNumberScribeServiceTest {
-    private PhoneNumberScribeService service;
+public class PinCodeScribeServiceTest {
+    private PinCodeScribeService service;
     @Mock
     private DigitsScribeClient client;
     @Captor
@@ -44,7 +43,16 @@ public class PhoneNumberScribeServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new PhoneNumberScribeService(client);
+        service = new PinCodeScribeService(client);
+    }
+
+    @Test
+    public void testSuccess() throws Exception {
+        service.success();
+        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
+        final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
+        final EventNamespace ns = createSuccess();
+        assertEquals(ns, eventNamespace);
     }
 
     @Test
@@ -56,14 +64,6 @@ public class PhoneNumberScribeServiceTest {
         assertEquals(ns, eventNamespace);
     }
 
-    @Test
-    public void testSuccess() throws Exception {
-        service.success();
-        verify(client).scribe(eventNamespaceArgumentCaptor.capture());
-        final EventNamespace eventNamespace = eventNamespaceArgumentCaptor.getValue();
-        final EventNamespace ns = createSuccess();
-        assertEquals(ns, eventNamespace);
-    }
 
     @Test
     public void testClick() throws Exception {
@@ -85,12 +85,12 @@ public class PhoneNumberScribeServiceTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
-        new PhoneNumberScribeService(null);
+        new PinCodeScribeService(null);
     }
 
     private EventNamespace createImpression() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(PinCodeScribeService.PIN_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.IMPRESSION_ACTION)
                 .builder();
@@ -98,7 +98,7 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createSuccess() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(PinCodeScribeService.PIN_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.SUCCESS_ACTION)
                 .builder();
@@ -106,7 +106,7 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createFailure() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(PinCodeScribeService.PIN_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.FAILURE_ACTION)
                 .builder();
@@ -114,8 +114,8 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createClick() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
-                .setElement(DigitsScribeConstants.Element.SUBMIT.getElement())
+                .setComponent(PinCodeScribeService.PIN_COMPONENT)
+                .setElement(DigitsScribeConstants.Element.SUBMIT.toString())
                 .setAction(DigitsScribeConstants.CLICK_ACTION)
                 .builder();
     }

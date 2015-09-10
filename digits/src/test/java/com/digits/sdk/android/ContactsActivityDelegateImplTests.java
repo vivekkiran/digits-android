@@ -29,7 +29,10 @@ import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
-import static org.mockito.Mockito.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
@@ -41,6 +44,7 @@ public class ContactsActivityDelegateImplTests {
     ArgumentCaptor<View.OnClickListener> captorClick;
     Button button;
     TextView textView;
+    private DigitsScribeService scribeService;
 
     @Before
     public void setUp() throws Exception {
@@ -48,7 +52,8 @@ public class ContactsActivityDelegateImplTests {
 
         activity = mock(Activity.class);
         controller = mock(ContactsController.class);
-        delegate = spy(new DummyContactsDelegateImpl(activity, controller));
+        scribeService = mock(DigitsScribeService.class);
+        delegate = spy(new DummyContactsDelegateImpl(activity, controller, scribeService));
         captorClick = ArgumentCaptor.forClass(View.OnClickListener.class);
         button = mock(Button.class);
         textView = mock(TextView.class);
@@ -62,6 +67,7 @@ public class ContactsActivityDelegateImplTests {
 
         delegate.init();
 
+        verify(scribeService).impression();
         verify(delegate).setContentView();
         verify(delegate).setUpViews();
     }
@@ -93,6 +99,7 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
+        verify(scribeService).click(DigitsScribeConstants.Element.CANCEL);
         verify(activity).finish();
     }
 
@@ -103,14 +110,16 @@ public class ContactsActivityDelegateImplTests {
         verify(button).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
         verify(controller).startUploadService(activity);
         verify(activity).finish();
     }
 
     public class DummyContactsDelegateImpl extends ContactsActivityDelegateImpl {
 
-        public DummyContactsDelegateImpl(Activity activity, ContactsController controller) {
-            super(activity, controller);
+        public DummyContactsDelegateImpl(Activity activity, ContactsController controller,
+                                         DigitsScribeService scribeService) {
+            super(activity, controller, scribeService);
         }
 
         protected String getFormattedDescription() {

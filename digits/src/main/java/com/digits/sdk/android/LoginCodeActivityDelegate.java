@@ -28,6 +28,7 @@ import android.widget.TextView;
 import io.fabric.sdk.android.services.common.CommonUtils;
 
 class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
+    private final DigitsScribeService scribeService;
     EditText editText;
     StateButton stateButton;
     TextView termsText;
@@ -35,6 +36,10 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
     SmsBroadcastReceiver receiver;
     Activity activity;
     AuthConfig config;
+
+    LoginCodeActivityDelegate(DigitsScribeService scribeService) {
+        this.scribeService = scribeService;
+    }
 
     @Override
     public void init(Activity activity, Bundle bundle) {
@@ -61,7 +66,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
                 stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
                 bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE));
+                .EXTRA_PHONE), scribeService);
     }
 
     @Override
@@ -76,7 +81,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void setUpSendButton(Activity activity, DigitsController controller,
-            StateButton stateButton) {
+                                StateButton stateButton) {
         stateButton.setStatesText(R.string.dgts__sign_in, R.string.dgts__signing_in,
                 R.string.dgts__sign_in);
         stateButton.showStart();
@@ -87,6 +92,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         resendText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scribeService.click(DigitsScribeConstants.Element.RESEND);
                 activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
                 activity.finish();
             }
@@ -107,6 +113,7 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
+        scribeService.impression();
         controller.onResume();
     }
 

@@ -38,7 +38,7 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     @Override
     public ConfirmationCodeActivityDelegate getDelegate() {
-        return spy(new DummyConfirmationCodeActivityDelegate());
+        return spy(new DummyConfirmationCodeActivityDelegate(scribeService));
     }
 
     public void testIsValid() {
@@ -74,15 +74,16 @@ public class ConfirmationCodeActivityDelegateTests extends
         verify(editText).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
+        verify(scribeService).click(DigitsScribeConstants.Element.RESEND);
         verify(activity).finish();
         verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
     }
-
 
     public void testOnResume() {
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
+        verify(scribeService).impression();
     }
 
     public void testSetUpSmsIntercept_permissionDenied() {
@@ -116,5 +117,8 @@ public class ConfirmationCodeActivityDelegateTests extends
 
     public class DummyConfirmationCodeActivityDelegate extends ConfirmationCodeActivityDelegate {
 
+        public DummyConfirmationCodeActivityDelegate(DigitsScribeService scribeService) {
+            super(scribeService);
+        }
     }
 }

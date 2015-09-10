@@ -43,10 +43,12 @@ public abstract class DigitsActivityDelegateTests<T extends DigitsActivityDelega
     ArgumentCaptor<TextView.OnEditorActionListener> captorEditor;
     EditText editText;
     TextView textView;
+    DigitsScribeService scribeService;
 
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        scribeService = mock(DigitsScribeService.class);
         delegate = getDelegate();
         activity = mock(Activity.class);
         controller = mock(DigitsController.class);

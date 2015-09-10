@@ -23,19 +23,24 @@ import android.widget.Button;
 import android.widget.TextView;
 
 class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
+    private final DigitsScribeService scribeService;
     final Activity activity;
     final ContactsController controller;
 
     public ContactsActivityDelegateImpl(Activity activity) {
-        this(activity, new ContactsControllerImpl());
+        this(activity, new ContactsControllerImpl(),
+                new ContactsScribeService(Digits.getInstance().getScribeClient()));
     }
 
-    public ContactsActivityDelegateImpl(Activity activity, ContactsController controller) {
+    public ContactsActivityDelegateImpl(Activity activity, ContactsController controller,
+                                        DigitsScribeService scribeService) {
         this.activity = activity;
         this.controller = controller;
+        this.scribeService = scribeService;
     }
 
     public void init() {
+        scribeService.impression();
         setContentView();
         setUpViews();
     }
@@ -70,6 +75,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                scribeService.click(DigitsScribeConstants.Element.CANCEL);
                 activity.finish();
             }
         });
@@ -79,6 +85,7 @@ class ContactsActivityDelegateImpl implements ContactsActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                scribeService.click(DigitsScribeConstants.Element.SUBMIT);
                 controller.startUploadService(activity);
                 activity.finish();
             }

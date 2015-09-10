@@ -24,6 +24,7 @@ package com.digits.sdk.android;
 public class PinCodeActivity extends DigitsActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new PinCodeActivityDelegate();
+        return new PinCodeActivityDelegate(new PinCodeScribeService(
+                Digits.getInstance().getScribeClient()));
     }
 }

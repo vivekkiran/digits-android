@@ -29,17 +29,22 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class FailureActivityDelegateImpl implements FailureActivityDelegate {
     final Activity activity;
     final FailureController controller;
+    final DigitsScribeService scribeService;
 
     public FailureActivityDelegateImpl(Activity activity) {
-        this(activity, new FailureControllerImpl());
+        this(activity, new FailureControllerImpl(), new FailureScribeService(Digits.getInstance()
+                .getScribeClient()));
     }
 
-    public FailureActivityDelegateImpl(Activity activity, FailureController controller) {
+    public FailureActivityDelegateImpl(Activity activity, FailureController controller,
+                                       DigitsScribeService scribeService) {
         this.activity = activity;
         this.controller = controller;
+        this.scribeService = scribeService;
     }
 
     public void init() {
+        scribeService.impression();
         final Bundle bundle = activity.getIntent().getExtras();
         if (isBundleValid(bundle)) {
             setContentView();
@@ -70,6 +75,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                scribeService.click(DigitsScribeConstants.Element.DISMISS);
                 CommonUtils.finishAffinity(activity, DigitsActivity.RESULT_FINISH_DIGITS);
                 controller.sendFailure(getBundleResultReceiver(), getBundleException());
             }
@@ -80,6 +86,7 @@ class FailureActivityDelegateImpl implements FailureActivityDelegate {
         textView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                scribeService.click(DigitsScribeConstants.Element.RETRY);
                 controller.tryAnotherNumber(activity, getBundleResultReceiver());
                 activity.finish();
             }

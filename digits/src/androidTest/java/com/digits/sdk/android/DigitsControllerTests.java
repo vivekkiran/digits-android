@@ -60,6 +60,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     ErrorCodes errors;
     SessionManager<DigitsSession> sessionManager;
     Activity context;
+    DigitsScribeService scribeService;
 
     @Override
     public void setUp() throws Exception {
@@ -74,6 +75,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         resultReceiver = mock(ResultReceiver.class);
         sessionManager = mock(SessionManager.class);
         errors = mock(ErrorCodes.class);
+        scribeService = mock(DigitsScribeService.class);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
     }
 
@@ -89,6 +91,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         controller.handleError(context, new DigitsException(ERROR_MESSAGE));
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
+        verifyNoInteractions(scribeService);
         verifyZeroInteractions(context);
     }
 
@@ -100,6 +103,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         controller.handleError(context, new DigitsException(ERROR_MESSAGE));
         controller.handleError(context, new DigitsException(ERROR_MESSAGE));
 
+        verify(scribeService).failure();
         verify(phoneEditText, atMost(4)).setError(ERROR_MESSAGE);
         verify(sendButton, atMost(4)).showError();
         verify(context).startActivity(intentCaptor.capture());
@@ -116,6 +120,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
 
     public void testHandleError_unrecoverableExceptionStartFallback() throws Exception {
         controller.handleError(context, new UnrecoverableException(ERROR_MESSAGE));
+        verify(scribeService).failure();
         verifyNoInteractions(sendButton, phoneEditText);
         verify(context).startActivity(intentCaptor.capture());
         final Intent intent = intentCaptor.getValue();

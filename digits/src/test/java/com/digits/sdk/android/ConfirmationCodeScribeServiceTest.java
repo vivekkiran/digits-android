@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
@@ -34,8 +33,8 @@ import static org.mockito.Mockito.verify;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class PhoneNumberScribeServiceTest {
-    private PhoneNumberScribeService service;
+public class ConfirmationCodeScribeServiceTest {
+    private ConfirmationCodeScribeService service;
     @Mock
     private DigitsScribeClient client;
     @Captor
@@ -44,7 +43,7 @@ public class PhoneNumberScribeServiceTest {
     @Before
     public void setUp() throws Exception {
         MockitoAnnotations.initMocks(this);
-        service = new PhoneNumberScribeService(client);
+        service = new ConfirmationCodeScribeService(client);
     }
 
     @Test
@@ -85,12 +84,12 @@ public class PhoneNumberScribeServiceTest {
 
     @Test(expected = NullPointerException.class)
     public void testConstructor_withNullScribeClient() throws Exception {
-        new PhoneNumberScribeService(null);
+        new ConfirmationCodeScribeService(null);
     }
 
     private EventNamespace createImpression() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(ConfirmationCodeScribeService.SIGNUP_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.IMPRESSION_ACTION)
                 .builder();
@@ -98,7 +97,7 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createSuccess() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(ConfirmationCodeScribeService.SIGNUP_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.SUCCESS_ACTION)
                 .builder();
@@ -106,7 +105,7 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createFailure() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
+                .setComponent(ConfirmationCodeScribeService.SIGNUP_COMPONENT)
                 .setElement(DigitsScribeConstants.EMPTY_SCRIBE_ELEMENT)
                 .setAction(DigitsScribeConstants.FAILURE_ACTION)
                 .builder();
@@ -114,8 +113,8 @@ public class PhoneNumberScribeServiceTest {
 
     private EventNamespace createClick() {
         return DigitsScribeConstants.DIGITS_EVENT_BUILDER
-                .setComponent(PhoneNumberScribeService.AUTH_COMPONENT)
-                .setElement(DigitsScribeConstants.Element.SUBMIT.getElement())
+                .setComponent(ConfirmationCodeScribeService.SIGNUP_COMPONENT)
+                .setElement(DigitsScribeConstants.Element.SUBMIT.toString())
                 .setAction(DigitsScribeConstants.CLICK_ACTION)
                 .builder();
     }

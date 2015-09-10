@@ -22,10 +22,10 @@ import android.net.Uri;
 import android.os.ResultReceiver;
 import android.widget.EditText;
 
-import io.fabric.sdk.android.services.common.CommonUtils;
-
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
+
+import io.fabric.sdk.android.services.common.CommonUtils;
 
 class PinCodeController extends DigitsControllerImpl {
     private final String requestId;
@@ -34,20 +34,21 @@ class PinCodeController extends DigitsControllerImpl {
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                       EditText phoneEditText, String requestId, long userId,
-                      String phoneNumber) {
+                      String phoneNumber, DigitsScribeService scribeService) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager());
+                Digits.getInstance().getActivityClassManager(), scribeService);
     }
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
-                      EditText phoneEditText, SessionManager<DigitsSession>
-            sessionManager, DigitsClient digitsClient, String requestId, long userId,
+                      EditText phoneEditText, SessionManager<DigitsSession> sessionManager,
+                      DigitsClient digitsClient, String requestId, long userId,
                       String phoneNumber, ErrorCodes errors,
-                      ActivityClassManager activityClassManager) {
+                      ActivityClassManager activityClassManager,
+                      DigitsScribeService scribeService) {
         super(resultReceiver, stateButton, phoneEditText, digitsClient, errors,
-                activityClassManager, sessionManager);
+                activityClassManager, sessionManager, scribeService);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
@@ -65,6 +66,7 @@ class PinCodeController extends DigitsControllerImpl {
 
     @Override
     public void executeRequest(final Context context) {
+        scribeService.click(DigitsScribeConstants.Element.SUBMIT);
         if (validateInput(editText.getText())) {
             sendButton.showProgress();
             CommonUtils.hideKeyboard(context, editText);
@@ -73,6 +75,7 @@ class PinCodeController extends DigitsControllerImpl {
                     new DigitsCallback<DigitsSessionResponse>(context, this) {
                         @Override
                         public void success(Result<DigitsSessionResponse> result) {
+                            scribeService.success();
                             final DigitsSession session = DigitsSession.create(result.data,
                                     phoneNumber);
                             loginSuccess(context, session, phoneNumber);

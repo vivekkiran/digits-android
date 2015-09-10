@@ -24,6 +24,7 @@ package com.digits.sdk.android;
 public class ConfirmationCodeActivity extends DigitsActivity {
     @Override
     DigitsActivityDelegate getActivityDelegate() {
-        return new ConfirmationCodeActivityDelegate();
+        return new ConfirmationCodeActivityDelegate(new ConfirmationCodeScribeService(
+                Digits.getInstance().getScribeClient()));
     }
 }

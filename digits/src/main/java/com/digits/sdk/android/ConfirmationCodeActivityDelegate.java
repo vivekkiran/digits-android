@@ -35,6 +35,11 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsController controller;
     SmsBroadcastReceiver receiver;
     Activity activity;
+    DigitsScribeService scribeService;
+
+    public ConfirmationCodeActivityDelegate(DigitsScribeService scribeService) {
+        this.scribeService = scribeService;
+    }
 
     @Override
     public int getLayoutId() {
@@ -69,13 +74,14 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     DigitsController initController(Bundle bundle) {
         return new ConfirmationCodeController(
                 bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                stateButton, editText, bundle.getString(DigitsClient.EXTRA_PHONE));
+                stateButton, editText, bundle.getString(DigitsClient.EXTRA_PHONE), scribeService);
     }
 
     protected void setUpResendText(final Activity activity, TextView resendText) {
         resendText.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scribeService.click(DigitsScribeConstants.Element.RESEND);
                 activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
                 activity.finish();
             }
@@ -90,6 +96,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
     @Override
     public void onResume() {
+        scribeService.impression();
         controller.onResume();
     }
 

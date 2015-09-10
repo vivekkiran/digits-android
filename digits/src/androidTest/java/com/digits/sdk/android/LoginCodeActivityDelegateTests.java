@@ -38,7 +38,7 @@ public class LoginCodeActivityDelegateTests extends
         DigitsActivityDelegateTests<LoginCodeActivityDelegate> {
     @Override
     public LoginCodeActivityDelegate getDelegate() {
-        return spy(new DummyLoginCodeActivityDelegate());
+        return spy(new DummyLoginCodeActivityDelegate(scribeService));
     }
 
     public void testIsValid() {
@@ -126,6 +126,7 @@ public class LoginCodeActivityDelegateTests extends
         verify(editText).setOnClickListener(captorClick.capture());
         final View.OnClickListener listener = captorClick.getValue();
         listener.onClick(null);
+        verify(scribeService).click(DigitsScribeConstants.Element.RESEND);
         verify(activity).finish();
         verifyResultCode(activity, DigitsActivity.RESULT_RESEND_CONFIRMATION);
     }
@@ -134,6 +135,7 @@ public class LoginCodeActivityDelegateTests extends
         delegate.controller = controller;
         delegate.onResume();
         verify(controller).onResume();
+        verify(scribeService).impression();
     }
 
     public void testSetUpSmsIntercept_permissionDenied() {
@@ -158,5 +160,8 @@ public class LoginCodeActivityDelegateTests extends
 
     public class DummyLoginCodeActivityDelegate extends LoginCodeActivityDelegate {
 
+        DummyLoginCodeActivityDelegate(DigitsScribeService scribeService) {
+            super(scribeService);
+        }
     }
 }

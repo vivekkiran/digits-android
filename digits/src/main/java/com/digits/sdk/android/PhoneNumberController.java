@@ -36,7 +36,6 @@ import io.fabric.sdk.android.services.common.CommonUtils;
 class PhoneNumberController extends DigitsControllerImpl implements
         PhoneNumberTask.Listener {
     private final TosView tosView;
-    private final DigitsScribeService scribeService;
     final CountryListSpinner countryCodeSpinner;
     String phoneNumber;
     boolean voiceEnabled;
@@ -63,10 +62,9 @@ class PhoneNumberController extends DigitsControllerImpl implements
                           SessionManager<DigitsSession> sessionManager, TosView tosView,
                           DigitsScribeService scribeService) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
-                sessionManager);
+                sessionManager, scribeService);
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
-        this.scribeService = scribeService;
         voiceEnabled = false;
         resendState = false;
     }

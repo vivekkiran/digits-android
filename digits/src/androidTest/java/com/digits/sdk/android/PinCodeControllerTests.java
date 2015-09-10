@@ -34,7 +34,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         super.setUp();
         controller = new PinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE,
-                errors, new ActivityClassManagerImp());
+                errors, new ActivityClassManagerImp(), scribeService);
     }
 
     @Override
@@ -48,6 +48,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final DigitsSessionResponse response = TestConstants.DIGITS_USER;
         final Result<DigitsSessionResponse> result = new Result(response, null);
         callback.success(result);
+        verify(scribeService).success();
         verify(sessionManager).setActiveSession(DigitsSession.create(response,
                 PHONE_WITH_COUNTRY_CODE));
         verify(sendButton).showFinish();
@@ -71,6 +72,7 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
         final ArgumentCaptor<DigitsCallback> callbackArgumentCaptor = ArgumentCaptor.forClass
                 (DigitsCallback.class);
         controller.executeRequest(context);
+        verify(scribeService).click(DigitsScribeConstants.Element.SUBMIT);
         verify(sendButton).showProgress();
         verify(digitsClient).verifyPin(eq(REQUEST_ID), eq(USER_ID), eq(CODE),
                 callbackArgumentCaptor.capture());

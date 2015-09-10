@@ -36,15 +36,12 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     private CountryListSpinner countrySpinner;
     private Verification verification;
     private TosView tosView;
-    private DigitsScribeService scribeService;
-
     @Override
     public void setUp() throws Exception {
         super.setUp();
         verification = Verification.sms;
         countrySpinner = mock(CountryListSpinner.class);
         tosView = mock(TosView.class);
-        scribeService = mock(DigitsScribeService.class);
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
                 new ActivityClassManagerImp(), sessionManager, tosView, scribeService);
