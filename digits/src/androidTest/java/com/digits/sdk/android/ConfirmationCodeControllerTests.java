@@ -20,9 +20,9 @@ package com.digits.sdk.android;
 import android.os.Bundle;
 import android.text.Editable;
 
-import org.apache.http.HttpStatus;
 import org.mockito.ArgumentCaptor;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import retrofit.client.Header;
@@ -45,7 +45,7 @@ public class ConfirmationCodeControllerTests extends
 
     public void testExecuteRequest_success() throws Exception {
         final DigitsCallback callback = executeRequest();
-        final Response response = new Response(TWITTER_URL, HttpStatus.SC_ACCEPTED, "",
+        final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_ACCEPTED, "",
                 new ArrayList<Header>(), null);
         final DigitsUser user = new DigitsUser(USER_ID, "");
         callback.success(user, response);

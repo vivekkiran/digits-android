@@ -20,12 +20,12 @@ package com.digits.sdk.android;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterAuthToken;
 
-import org.apache.http.HttpStatus;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 
 import retrofit.client.Header;
@@ -50,8 +50,8 @@ public class DigitsSessionTests {
         headers.add(new Header(DigitsSession.TOKEN_HEADER, TestConstants.TOKEN));
         headers.add(new Header(DigitsSession.SECRET_HEADER, TestConstants.SECRET));
 
-        final Response response = new Response(TestConstants.TWITTER_URL, HttpStatus.SC_ACCEPTED,
-                "", headers, null);
+        final Response response = new Response(TestConstants.TWITTER_URL,
+                HttpURLConnection.HTTP_ACCEPTED, "", headers, null);
         final DigitsUser user = new DigitsUser(TestConstants.USER_ID,
                 DigitsSession.DEFAULT_PHONE_NUMBER);
         final DigitsSession session = DigitsSession.create(new Result<>(user, response),
@@ -117,7 +117,7 @@ public class DigitsSessionTests {
     public void testCreate_nullResultData() throws Exception {
         try {
             final Response response = new Response(TestConstants.TWITTER_URL,
-                    HttpStatus.SC_ACCEPTED, DigitsSession.DEFAULT_PHONE_NUMBER,
+                    HttpURLConnection.HTTP_ACCEPTED, DigitsSession.DEFAULT_PHONE_NUMBER,
                     new ArrayList<Header>(), null);
             DigitsSession.create(new Result<DigitsUser>(null, response), TestConstants.PHONE);
             fail();

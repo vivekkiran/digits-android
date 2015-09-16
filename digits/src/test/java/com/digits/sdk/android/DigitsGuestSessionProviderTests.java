@@ -25,7 +25,6 @@ import com.twitter.sdk.android.core.TwitterApiException;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Service;
 import com.twitter.sdk.android.core.internal.oauth.OAuth2Token;
 
-import org.apache.http.HttpStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -33,6 +32,7 @@ import org.mockito.ArgumentCaptor;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.annotation.Config;
 
+import java.net.HttpURLConnection;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -79,8 +79,8 @@ public class DigitsGuestSessionProviderTests {
 
     @Test
     public void testGuestAuthCallback_success() throws Exception {
-        final Response response = new Response(TestConstants.TWITTER_URL, HttpStatus.SC_ACCEPTED,
-                "", new ArrayList<Header>(), null);
+        final Response response = new Response(TestConstants.TWITTER_URL,
+                HttpURLConnection.HTTP_ACCEPTED, "", new ArrayList<Header>(), null);
         final DigitsGuestSessionProvider.GuestAuthCallback guestAuthCallback =
                 new DigitsGuestSessionProvider.GuestAuthCallback(sessionManager, sessionCallback);
         guestAuthCallback.success(mock(OAuth2Token.class), response);
