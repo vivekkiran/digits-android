@@ -126,9 +126,10 @@ public class PhoneNumberActivityDelegateTests extends
 
         DummyPhoneNumberController(ResultReceiver resultReceiver, StateButton stateButton,
                                    EditText phoneEditText, CountryListSpinner countryCodeSpinner,
-                                   TosView tosView, DigitsScribeService scribeService) {
+                                   TosView tosView, DigitsScribeService scribeService,
+                                   boolean emailCollection) {
             super(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
-                    tosView, scribeService);
+                    tosView, scribeService, emailCollection);
         }
     }
 }

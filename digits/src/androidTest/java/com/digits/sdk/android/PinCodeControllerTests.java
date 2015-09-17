@@ -17,24 +17,36 @@
 
 package com.digits.sdk.android;
 
+import android.content.ComponentName;
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 
+import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
+import org.mockito.MockitoAnnotations;
 
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 public class PinCodeControllerTests extends DigitsControllerTests<PinCodeController> {
+    @Captor
+    ArgumentCaptor<Callback<VerifyAccountResponse>> callbackArgumentCaptor;
+    @Captor
+    private ArgumentCaptor<Intent> intentArgumentCaptor;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
+        MockitoAnnotations.initMocks(this);
         controller = new PinCodeController(resultReceiver, sendButton, phoneEditText,
                 sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE,
-                errors, new ActivityClassManagerImp(), scribeService);
+                errors, new ActivityClassManagerImp(), scribeService, false);
     }
 
     @Override
@@ -85,5 +97,92 @@ public class PinCodeControllerTests extends DigitsControllerTests<PinCodeControl
 
     public void testValidateInput_empty() throws Exception {
         assertFalse(controller.validateInput(EMPTY_CODE));
+    }
+
+    public void testExecuteRequest_successWithEmailRequestSessionHasEmail() throws Exception {
+        final DigitsSessionResponse response = TestConstants.DIGITS_USER;
+        final Result<DigitsSessionResponse> result = new Result(response, null);
+        final Result<VerifyAccountResponse> resultEmailRequest = new Result(
+                TestConstants.getVerifyAccountResponse(), null);
+        controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
+                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                new ActivityClassManagerImp(), scribeService, true);
+
+        final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
+        callback.success(result);
+        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
+                .getValue();
+        emailRequestCallback.success(resultEmailRequest);
+        verify(scribeService).success();
+        final DigitsSession session = DigitsSession.create(
+                TestConstants.getVerifyAccountResponse());
+        verifyEmailRequest(session);
+    }
+
+
+    public void testExecuteRequest_successWithEmailRequestFailure() throws Exception {
+        final DigitsSessionResponse response = TestConstants.DIGITS_USER;
+        final Result<DigitsSessionResponse> result = new Result(response, null);
+        controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
+                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                new ActivityClassManagerImp(), scribeService, true);
+
+        final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
+        callback.success(result);
+
+        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
+                .getValue();
+        emailRequestCallback.failure(TestConstants.ANY_EXCEPTION);
+        verify(scribeService).error(any(DigitsException.class));
+        verify(phoneEditText).setError(null);
+        verify(sendButton).showError();
+    }
+
+    public void testExecuteRequest_successWithEmailRequestSessionNoEmail() throws Exception {
+        final DigitsSessionResponse response = TestConstants.DIGITS_USER;
+        final Result<DigitsSessionResponse> result = new Result(response, null);
+        final Result<VerifyAccountResponse> resultEmailRequest = new Result(
+                TestConstants.getVerifyAccountResponseNoEmail(), null);
+        final ComponentName emailRequestComponent = new ComponentName(context,
+                controller.activityClassManager.getEmailRequestActivity());
+        controller = new DummyPinCodeController(resultReceiver, sendButton, phoneEditText,
+                sessionManager, digitsClient, REQUEST_ID, USER_ID, PHONE_WITH_COUNTRY_CODE, errors,
+                new ActivityClassManagerImp(), scribeService, true);
+
+        final DigitsCallback<DigitsSessionResponse> callback = executeRequest();
+        callback.success(result);
+        verify(controller.getAccountService(null)).verifyAccount(callbackArgumentCaptor.capture());
+        final Callback<VerifyAccountResponse> emailRequestCallback = callbackArgumentCaptor
+                .getValue();
+        emailRequestCallback.success(resultEmailRequest);
+        final DigitsSession session = DigitsSession.create(
+                TestConstants.getVerifyAccountResponseNoEmail());
+        verify(sessionManager).setActiveSession(session);
+        verify(context).startActivityForResult(intentArgumentCaptor.capture(), eq(DigitsActivity
+                .REQUEST_CODE));
+        final Intent intent = intentArgumentCaptor.getValue();
+        assertEquals(emailRequestComponent, intent.getComponent());
+        final Bundle bundle = intent.getExtras();
+        assertTrue(BundleManager.assertContains(bundle, DigitsClient.EXTRA_PHONE,
+                DigitsClient.EXTRA_RESULT_RECEIVER));
+    }
+
+    private void verifyEmailRequest(DigitsSession session) {
+        verify(sessionManager).setActiveSession(session);
+        verify(sendButton).showFinish();
+        final ArgumentCaptor<Runnable> runnableArgumentCaptor = ArgumentCaptor.forClass
+                (Runnable.class);
+        verify(phoneEditText).postDelayed(runnableArgumentCaptor.capture(),
+                eq(DigitsControllerImpl.POST_DELAY_MS));
+        final Runnable runnable = runnableArgumentCaptor.getValue();
+        runnable.run();
+
+        final ArgumentCaptor<Bundle> bundleArgumentCaptor = ArgumentCaptor.forClass(Bundle.class);
+        verify(resultReceiver).send(eq(LoginResultReceiver.RESULT_OK),
+                bundleArgumentCaptor.capture());
+        assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
+                (DigitsClient.EXTRA_PHONE));
     }
 }

@@ -24,8 +24,9 @@
               android:paddingLeft="@dimen/padding_container"
               android:paddingRight="@dimen/padding_container">
 
-    <com.digits.sdk.android.DigitsAuthButton
+    <Button
         android:id="@+id/signup_button"
+        android:text="@string/dgts__login_digits_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

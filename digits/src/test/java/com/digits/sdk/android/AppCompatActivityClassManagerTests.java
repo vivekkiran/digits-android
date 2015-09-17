@@ -69,4 +69,10 @@ public class AppCompatActivityClassManagerTests  {
         assertEquals(PinCodeActionBarActivity.class,
                 activityClassManager.getPinCodeActivity());
     }
+
+    @Test
+    public void testEmailRequestActivity() throws Exception {
+        assertEquals(EmailRequestActionBarActivity.class,
+                activityClassManager.getEmailRequestActivity());
+    }
 }

@@ -77,6 +77,7 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
         errors = mock(ErrorCodes.class);
         scribeService = mock(DigitsScribeService.class);
         when(context.getPackageName()).thenReturn(getClass().getPackage().toString());
+        when(context.getResources()).thenReturn(getContext().getResources());
     }
 
     public void testShowTOS() throws Exception {
@@ -121,8 +122,11 @@ public abstract class DigitsControllerTests<T extends DigitsControllerImpl> exte
     }
 
     public void testHandleError_unrecoverableExceptionStartFallback() throws Exception {
-        controller.handleError(context, UNRECOVERABLE_EXCEPTION);
-        verify(scribeService).error(UNRECOVERABLE_EXCEPTION);
+        controller.handleError(context, new UnrecoverableException(ERROR_MESSAGE));
+        verifyUnrecoverableException();
+    }
+
+    void verifyUnrecoverableException() {
         verify(scribeService).failure();
         verifyNoInteractions(sendButton, phoneEditText);
         verify(context).startActivity(intentCaptor.capture());

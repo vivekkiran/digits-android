@@ -14,25 +14,16 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
-import android.app.Activity;
+import android.content.res.Resources;
 
+import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 
-public interface ActivityClassManager {
-
-    Class<? extends Activity> getPhoneNumberActivity();
-
-    Class<? extends Activity> getConfirmationActivity();
-
-    Class<? extends Activity> getLoginCodeActivity();
-
-    Class<? extends Activity> getFailureActivity();
-
-    Class<? extends Activity> getContactsActivity();
-
-    Class<? extends Activity> getPinCodeActivity();
-
-    Class<? extends Activity> getEmailRequestActivity();
+public class EmailErrorCodes extends DigitsErrorCodes {
+    public EmailErrorCodes(Resources resources) {
+        super(resources);
+        codeIdMap.put(TwitterApiErrorConstants.EMAIL_ALREADY_REGISTERED,
+                R.string.dgts__try_again_email);
+    }
 }

@@ -14,30 +14,30 @@
  * limitations under the License.
  *
  */
-
 package com.digits.sdk.android;
 
 import android.app.Activity;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.os.ResultReceiver;
+import android.text.InputType;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
 import io.fabric.sdk.android.services.common.CommonUtils;
 
-class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
+
+public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     EditText editText;
     StateButton stateButton;
     TextView termsText;
     TextView resendText;
     DigitsController controller;
-    SmsBroadcastReceiver receiver;
     Activity activity;
     DigitsScribeService scribeService;
+    TextView titleText;
 
-    public ConfirmationCodeActivityDelegate(DigitsScribeService scribeService) {
+    EmailRequestActivityDelegate(DigitsScribeService scribeService) {
         this.scribeService = scribeService;
     }
 
@@ -55,6 +55,7 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
     @Override
     public void init(Activity activity, Bundle bundle) {
         this.activity = activity;
+        titleText = (TextView) activity.findViewById(R.id.dgts__titleText);
         editText = (EditText) activity.findViewById(R.id.dgts__confirmationEditText);
         stateButton = (StateButton) activity.findViewById(R.id.dgts__createAccount);
         termsText = (TextView) activity.findViewById(R.id.dgts__termsTextCreateAccount);
@@ -62,57 +63,52 @@ class ConfirmationCodeActivityDelegate extends DigitsActivityDelegateImpl {
 
         controller = initController(bundle);
 
+        editText.setHint(R.string.dgts__email_request_edit_hint);
+        titleText.setText(R.string.dgts__email_request_title);
+
         setUpEditText(activity, controller, editText);
         setUpSendButton(activity, controller, stateButton);
         setUpTermsText(activity, controller, termsText);
-        setUpResendText(activity, resendText);
-        setUpSmsIntercept(activity, editText);
+        setUpResendText(resendText);
 
         CommonUtils.openKeyboard(activity, editText);
     }
 
-    DigitsController initController(Bundle bundle) {
-        return new ConfirmationCodeController(
-                bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                stateButton, editText, bundle.getString(DigitsClient.EXTRA_PHONE), scribeService,
-                bundle.getBoolean(DigitsClient.EXTRA_EMAIL));
+    @Override
+    public void setUpSendButton(final Activity activity, final DigitsController controller,
+                                StateButton stateButton) {
+        stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__continue,
+                R.string.dgts__continue);
+        stateButton.showStart();
+        super.setUpSendButton(activity, controller, stateButton);
     }
 
-    protected void setUpResendText(final Activity activity, TextView resendText) {
-        resendText.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                scribeService.click(DigitsScribeConstants.Element.RESEND);
-                activity.setResult(DigitsActivity.RESULT_RESEND_CONFIRMATION);
-                activity.finish();
-            }
-        });
+    @Override
+    public void setUpEditText(final Activity activity, final DigitsController controller,
+                              EditText editText) {
+        editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);
+        super.setUpEditText(activity, controller, editText);
     }
 
     @Override
     public void setUpTermsText(Activity activity, DigitsController controller, TextView termsText) {
-        termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_text_create));
+        termsText.setText(getFormattedTerms(activity, R.string.dgts__terms_email_request));
         super.setUpTermsText(activity, controller, termsText);
+    }
+
+    private void setUpResendText(TextView resendText) {
+        resendText.setVisibility(View.GONE);
+    }
+
+    private DigitsController initController(Bundle bundle) {
+        return new EmailRequestController(stateButton, editText,
+                bundle.<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
+                bundle.getString(DigitsClient.EXTRA_PHONE), scribeService);
     }
 
     @Override
     public void onResume() {
         scribeService.impression();
         controller.onResume();
-    }
-
-    @Override
-    public void onDestroy() {
-        if (receiver != null) {
-            activity.unregisterReceiver(receiver);
-        }
-    }
-
-    protected void setUpSmsIntercept(Activity activity, EditText editText) {
-        if (CommonUtils.checkPermission(activity, "android.permission.RECEIVE_SMS")) {
-            final IntentFilter filter = new IntentFilter("android.provider.Telephony.SMS_RECEIVED");
-            receiver = new SmsBroadcastReceiver(editText);
-            activity.registerReceiver(receiver, filter);
-        }
     }
 }

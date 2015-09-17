@@ -41,6 +41,7 @@ public class DigitsClient {
     public static final String THIRD_PARTY_CONFIRMATION_CODE = "third_party_confirmation_code";
     public static final String EXTRA_FALLBACK_REASON = "fallback_reason";
     public static final String EXTRA_AUTH_CONFIG = "auth_config";
+    public static final String EXTRA_EMAIL = "email_enabled";
     public static final String CLIENT_IDENTIFIER = "digits_sdk";
 
     private final Digits digits;
@@ -93,9 +94,10 @@ public class DigitsClient {
         startSignUpWithBundle(callback, createBundleForAuthFlow(callback));
     }
 
-    protected void startSignUp(AuthCallback callback, String phoneNumber) {
+    protected void startSignUp(AuthCallback callback, String phoneNumber,
+                               boolean emailCollection) {
         startSignUpWithBundle(callback, createBundleForAuthFlow(callback,
-                phoneNumber == null ? "" : phoneNumber));
+                phoneNumber == null ? "" : phoneNumber, emailCollection));
     }
 
     private void startSignUpWithBundle(AuthCallback callback, Bundle bundle) {
@@ -109,9 +111,11 @@ public class DigitsClient {
         }
     }
 
-    private Bundle createBundleForAuthFlow(AuthCallback callback, String phoneNumber) {
+    private Bundle createBundleForAuthFlow(AuthCallback callback, String phoneNumber,
+                                           boolean emailCollection) {
         final Bundle bundle = createBundleForAuthFlow(callback);
         bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
         return bundle;
     }
 

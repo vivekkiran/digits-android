@@ -153,13 +153,13 @@ public class DigitsClientTests {
 
     @Test
     public void testStartSignUp_withPhone() throws Exception {
-        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE);
+        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
         verifyCallbackInReceiver(callback);
     }
 
     @Test
     public void testStartSignUp_withNullPhone() throws Exception {
-        verifySignUpWithProvidedPhone(callback, null);
+        verifySignUpWithProvidedPhone(callback, null, TestConstants.ANY_BOOLEAN);
         verifyCallbackInReceiver(callback);
     }
 
@@ -171,7 +171,7 @@ public class DigitsClientTests {
 
     @Test
     public void testStartSignUp_nullListenerWithPhone() throws Exception {
-        verifySignUpWithProvidedPhone(null, TestConstants.PHONE);
+        verifySignUpWithProvidedPhone(null, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
         verifyCallbackInReceiver(null);
     }
 
@@ -187,7 +187,7 @@ public class DigitsClientTests {
     @Test
     public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(callback, TestConstants.PHONE);
+        digitsClient.startSignUp(callback, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
         verify(scribeService).impression();
         verify(scribeService).success();
         verify(callback).success(userSession, null);
@@ -203,7 +203,7 @@ public class DigitsClientTests {
     @Test
     public void testStartSignUp_loggedOutUserWithPhone() throws Exception {
         when(sessionManager.getActiveSession()).thenReturn(guestSession);
-        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE);
+        verifySignUpWithProvidedPhone(callback, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
         verifyCallbackInReceiver(callback);
     }
 
@@ -288,8 +288,9 @@ public class DigitsClientTests {
         assertTrue(component.equals(capturedIntent.getComponent()));
     }
 
-    private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone) {
-        digitsClient.startSignUp(callback, phone);
+    private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone,
+                                               boolean emailCollection) {
+        digitsClient.startSignUp(callback, phone, emailCollection);
         verify(scribeService).impression();
         verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
@@ -299,6 +300,8 @@ public class DigitsClientTests {
         capturedIntent = argument.getValue();
         assertEquals(phone == null ? "" : phone, capturedIntent.getStringExtra(DigitsClient
                 .EXTRA_PHONE));
+        assertEquals(emailCollection, capturedIntent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
         assertTrue(component.equals(capturedIntent.getComponent()));
     }
 

@@ -22,21 +22,23 @@ import android.net.Uri;
 import android.os.ResultReceiver;
 import android.widget.EditText;
 
-import io.fabric.sdk.android.services.common.CommonUtils;
-
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.SessionManager;
 
+import io.fabric.sdk.android.services.common.CommonUtils;
+
 class ConfirmationCodeController extends DigitsControllerImpl {
     private final String phoneNumber;
+    private final Boolean isEmailCollection;
 
     ConfirmationCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                                EditText phoneEditText, String phoneNumber,
-                               DigitsScribeService scribeService) {
+                               DigitsScribeService scribeService, boolean isEmailCollection) {
         this(resultReceiver, stateButton, phoneEditText, phoneNumber,
                 Digits.getSessionManager(), Digits.getInstance().getDigitsClient(),
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService);
+                Digits.getInstance().getActivityClassManager(), scribeService,
+                isEmailCollection);
     }
 
     /**
@@ -46,10 +48,11 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                                EditText phoneEditText, String phoneNumber,
                                SessionManager<DigitsSession> sessionManager, DigitsClient client,
                                ErrorCodes errors, ActivityClassManager activityClassManager,
-                               DigitsScribeService scribeService) {
+                               DigitsScribeService scribeService, boolean isEmailCollection) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
                 sessionManager, scribeService);
         this.phoneNumber = phoneNumber;
+        this.isEmailCollection = isEmailCollection;
     }
 
     @Override
@@ -64,8 +67,14 @@ class ConfirmationCodeController extends DigitsControllerImpl {
                         @Override
                         public void success(Result<DigitsUser> result) {
                             scribeService.success();
-                            final DigitsSession session = DigitsSession.create(result, phoneNumber);
-                            loginSuccess(context, session, phoneNumber);
+                            final DigitsSession session =
+                                    DigitsSession.create(result, phoneNumber);
+                            if (isEmailCollection) {
+                                sessionManager.setActiveSession(session);
+                                startEmailRequest(context, phoneNumber);
+                            } else {
+                                loginSuccess(context, session, phoneNumber);
+                            }
                         }
 
                     });

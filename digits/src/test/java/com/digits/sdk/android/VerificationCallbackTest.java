@@ -63,7 +63,7 @@ public class VerificationCallbackTest {
     @Test
     public void testSuccess_tokenChanged() throws Exception {
         final DigitsSession changedSession = new DigitsSession(TestConstants.ANY_TOKEN,
-                TestConstants.USER_ID, TestConstants.PHONE);
+                TestConstants.USER_ID, TestConstants.PHONE, TestConstants.EMAIL);
         when(sessionManager.getSession(TestConstants.USER_ID)).thenReturn(changedSession);
 
         verificationCallback.addSessionListener(sessionListener);
@@ -80,7 +80,7 @@ public class VerificationCallbackTest {
     public void testSuccess_phoneChanged() throws Exception {
         final DigitsSession changedSession =
                 new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET),
-                        TestConstants.USER_ID, TestConstants.ES_RAW_PHONE);
+                        TestConstants.USER_ID, TestConstants.ES_RAW_PHONE, TestConstants.EMAIL);
         when(sessionManager.getSession(TestConstants.USER_ID)).thenReturn(changedSession);
 
         verificationCallback.addSessionListener(sessionListener);

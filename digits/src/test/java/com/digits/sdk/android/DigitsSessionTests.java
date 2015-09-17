@@ -58,7 +58,7 @@ public class DigitsSessionTests {
                 TestConstants.PHONE);
         final DigitsSession newSession = new DigitsSession(new TwitterAuthToken(TestConstants.TOKEN,
                 TestConstants.SECRET),
-                TestConstants.USER_ID, TestConstants.PHONE);
+                TestConstants.USER_ID, TestConstants.PHONE, DigitsSession.DEFAULT_EMAIL);
         assertEquals(session, newSession);
     }
 
@@ -68,7 +68,7 @@ public class DigitsSessionTests {
         final DigitsSession session = DigitsSession.create(response, TestConstants.PHONE);
         final DigitsSession newSession = new DigitsSession(
                 new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET),
-                TestConstants.USER_ID, TestConstants.PHONE);
+                TestConstants.USER_ID, TestConstants.PHONE, DigitsSession.DEFAULT_EMAIL);
         assertEquals(session, newSession);
     }
 
@@ -157,7 +157,7 @@ public class DigitsSessionTests {
                 DigitsSession.create(TestConstants.getVerifyAccountResponse());
         final DigitsSession expectedSession = new DigitsSession(new TwitterAuthToken
                 (TestConstants.TOKEN, TestConstants.SECRET), TestConstants.USER_ID,
-                TestConstants.PHONE);
+                TestConstants.PHONE, TestConstants.EMAIL);
         assertEquals(expectedSession, digitsSession);
     }
 

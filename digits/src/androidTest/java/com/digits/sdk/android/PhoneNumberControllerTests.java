@@ -36,6 +36,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     private CountryListSpinner countrySpinner;
     private Verification verification;
     private TosView tosView;
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
@@ -44,8 +45,9 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         tosView = mock(TosView.class);
         controller = new PhoneNumberController(resultReceiver,
                 sendButton, phoneEditText, countrySpinner, digitsClient, errors,
-                new ActivityClassManagerImp(), sessionManager, tosView, scribeService);
+                new ActivityClassManagerImp(), sessionManager, tosView, scribeService, false);
         assertFalse(controller.voiceEnabled);
+        assertFalse(controller.emailCollection);
         assertFalse(controller.resendState);
         when(countrySpinner.getTag()).thenReturn(COUNTRY_CODE);
     }
@@ -57,9 +59,28 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         callback.success(createAuthResponse(), null);
 
         assertTrue(controller.voiceEnabled);
+        assertFalse(controller.emailCollection);
         verify(phoneEditText).postDelayed(any(Runnable.class),
                 eq(PhoneNumberController.POST_DELAY_MS));
         verify(sendButton).showFinish();
+    }
+
+    public void testExecuteRequest_successMailEnabled() throws Exception {
+        controller.emailCollection = true;
+
+        final DigitsCallback<AuthResponse> callback = executeRequest();
+        callback.success(createAuthResponse(), null);
+
+        assertTrue(controller.emailCollection);
+    }
+
+    public void testExecuteRequest_successMailDisabled() throws Exception {
+        controller.emailCollection = true;
+
+        final DigitsCallback<AuthResponse> callback = executeRequest();
+        callback.success(createAuthResponseDisabledEmail(), null);
+
+        assertFalse(controller.emailCollection);
     }
 
     public void testExecuteRequest_successVoiceVerification() throws Exception {
@@ -72,6 +93,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         callback.success(createAuthResponse(), null);
 
         assertTrue(controller.voiceEnabled);
+        assertFalse(controller.emailCollection);
         verify(phoneEditText).postDelayed(any(Runnable.class),
                 eq(PhoneNumberController.POST_DELAY_MS));
         verify(sendButton).showFinish();
@@ -85,6 +107,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         callback.success(createAuthResponse(), null);
 
         assertTrue(controller.voiceEnabled);
+        assertFalse(controller.emailCollection);
         verify(phoneEditText).postDelayed(any(Runnable.class),
                 eq(PhoneNumberController.POST_DELAY_MS));
         verify(sendButton).showFinish();
@@ -110,7 +133,7 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testHandleError_couldNotAuthenticateException() throws Exception {
         final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
         data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
-        data.authConfig = createAuthConfig(true, true);
+        data.authConfig = createAuthConfig(true, true, true);
         final Intent intent = handleErrorSuccess(data);
         assertTrue(controller.voiceEnabled);
         assertEquals(ConfirmationCodeActivity.class.getName(),
@@ -118,6 +141,40 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
         assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
+    }
+
+    public void testHandleError_couldNotAuthenticateExceptionEnabledEmail() throws Exception {
+        controller.emailCollection = true;
+        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
+        data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
+        data.authConfig = createAuthConfig(true, true, true);
+        final Intent intent = handleErrorSuccess(data);
+        assertTrue(controller.emailCollection);
+        assertEquals(ConfirmationCodeActivity.class.getName(),
+                intent.getComponent().getClassName());
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
+        assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
+    }
+
+    public void testHandleError_couldNotAuthenticateExceptionDisabledEmail() throws Exception {
+        controller.emailCollection = true;
+        final DeviceRegistrationResponse data = new DeviceRegistrationResponse();
+        data.normalizedPhoneNumber = PHONE_WITH_COUNTRY_CODE;
+        data.authConfig = createAuthConfig(true, true, false);
+        final Intent intent = handleErrorSuccess(data);
+        assertFalse(controller.emailCollection);
+        assertEquals(ConfirmationCodeActivity.class.getName(),
+                intent.getComponent().getClassName());
+        assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(data.normalizedPhoneNumber, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
+        assertEquals(data.authConfig, intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
     }
 
     public void testHandleError_couldNotAuthenticateExceptionNullData() throws Exception {
@@ -128,6 +185,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertEquals(resultReceiver, intent.getExtras().get(DigitsClient.EXTRA_RESULT_RECEIVER));
         assertEquals(PHONE, intent.getExtras().get(DigitsClient.EXTRA_PHONE));
         assertNull(intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG));
+        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
     }
 
     private Intent handleErrorSuccess(DeviceRegistrationResponse data) {
@@ -157,6 +216,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         assertEquals(USER_ID, intent.getLongExtra(DigitsClient.EXTRA_USER_ID, 0));
         assertEquals(true,
                 ((AuthConfig) intent.getParcelableExtra(DigitsClient.EXTRA_AUTH_CONFIG)).tosUpdate);
+        assertEquals(controller.emailCollection, intent.getBooleanExtra(DigitsClient.EXTRA_EMAIL,
+                false));
     }
 
     public void testValidateInput_valid() throws Exception {
@@ -264,7 +325,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testHandleError_operatorUnsupportedWithVoiceEnabled() throws Exception {
         assertFalse(controller.voiceEnabled);
         controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
-                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, true)));
+                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, true,
+                true)));
         assertTrue(controller.voiceEnabled);
         assertResendWithVoiceEnabled();
         verify(phoneEditText).setError(ERROR_MESSAGE);
@@ -274,7 +336,8 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
     public void testHandleError_operatorUnsupportedWithVoiceDisable() throws Exception {
         assertFalse(controller.voiceEnabled);
         controller.handleError(context, new OperatorUnsupportedException(ERROR_MESSAGE,
-                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, false)));
+                TwitterApiErrorConstants.OPERATOR_UNSUPPORTED, createAuthConfig(true, false,
+                true)));
         assertFalse(controller.voiceEnabled);
         verify(phoneEditText).setError(ERROR_MESSAGE);
         verify(sendButton).showError();
@@ -290,14 +353,24 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         final AuthResponse authResponse = new AuthResponse();
         authResponse.requestId = REQUEST_ID;
         authResponse.userId = USER_ID;
-        authResponse.authConfig = createAuthConfig(true, true);
+        authResponse.authConfig = createAuthConfig(true, true, true);
         return authResponse;
     }
 
-    private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled) {
+    private AuthResponse createAuthResponseDisabledEmail() {
+        final AuthResponse authResponse = new AuthResponse();
+        authResponse.requestId = REQUEST_ID;
+        authResponse.userId = USER_ID;
+        authResponse.authConfig = createAuthConfig(true, true, false);
+        return authResponse;
+    }
+
+    private AuthConfig createAuthConfig(boolean tosUpdate, boolean isVoiceEnabled,
+                                        boolean isEmailEnabled) {
         final AuthConfig authConfig = new AuthConfig();
         authConfig.tosUpdate = tosUpdate;
         authConfig.isVoiceEnabled = isVoiceEnabled;
+        authConfig.isEmailEnabled = isEmailEnabled;
         return authConfig;
     }
 

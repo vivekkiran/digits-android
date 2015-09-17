@@ -49,4 +49,10 @@ class ActivityClassManagerImp implements ActivityClassManager {
     public Class<? extends Activity> getPinCodeActivity() {
         return PinCodeActivity.class;
     }
+
+    @Override
+    public Class<? extends Activity> getEmailRequestActivity() {
+        return EmailRequestActivity.class;
+    }
+
 }

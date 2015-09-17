@@ -56,12 +56,12 @@ class PinCodeActivityDelegate extends DigitsActivityDelegateImpl {
         CommonUtils.openKeyboard(activity, editText);
     }
 
-    DigitsController initController(Bundle bundle) {
-        return new PinCodeController(bundle
-                .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
-                stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
-                bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
-                .EXTRA_PHONE), scribeService);
+        DigitsController initController(Bundle bundle) {
+            return new PinCodeController(bundle
+                    .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER),
+                    stateButton, editText, bundle.getString(DigitsClient.EXTRA_REQUEST_ID),
+                    bundle.getLong(DigitsClient.EXTRA_USER_ID), bundle.getString(DigitsClient
+                    .EXTRA_PHONE), scribeService, bundle.getBoolean(DigitsClient.EXTRA_EMAIL));
     }
 
     @Override

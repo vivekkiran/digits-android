@@ -33,6 +33,9 @@ import static org.junit.Assert.assertNull;
 public class DigitsSessionSerializerTests {
     private static final long CREATED_AT = 1414450780L;
     public static final String FULL_SESSION_JSON = "{\"phone_number\":\"" + TestConstants.PHONE + "\","
+            + "\"email\":{"
+            + "\"address\":\"" + TestConstants.EMAIL.address + "\","
+            + "\"is_verified\":" + TestConstants.EMAIL.verified + "},"
             + "\"auth_token\":{\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"
             + "\"token\":\"token\","
@@ -40,13 +43,20 @@ public class DigitsSessionSerializerTests {
             + "\"created_at\":" + CREATED_AT + "}},"
             + "\"id\":1}";
     public static final String SESSION_JSON_EMPTY_PHONE_NUMBER = "{\"phone_number\":\"\","
+            + "\"email\":{"
+            + "\"address\":\"" + TestConstants.EMAIL.address + "\","
+            + "\"is_verified\":" + TestConstants.EMAIL.verified + "},"
             + "\"auth_token\":{\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"
             + "\"token\":\"token\","
             + "\"secret\":\"secret\","
             + "\"created_at\":" + CREATED_AT + "}},"
             + "\"id\":1}";
-    public static final String SESSION_JSON_NULL_PHONE_NUMBER = "{\"auth_token\":{\"auth_type\":\"oauth1a\","
+    public static final String SESSION_JSON_NULL_PHONE_NUMBER = "{"
+            + "\"email\":{"
+            + "\"address\":\"" + TestConstants.EMAIL.address + "\","
+            + "\"is_verified\":" + TestConstants.EMAIL.verified + "},"
+            + "\"auth_token\":{\"auth_type\":\"oauth1a\","
             + "\"auth_token\":{"
             + "\"token\":\"token\","
             + "\"secret\":\"secret\","
@@ -71,24 +81,24 @@ public class DigitsSessionSerializerTests {
     public void testDeserialize_session() throws Exception {
         final DigitsSession session = serializer.deserialize(FULL_SESSION_JSON);
         assertEquals(new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
-                TestConstants.TOKEN, TestConstants.SECRET,
-                CREATED_AT), 1, TestConstants.PHONE), session);
+                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1, TestConstants.PHONE,
+                TestConstants.EMAIL), session);
     }
 
     @Test
     public void testDeserialize_sessionWithNullPhoneNumber() throws Exception {
         final DigitsSession session = serializer.deserialize(SESSION_JSON_NULL_PHONE_NUMBER);
         assertEquals(new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
-                TestConstants.TOKEN, TestConstants.SECRET,
-                CREATED_AT), 1, DigitsSession.DEFAULT_PHONE_NUMBER), session);
+                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1,
+                DigitsSession.DEFAULT_PHONE_NUMBER, TestConstants.EMAIL), session);
     }
 
     @Test
     public void testDeserialize_sessionWithEmptyPhoneNumber() throws Exception {
         final DigitsSession session = serializer.deserialize(SESSION_JSON_EMPTY_PHONE_NUMBER);
         assertEquals(new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
-                TestConstants.TOKEN, TestConstants.SECRET,
-                CREATED_AT), 1, DigitsSession.DEFAULT_PHONE_NUMBER), session);
+                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1,
+                DigitsSession.DEFAULT_PHONE_NUMBER, TestConstants.EMAIL), session);
     }
 
     @Test
@@ -106,14 +116,16 @@ public class DigitsSessionSerializerTests {
     @Test
     public void testSerialize_session() throws Exception {
         final DigitsSession session = new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
-                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1, TestConstants.PHONE);
+                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1, TestConstants.PHONE,
+                TestConstants.EMAIL);
         assertEquals(FULL_SESSION_JSON, serializer.serialize(session));
     }
 
     @Test
-     public void testSerialize_sessionWithNullPhoneNumber() throws Exception {
+    public void testSerialize_sessionWithNullPhoneNumber() throws Exception {
         final DigitsSession session = new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
-                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1, null);
+                TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1, null,
+                TestConstants.EMAIL);
         assertEquals(SESSION_JSON_NULL_PHONE_NUMBER, serializer.serialize(session));
     }
 
@@ -121,7 +133,7 @@ public class DigitsSessionSerializerTests {
     public void testSerialize_sessionWithEmptyPhoneNumber() throws Exception {
         final DigitsSession session = new DigitsSession(AuthTokenUtils.createTwitterAuthToken(
                 TestConstants.TOKEN, TestConstants.SECRET, CREATED_AT), 1,
-                DigitsSession.DEFAULT_PHONE_NUMBER);
+                DigitsSession.DEFAULT_PHONE_NUMBER, TestConstants.EMAIL);
         assertEquals(SESSION_JSON_EMPTY_PHONE_NUMBER, serializer.serialize(session));
     }
 }

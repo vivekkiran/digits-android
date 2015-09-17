@@ -49,4 +49,9 @@ class AppCompatClassManagerImp implements ActivityClassManager {
     public Class<? extends Activity> getPinCodeActivity() {
         return PinCodeActionBarActivity.class;
     }
+
+    @Override
+    public Class<? extends Activity> getEmailRequestActivity() {
+        return EmailRequestActionBarActivity.class;
+    }
 }

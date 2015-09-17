@@ -35,14 +35,17 @@ class LoginCodeController extends DigitsControllerImpl {
     private final String requestId;
     private final long userId;
     private final String phoneNumber;
+    private final Boolean emailCollection;
 
     LoginCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                         EditText phoneEditText, String requestId, long userId, String
-                                phoneNumber, DigitsScribeService scribeService) {
+                                phoneNumber, DigitsScribeService scribeService,
+                        Boolean emailCollection) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService);
+                Digits.getInstance().getActivityClassManager(), scribeService,
+                emailCollection);
     }
 
     LoginCodeController(ResultReceiver resultReceiver,
@@ -50,12 +53,13 @@ class LoginCodeController extends DigitsControllerImpl {
                         SessionManager<DigitsSession> sessionManager, DigitsClient client,
                         String requestId, long userId, String phoneNumber, ErrorCodes errors,
                         ActivityClassManager activityClassManager,
-                        DigitsScribeService scribeService) {
+                        DigitsScribeService scribeService, Boolean emailCollection) {
         super(resultReceiver, stateButton, loginEditText, client, errors, activityClassManager,
                 sessionManager, scribeService);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
+        this.emailCollection = emailCollection;
     }
 
 
@@ -72,14 +76,35 @@ class LoginCodeController extends DigitsControllerImpl {
                             scribeService.success();
                             if (result.data.isEmpty()) {
                                 startPinCodeActivity(context);
+                            } else if (emailCollection) {
+                                final DigitsSession session =
+                                        DigitsSession.create(result.data, phoneNumber);
+                                emailRequest(context, session);
                             } else {
-                                final DigitsSession session = DigitsSession.create(result.data,
-                                        phoneNumber);
+                                final DigitsSession session =
+                                        DigitsSession.create(result.data, phoneNumber);
                                 loginSuccess(context, session, phoneNumber);
                             }
                         }
                     });
         }
+    }
+
+    private void emailRequest(final Context context, final DigitsSession session) {
+        getAccountService(session).verifyAccount
+                (new DigitsCallback<VerifyAccountResponse>(context, this) {
+                    @Override
+                    public void success(Result<VerifyAccountResponse> result) {
+                        final DigitsSession newSession =
+                                DigitsSession.create(result.data);
+                        if (canRequestEmail(newSession, session)) {
+                            sessionManager.setActiveSession(newSession);
+                            startEmailRequest(context, phoneNumber);
+                        } else {
+                            loginSuccess(context, newSession, phoneNumber);
+                        }
+                    }
+                });
     }
 
     private void startPinCodeActivity(Context context) {
@@ -88,6 +113,7 @@ class LoginCodeController extends DigitsControllerImpl {
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, requestId);
         bundle.putLong(DigitsClient.EXTRA_USER_ID, userId);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
     }
@@ -95,5 +121,14 @@ class LoginCodeController extends DigitsControllerImpl {
     @Override
     Uri getTosUri() {
         return DigitsConstants.TWITTER_TOS;
+    }
+
+    private boolean canRequestEmail(DigitsSession newSession, DigitsSession session) {
+        return emailCollection && newSession.getEmail().equals(DigitsSession.DEFAULT_EMAIL)
+                && newSession.getId() == session.getId();
+    }
+
+    DigitsApiClient.AccountService getAccountService(DigitsSession session) {
+        return new DigitsApiClient(session).getAccountService();
     }
 }

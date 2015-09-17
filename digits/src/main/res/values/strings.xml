@@ -124,4 +124,16 @@
     <string name="dgts__calling">Calling…</string>
     <!--suppress MissingTranslation -->
     <string name="dgts__unsupported_operator_error">Unable to send this number an SMS message.</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__terms_email_request">By tapping %1$sContinue%1$s above, you are adding your email to you %2$sDigitsProfile%3$s.</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__email_request_edit_hint">Email address</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__continue">Continue</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__email_request_title">Enter email address</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__try_again_email">Please check your email and try again</string>
+    <!--suppress MissingTranslation -->
+    <string name="dgts__invalid_email">Invalid Email. Try Again</string>
 </resources>

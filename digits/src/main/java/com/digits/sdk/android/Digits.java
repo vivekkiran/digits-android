@@ -61,7 +61,6 @@ public class Digits extends Kit<Void> {
 
     private int themeResId;
 
-
     public static Digits getInstance() {
         return Fabric.getKit(Digits.class);
     }
@@ -74,6 +73,7 @@ public class Digits extends Kit<Void> {
      *                 <strong>have a strong reference to this object</strong> or it will never receive
      *                 the result.
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback) {
         authenticate(callback, ThemeUtils.DEFAULT_THEME);
     }
@@ -81,23 +81,25 @@ public class Digits extends Kit<Void> {
     /**
      * Starts the authentication flow with the provided phone number.
      *
-     * @param callback {@link AuthCallback} to be called with the authentication result, or <code>null</code> if no callback is needed.
-     *                 Digits holds a weak reference to this object, therefore the caller should
-     *                 <strong>have a strong reference to this object</strong> or it will never receive
-     *                 the result.
+     * @param callback    {@link AuthCallback} to be called with the authentication result, or <code>null</code> if no callback is needed.
+     *                    Digits holds a weak reference to this object, therefore the caller should
+     *                    <strong>have a strong reference to this object</strong> or it will never receive
+     *                    the result.
      * @param phoneNumber the phone number to authenticate
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback, String phoneNumber) {
-        authenticate(callback, ThemeUtils.DEFAULT_THEME, phoneNumber);
+        authenticate(callback, ThemeUtils.DEFAULT_THEME, phoneNumber, false);
     }
 
     /**
      * Starts and sets the theme for the authentication flow.
      *
-     * @param callback will get the success or failure callback. It can be null,
-     * but the developer will not get any callback.
+     * @param callback   will get the success or failure callback. It can be null,
+     *                   but the developer will not get any callback.
      * @param themeResId Theme resource id
      */
+    @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback, int themeResId) {
         getInstance().setTheme(themeResId);
         getInstance().getDigitsClient().startSignUp(callback);
@@ -106,14 +108,16 @@ public class Digits extends Kit<Void> {
     /**
      * Starts the authentication flow with the provided phone number and theme.
      *
-     * @param callback will get the success or failure callback. It can be null,
-     * but the developer will not get any callback.
-     * @param themeResId Theme resource id
+     * @param callback    will get the success or failure callback. It can be null,
+     *                    but the developer will not get any callback.
+     * @param themeResId  Theme resource id
      * @param phoneNumber the phone number to authenticate
      */
-    public static void authenticate(AuthCallback callback, int themeResId, String phoneNumber) {
+    @SuppressWarnings("UnusedDeclaration")
+    public static void authenticate(AuthCallback callback, int themeResId, String phoneNumber,
+                                    boolean emailCollection) {
         getInstance().setTheme(themeResId);
-        getInstance().getDigitsClient().startSignUp(callback, phoneNumber);
+        getInstance().getDigitsClient().startSignUp(callback, phoneNumber, emailCollection);
     }
 
     public static SessionManager<DigitsSession> getSessionManager() {
@@ -122,7 +126,7 @@ public class Digits extends Kit<Void> {
 
     /**
      * Adds a {@link SessionListener} to the list of notifiers when the session changes.
-     *
+     * <p/>
      * Internally a strong reference is held to this sessionListener. In case this
      * sessionListener is instantiated inside an Activity context, when the Activity is being
      * destroyed, the sessionListener must be remove from the list {@see removeSessionListener}
@@ -261,6 +265,7 @@ public class Digits extends Kit<Void> {
     /**
      * Exposes the AuthConfig used in this instance of Digits kit
      */
+    @SuppressWarnings("UnusedDeclaration")
     public TwitterAuthConfig getAuthConfig() {
         return TwitterCore.getInstance().getAuthConfig();
     }

@@ -27,7 +27,7 @@ import static org.junit.Assert.assertEquals;
 
 @RunWith(RobolectricGradleTestRunner.class)
 @Config(constants = BuildConfig.class, sdk = 21)
-public class ActivityClassManagerImpTests  {
+public class ActivityClassManagerImpTests {
     private ActivityClassManagerImp activityClassManager;
 
     @Before
@@ -64,5 +64,10 @@ public class ActivityClassManagerImpTests  {
     @Test
     public void testPinCodeActivity() throws Exception {
         assertEquals(PinCodeActivity.class, activityClassManager.getPinCodeActivity());
+    }
+
+    @Test
+    public void testEmailRequestActivity() throws Exception {
+        assertEquals(EmailRequestActivity.class, activityClassManager.getEmailRequestActivity());
     }
 }

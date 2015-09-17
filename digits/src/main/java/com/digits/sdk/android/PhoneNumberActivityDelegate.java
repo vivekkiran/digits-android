@@ -90,7 +90,8 @@ class PhoneNumberActivityDelegate extends DigitsActivityDelegateImpl implements
     PhoneNumberController initController(Bundle bundle) {
         return new PhoneNumberController(bundle
                 .<ResultReceiver>getParcelable(DigitsClient.EXTRA_RESULT_RECEIVER), sendButton,
-                phoneEditText, countryCodeSpinner, this, scribeService);
+                phoneEditText, countryCodeSpinner, this, scribeService, bundle.getBoolean
+                (DigitsClient.EXTRA_EMAIL));
     }
 
     @Override

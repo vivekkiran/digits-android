@@ -166,4 +166,13 @@ abstract class DigitsControllerImpl implements DigitsController, TextWatcher {
             }
         }, POST_DELAY_MS);
     }
+
+    void startEmailRequest(final Context context, String phoneNumber) {
+        sendButton.showFinish();
+        final Intent intent = new Intent(context, activityClassManager.getEmailRequestActivity());
+        final Bundle bundle = getBundle(phoneNumber);
+        bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER, resultReceiver);
+        intent.putExtras(bundle);
+        startActivityForResult((Activity) context, intent);
+    }
 }

@@ -17,6 +17,7 @@
 
 package com.digits.sdk.android;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 
@@ -35,15 +36,16 @@ import static org.mockito.Mockito.when;
 
 public class ConfirmationCodeControllerTests extends
         DigitsControllerTests<ConfirmationCodeController> {
+
     @Override
     public void setUp() throws Exception {
         super.setUp();
         controller = new ConfirmationCodeController(resultReceiver, sendButton,
                 phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager, digitsClient, errors,
-                new ActivityClassManagerImp(), scribeService);
+                new ActivityClassManagerImp(), scribeService, false);
     }
 
-    public void testExecuteRequest_success() throws Exception {
+    public void testExecuteRequest_successAndMailRequestDisabled() throws Exception {
         final DigitsCallback callback = executeRequest();
         final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_ACCEPTED, "",
                 new ArrayList<Header>(), null);
@@ -64,6 +66,29 @@ public class ConfirmationCodeControllerTests extends
                 bundleArgumentCaptor.capture());
         assertEquals(PHONE_WITH_COUNTRY_CODE, bundleArgumentCaptor.getValue().getString
                 (DigitsClient.EXTRA_PHONE));
+    }
+
+    public void testExecuteRequest_successAndMailRequestEnabled() throws Exception {
+        controller = new ConfirmationCodeController(resultReceiver, sendButton,
+                phoneEditText, PHONE_WITH_COUNTRY_CODE, sessionManager, digitsClient, errors,
+                new ActivityClassManagerImp(), scribeService, true);
+
+        final Response response = new Response(TWITTER_URL, HttpURLConnection.HTTP_OK, "",
+                new ArrayList<Header>(), null);
+        final DigitsUser user = new DigitsUser(USER_ID, "");
+
+        final DigitsCallback callback = executeRequest();
+        callback.success(user, response);
+
+        verify(scribeService).success();
+        verify(sessionManager).setActiveSession(any(DigitsSession.class));
+        verify(sendButton).showFinish();
+        verify(context).startActivityForResult(intentCaptor.capture(),
+                eq(DigitsActivity.REQUEST_CODE));
+        final Intent intent = intentCaptor.getValue();
+        assertEquals(resultReceiver,
+                intent.getParcelableExtra(DigitsClient.EXTRA_RESULT_RECEIVER));
+        assertEquals(PHONE_WITH_COUNTRY_CODE, intent.getStringExtra(DigitsClient.EXTRA_PHONE));
     }
 
     DigitsCallback executeRequest() {

@@ -41,6 +41,8 @@ public class TestConstants {
     public static final String ES_COUNTRY_CODE = "34";
     public static final String ES_ISO2 = "es";
     public static final DigitsException ANY_EXCEPTION = new DigitsException("");
+    public static final Email EMAIL = new Email("support@fabric.io", false);
+    public static final boolean ANY_BOOLEAN = Boolean.TRUE;
 
     public static DigitsSessionResponse LOGGED_OUT_USER = getDigitsSessionResponse(
             TestConstants.TOKEN, TestConstants.SECRET, DigitsSession.LOGGED_OUT_USER_ID);
@@ -49,7 +51,7 @@ public class TestConstants {
             TestConstants.TOKEN, TestConstants.SECRET, TestConstants.USER_ID);
 
     private static DigitsSessionResponse getDigitsSessionResponse(String token, String secret,
-            long userId) {
+                                                                  long userId) {
         final DigitsSessionResponse response = new DigitsSessionResponse();
         response.token = token;
         response.secret = secret;
@@ -62,6 +64,7 @@ public class TestConstants {
         response.phoneNumber = TestConstants.PHONE;
         response.token = new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET);
         response.userId = TestConstants.USER_ID;
+        response.email = TestConstants.EMAIL;
         return response;
     }
 

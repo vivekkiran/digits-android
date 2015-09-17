@@ -17,20 +17,50 @@
 
 package com.digits.sdk.android;
 
+import com.twitter.sdk.android.core.TwitterAuthToken;
+import com.twitter.sdk.android.core.TwitterException;
+
 public class TestConstants {
     public static final String TOKEN = "token";
     public static final String SECRET = "secret";
     public static final long USER_ID = 11;
+    public static final String ANY_PHONE = "1234566";
+    public static final String VALID_EMAIL = "support@fabric.io";
+    public static final String INVALID_EMAIL = "invalidEmail@";
+    public static final Email EMAIL = new Email(VALID_EMAIL, false);
+    public static final TwitterException ANY_EXCEPTION = new TwitterException("");
+
+
+    public static DigitsSessionResponse LOGGED_OUT_USER = getDigitsSessionResponse(
+            TestConstants.TOKEN, TestConstants.SECRET, DigitsSession.LOGGED_OUT_USER_ID);
+
 
     public static DigitsSessionResponse DIGITS_USER = getDigitsSessionResponse(
-        TestConstants.TOKEN, TestConstants.SECRET, TestConstants.USER_ID);
+            TestConstants.TOKEN, TestConstants.SECRET, TestConstants.USER_ID);
 
     private static DigitsSessionResponse getDigitsSessionResponse(String token, String secret,
-            long userId) {
+                                                                  long userId) {
         final DigitsSessionResponse response = new DigitsSessionResponse();
         response.token = token;
         response.secret = secret;
         response.userId = userId;
+        return response;
+    }
+
+    public static VerifyAccountResponse getVerifyAccountResponse() {
+        final VerifyAccountResponse response = new VerifyAccountResponse();
+        response.phoneNumber = TestConstants.ANY_PHONE;
+        response.token = new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET);
+        response.userId = TestConstants.USER_ID;
+        response.email = TestConstants.EMAIL;
+        return response;
+    }
+
+    public static VerifyAccountResponse getVerifyAccountResponseNoEmail() {
+        final VerifyAccountResponse response = new VerifyAccountResponse();
+        response.phoneNumber = TestConstants.ANY_PHONE;
+        response.token = new TwitterAuthToken(TestConstants.TOKEN, TestConstants.SECRET);
+        response.userId = TestConstants.USER_ID;
         return response;
     }
 }

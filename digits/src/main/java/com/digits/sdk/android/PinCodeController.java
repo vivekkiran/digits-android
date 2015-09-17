@@ -31,14 +31,16 @@ class PinCodeController extends DigitsControllerImpl {
     private final String requestId;
     private final long userId;
     private final String phoneNumber;
+    private final Boolean isEmailCollection;
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
                       EditText phoneEditText, String requestId, long userId,
-                      String phoneNumber, DigitsScribeService scribeService) {
+                      String phoneNumber, DigitsScribeService scribeService,
+                      Boolean isEmailCollection) {
         this(resultReceiver, stateButton, phoneEditText, Digits.getSessionManager(),
                 Digits.getInstance().getDigitsClient(), requestId, userId, phoneNumber,
                 new ConfirmationErrorCodes(stateButton.getContext().getResources()),
-                Digits.getInstance().getActivityClassManager(), scribeService);
+                Digits.getInstance().getActivityClassManager(), scribeService, isEmailCollection);
     }
 
     PinCodeController(ResultReceiver resultReceiver, StateButton stateButton,
@@ -46,12 +48,13 @@ class PinCodeController extends DigitsControllerImpl {
                       DigitsClient digitsClient, String requestId, long userId,
                       String phoneNumber, ErrorCodes errors,
                       ActivityClassManager activityClassManager,
-                      DigitsScribeService scribeService) {
+                      DigitsScribeService scribeService, Boolean isEmailCollection) {
         super(resultReceiver, stateButton, phoneEditText, digitsClient, errors,
                 activityClassManager, sessionManager, scribeService);
         this.requestId = requestId;
         this.userId = userId;
         this.phoneNumber = phoneNumber;
+        this.isEmailCollection = isEmailCollection;
     }
 
     @Override
@@ -78,9 +81,41 @@ class PinCodeController extends DigitsControllerImpl {
                             scribeService.success();
                             final DigitsSession session = DigitsSession.create(result.data,
                                     phoneNumber);
-                            loginSuccess(context, session, phoneNumber);
+                            if (isEmailCollection) {
+                                emailRequest(context, session);
+                            } else {
+                                loginSuccess(context, session, phoneNumber);
+                            }
                         }
                     });
         }
     }
+
+    private boolean canRequestEmail(DigitsSession newSession, DigitsSession session) {
+        return isEmailCollection && newSession.getEmail().equals(DigitsSession.DEFAULT_EMAIL)
+                && newSession.getId() == session.getId();
+    }
+
+    private void emailRequest(final Context context, final DigitsSession session) {
+        getAccountService(session).verifyAccount
+                (new DigitsCallback<VerifyAccountResponse>(context, this) {
+                    @Override
+                    public void success(Result<VerifyAccountResponse>
+                                                result) {
+                        final DigitsSession newSession =
+                                DigitsSession.create(result.data);
+                        if (canRequestEmail(newSession, session)) {
+                            sessionManager.setActiveSession(newSession);
+                            startEmailRequest(context, phoneNumber);
+                        } else {
+                            loginSuccess(context, newSession, phoneNumber);
+                        }
+                    }
+                });
+    }
+
+    DigitsApiClient.AccountService getAccountService(DigitsSession session) {
+        return new DigitsApiClient(session).getAccountService();
+    }
+
 }

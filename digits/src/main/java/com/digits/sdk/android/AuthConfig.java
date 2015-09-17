@@ -26,12 +26,14 @@ import java.io.Serializable;
 
 class AuthConfig implements Parcelable, Serializable {
 
-    private static final long serialVersionUID = -3846326068096145508L;
+    private static final long serialVersionUID = 5677912742763353323L;
 
     @SerializedName("tos_update")
     public boolean tosUpdate;
     @SerializedName("voice_enabled")
     public boolean isVoiceEnabled;
+    @SerializedName("email_enabled")
+    public boolean isEmailEnabled;
 
     public AuthConfig() {
     }
@@ -39,6 +41,7 @@ class AuthConfig implements Parcelable, Serializable {
     protected AuthConfig(Parcel in) {
         tosUpdate = in.readInt() == 1;
         isVoiceEnabled = in.readInt() == 1;
+        isEmailEnabled = in.readInt() == 1;
     }
 
     public static final Creator<AuthConfig> CREATOR = new Creator<AuthConfig>() {
@@ -62,6 +65,7 @@ class AuthConfig implements Parcelable, Serializable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(tosUpdate ? 1 : 0);
         dest.writeInt(isVoiceEnabled ? 1 : 0);
+        dest.writeInt(isEmailEnabled ? 1 : 0);
     }
 
     @Override
@@ -71,13 +75,15 @@ class AuthConfig implements Parcelable, Serializable {
 
         final AuthConfig that = (AuthConfig) o;
 
-        return tosUpdate == that.tosUpdate && isVoiceEnabled == that.isVoiceEnabled;
+        return tosUpdate == that.tosUpdate && isVoiceEnabled == that.isVoiceEnabled &&
+                isEmailEnabled == that.isEmailEnabled;
     }
 
     @Override
     public int hashCode() {
         int result = (tosUpdate ? 1 : 0);
         result = 31 * result + (isVoiceEnabled ? 1 : 0);
+        result = 31 * result + (isEmailEnabled ? 1 : 0);
         return result;
     }
 }

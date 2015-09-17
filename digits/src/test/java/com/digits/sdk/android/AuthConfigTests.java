@@ -34,6 +34,7 @@ public class AuthConfigTests {
         final AuthConfig config = new AuthConfig();
         config.isVoiceEnabled = true;
         config.tosUpdate = false;
+        config.isEmailEnabled = true;
         final Parcel parcel = Parcel.obtain();
         config.writeToParcel(parcel, 0);
         parcel.setDataPosition(0);

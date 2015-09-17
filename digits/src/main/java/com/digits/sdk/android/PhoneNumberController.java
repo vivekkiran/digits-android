@@ -40,16 +40,17 @@ class PhoneNumberController extends DigitsControllerImpl implements
     String phoneNumber;
     boolean voiceEnabled;
     boolean resendState;
+    boolean emailCollection;
 
     PhoneNumberController(ResultReceiver resultReceiver,
                           StateButton stateButton, EditText phoneEditText,
                           CountryListSpinner countryCodeSpinner, TosView tosView,
-                          DigitsScribeService scribeService) {
+                          DigitsScribeService scribeService, boolean emailCollection) {
         this(resultReceiver, stateButton, phoneEditText, countryCodeSpinner,
                 Digits.getInstance().getDigitsClient(), new PhoneNumberErrorCodes(stateButton
                         .getContext().getResources()),
                 Digits.getInstance().getActivityClassManager(), Digits.getSessionManager(),
-                tosView, scribeService);
+                tosView, scribeService, emailCollection);
     }
 
     /**
@@ -60,13 +61,14 @@ class PhoneNumberController extends DigitsControllerImpl implements
                           DigitsClient client, ErrorCodes errors,
                           ActivityClassManager activityClassManager,
                           SessionManager<DigitsSession> sessionManager, TosView tosView,
-                          DigitsScribeService scribeService) {
+                          DigitsScribeService scribeService, boolean emailCollection) {
         super(resultReceiver, stateButton, phoneEditText, client, errors, activityClassManager,
                 sessionManager, scribeService);
         this.countryCodeSpinner = countryCodeSpinner;
         this.tosView = tosView;
         voiceEnabled = false;
         resendState = false;
+        this.emailCollection = emailCollection;
     }
 
     public void setPhoneNumber(PhoneNumber phoneNumber) {
@@ -100,6 +102,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
                             final AuthConfig config = result.data.authConfig;
                             if (config != null) {
                                 voiceEnabled = config.isVoiceEnabled;
+                                emailCollection = config.isEmailEnabled && emailCollection;
                             }
                             editText.postDelayed(new Runnable() {
                                 @Override
@@ -145,6 +148,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
                             final AuthConfig config = response.authConfig;
                             if (config != null) {
                                 voiceEnabled = config.isVoiceEnabled;
+                                emailCollection = config.isEmailEnabled && emailCollection;
                             }
                             phoneNumber = response.normalizedPhoneNumber == null ?
                                     phoneNumber : response.normalizedPhoneNumber;
@@ -173,6 +177,7 @@ class PhoneNumberController extends DigitsControllerImpl implements
         bundle.putString(DigitsClient.EXTRA_REQUEST_ID, response.requestId);
         bundle.putLong(DigitsClient.EXTRA_USER_ID, response.userId);
         bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
     }
@@ -181,9 +186,8 @@ class PhoneNumberController extends DigitsControllerImpl implements
         scribeService.success();
         final Intent intent = new Intent(context, activityClassManager.getConfirmationActivity());
         final Bundle bundle = getBundle();
-        if (response.authConfig != null) {
-            bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
-        }
+        bundle.putParcelable(DigitsClient.EXTRA_AUTH_CONFIG, response.authConfig);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
         intent.putExtras(bundle);
         startActivityForResult((Activity) context, intent);
     }

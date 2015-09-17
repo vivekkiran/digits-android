@@ -40,7 +40,7 @@ import com.twitter.sdk.android.core.models.User;
 
 public class DigitsMainActivity extends Activity {
     private AuthCallback callback;
-    private DigitsAuthButton digitsAuthButton;
+    private Button digitsAuthButton;
     private Button clearSessionButton;
     private Button verifyCredentialsButton;
     private SessionListener sessionListener;
@@ -82,10 +82,13 @@ public class DigitsMainActivity extends Activity {
             }
         };
 
-        //Example of how the Digits button works
-        digitsAuthButton = (DigitsAuthButton) findViewById(R.id.signup_button);
-        digitsAuthButton.setCallback(callback);
-        digitsAuthButton.setAuthTheme(R.style.LightTheme);
+        digitsAuthButton = (Button) findViewById(R.id.signup_button);
+        digitsAuthButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Digits.authenticate(callback, R.style.LightTheme,"",true);
+            }
+        });
 
         verifyCredentialsButton = (Button) findViewById(R.id.verify_credentials_button);
         verifyCredentialsButton.setOnClickListener(new View.OnClickListener() {

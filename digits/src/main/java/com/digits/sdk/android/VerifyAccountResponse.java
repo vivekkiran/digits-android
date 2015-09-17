@@ -27,4 +27,6 @@ public class VerifyAccountResponse {
     public long userId;
     @SerializedName("phone_number")
     public String phoneNumber;
+    @SerializedName("email_address")
+    public Email email;
 }

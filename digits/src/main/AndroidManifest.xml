@@ -62,6 +62,13 @@
             android:exported="false"
             />
         <activity
+            android:name=".EmailRequestActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible"
+            android:taskAffinity="com.digits.sdk.android"
+            />
+        <activity
             android:name=".PhoneNumberActionBarActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
@@ -95,6 +102,13 @@
             />
         <activity
             android:name=".PinCodeActionBarActivity"
+            android:configChanges="orientation|screenSize"
+            android:exported="false"
+            android:windowSoftInputMode="stateVisible"
+            android:taskAffinity="com.digits.sdk.android"
+            />
+        <activity
+            android:name=".EmailRequestActionBarActivity"
             android:configChanges="orientation|screenSize"
             android:exported="false"
             android:windowSoftInputMode="stateVisible"
