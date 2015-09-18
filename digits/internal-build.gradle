@@ -157,6 +157,9 @@ fabricKitRelease {
     minPlatformVersion {
         apiVersion "8"
     }
+    docsUrl = "https://docs.fabric.io/javadocs/digits/${project.version}/index.html"
+    twitterHandle = "@digits"
+    websiteUrl = "https://get.digits.com/"
 }
 
 project.tasks.getByName('fabricKitRelease').enabled = rootProject.ext.kitsForRelease.get(project.path)
