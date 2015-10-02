@@ -29,7 +29,7 @@ public class DigitsScribeClientImpl implements DigitsScribeClient {
     @Override
     public void scribe(EventNamespace ns) {
         if (scribeClient != null) {
-            scribeClient.scribeSyndicatedSdkImpressionEvents(ns);
+            scribeClient.scribe(ns);
         }
     }
 }
