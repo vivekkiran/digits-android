@@ -75,9 +75,9 @@
             android:layout_width="match_parent"
             android:layout_height="@dimen/tw__login_btn_height"
             android:layout_marginBottom="@dimen/dgts__margin_bottom"
-            digits:finishStateText="@string/dgts_verify"
-            digits:progressStateText="@string/dgts_verifying"
-            digits:startStateText="@string/dgts_verify"/>
+            digits:finishStateText="@string/dgts__done"
+            digits:progressStateText="@string/dgts__sending"
+            digits:startStateText="@string/dgts__continue"/>
 
         <TextView
             android:id="@+id/dgts__termsTextCreateAccount"

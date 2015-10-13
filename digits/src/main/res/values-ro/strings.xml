@@ -18,19 +18,11 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__cancel">Anulează</string>
-    <string name="dgts__communication_error">Eroare de comunicare</string>
     <string name="dgts__confirmation_code">Cod de confirmare</string>
     <string name="dgts__confirmation_edit_hint">Introdu codul de confirmare</string>
     <string name="dgts__confirmation_error">Nu s-a putut confirma numărul de telefon</string>
     <string name="dgts__confirmation_error_alternative">Ne pare rău, nu reușim să-ți trimitem un cod de confirmare.</string>
     <string name="dgts__confirmation_expired">Acest cod a expirat. Retrimite codul de confirmare.</string>
-    <string name="dgts__confirmation_send_text">Trimite codul de confirmare</string>
-    <string name="dgts__confirmation_sending_text">Se trimite codul de confirmare</string>
-    <string name="dgts__confirmation_sent_text">Cod de confirmare trimis</string>
-    <string name="dgts__confirmation_sms">Cod de confirmare: %1$s. Introdu codul în %2$s</string>
-    <string name="dgts__create_account_text">Creează un cont</string>
-    <string name="dgts__creating_account_text">Se creează contul</string>
     <string name="dgts__digits_logo_desc">pictograma siglei digits</string>
     <string name="dgts__digits_logo_name_desc">numele siglei digits</string>
     <string name="dgts__dismiss">Renunță</string>
@@ -43,12 +35,7 @@
     <string name="dgts__phone_number_edit_hint">Numărul tău</string>
     <string name="dgts__phone_number_text">Introdu numărul tău de telefon</string>
     <string name="dgts__pin_code_verification_title">Introdu codul de verificare în 2 pași</string>
-    <string name="dgts__resend">Retrimite</string>
     <string name="dgts__resend_confirmation_text">Retrimite codul de confirmare</string>
-    <string name="dgts__sign_in">Conectează-te</string>
-    <string name="dgts__sign_in_error">Nu am putut să te conectăm cu Twitter acum. Încearcă din nou mai târziu.</string>
-    <string name="dgts__sign_in_twitter">Conectează-te cu Twitter</string>
-    <string name="dgts__signing_in">În curs de conectare</string>
     <string name="dgts__success_desc">Pictograma Succes</string>
     <string name="dgts__terms_text">Dacă atingi %1$sTrimite codul de confirmare%1$s mai sus, Digits by\
 Twitter îți va trimite un mesaj SMS pentru a-ți confirma \
@@ -71,6 +58,4 @@ agenda în Digits by Twitter, ca să te ajutăm să găsești utilizatori %1$s p
 utilizatori %1$s să te găsească pe tine.</string>
     <string name="dgts__verification_code">Cod de verificare</string>
     <string name="dgts_pin_code_terms">Ai setat anterior un cod de verificare în 2 pași pe digits.com</string>
-    <string name="dgts_verify">Verifică</string>
-    <string name="dgts_verifying">Se verifică</string>
 </resources>

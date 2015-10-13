@@ -79,15 +79,6 @@ class LoginCodeActivityDelegate extends DigitsActivityDelegateImpl {
         }
     }
 
-    @Override
-    public void setUpSendButton(Activity activity, DigitsController controller,
-                                StateButton stateButton) {
-        stateButton.setStatesText(R.string.dgts__sign_in, R.string.dgts__signing_in,
-                R.string.dgts__sign_in);
-        stateButton.showStart();
-        super.setUpSendButton(activity, controller, stateButton);
-    }
-
     protected void setUpResendText(final Activity activity, TextView resendText) {
         resendText.setOnClickListener(new View.OnClickListener() {
             @Override

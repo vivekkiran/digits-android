@@ -111,14 +111,6 @@ public class LoginCodeActivityDelegateTests extends
                 eq(R.string.dgts__terms_text_sign_in));
     }
 
-    @Override
-    public void testSetUpSendButton() throws Exception {
-        super.testSetUpSendButton();
-        verify(button).setStatesText(R.string.dgts__sign_in, R.string.dgts__signing_in,
-                R.string.dgts__sign_in);
-        verify(button).showStart();
-    }
-
     public void testSetUpResendText() throws NoSuchFieldException, IllegalAccessException {
         delegate.controller = controller;
         delegate.setUpResendText(activity, editText);

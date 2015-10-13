@@ -68,14 +68,6 @@ public class EmailRequestActivityDelegateTests extends
         verify(textView).setText(new SpannedString(""));
     }
 
-    @Override
-    public void testSetUpSendButton() throws Exception {
-        super.testSetUpSendButton();
-        verify(button).setStatesText(R.string.dgts__continue, R.string.dgts__continue,
-                R.string.dgts__continue);
-        verify(button).showStart();
-    }
-
     public void testSetUpEditText() throws Exception {
         super.testSetUpEditText_noNextAction();
         verify(editText).setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);

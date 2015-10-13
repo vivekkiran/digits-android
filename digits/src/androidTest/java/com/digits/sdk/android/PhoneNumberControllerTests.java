@@ -283,9 +283,9 @@ public class PhoneNumberControllerTests extends DigitsControllerTests<PhoneNumbe
         controller.onTextChanged(PHONE, 0, 0, 0);
 
         assertFalse(controller.resendState);
-        verify(sendButton).setStatesText(R.string.dgts__confirmation_send_text,
-                R.string.dgts__confirmation_sending_text,
-                R.string.dgts__confirmation_sent_text);
+        verify(sendButton).setStatesText(R.string.dgts__continue,
+                R.string.dgts__sending,
+                R.string.dgts__done);
         verify(sendButton).showStart();
         verify(tosView).setText(R.string.dgts__terms_text);
     }

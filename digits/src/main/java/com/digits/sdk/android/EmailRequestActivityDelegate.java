@@ -75,15 +75,6 @@ public class EmailRequestActivityDelegate extends DigitsActivityDelegateImpl {
     }
 
     @Override
-    public void setUpSendButton(final Activity activity, final DigitsController controller,
-                                StateButton stateButton) {
-        stateButton.setStatesText(R.string.dgts__continue, R.string.dgts__continue,
-                R.string.dgts__continue);
-        stateButton.showStart();
-        super.setUpSendButton(activity, controller, stateButton);
-    }
-
-    @Override
     public void setUpEditText(final Activity activity, final DigitsController controller,
                               EditText editText) {
         editText.setInputType(InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS);

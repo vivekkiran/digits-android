@@ -224,9 +224,9 @@ class PhoneNumberController extends DigitsControllerImpl implements
         super.onTextChanged(s, start, before, count);
         if (Verification.voicecall.equals(getVerificationType())) {
             resendState = false;
-            sendButton.setStatesText(R.string.dgts__confirmation_send_text,
-                    R.string.dgts__confirmation_sending_text,
-                    R.string.dgts__confirmation_sent_text);
+            sendButton.setStatesText(R.string.dgts__continue,
+                    R.string.dgts__sending,
+                    R.string.dgts__done);
             sendButton.showStart();
             tosView.setText(R.string.dgts__terms_text);
         }

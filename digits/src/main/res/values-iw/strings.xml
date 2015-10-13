@@ -18,19 +18,11 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__cancel">ביטול</string>
-    <string name="dgts__communication_error">שגיאת תקשורת</string>
     <string name="dgts__confirmation_code">קוד אישור</string>
     <string name="dgts__confirmation_edit_hint">הזן קוד אישור</string>
     <string name="dgts__confirmation_error">לא ניתן לאשר את מספר הטלפון שלך</string>
     <string name="dgts__confirmation_error_alternative">מצטערים, נתקלנו בבעיה בשליחת קוד האישור.</string>
     <string name="dgts__confirmation_expired">תוקף הקוד פג. שלח מחדש קוד אישור.</string>
-    <string name="dgts__confirmation_send_text">שלח קוד אישור</string>
-    <string name="dgts__confirmation_sending_text">שולח קוד אישור</string>
-    <string name="dgts__confirmation_sent_text">קוד אישור נשלח</string>
-    <string name="dgts__confirmation_sms">קוד אישור: %1$s. הזן קוד זה ב%2$s</string>
-    <string name="dgts__create_account_text">צור חשבון</string>
-    <string name="dgts__creating_account_text">יצירת חשבון</string>
     <string name="dgts__digits_logo_desc">הסמל של Digits</string>
     <string name="dgts__digits_logo_name_desc">שם הסמל של Digits</string>
     <string name="dgts__dismiss">התעלם</string>
@@ -43,12 +35,7 @@
     <string name="dgts__phone_number_edit_hint">המספר שלך</string>
     <string name="dgts__phone_number_text">הזן את מספר הטלפון שלך</string>
     <string name="dgts__pin_code_verification_title">הזן קוד אימות בשני שלבים</string>
-    <string name="dgts__resend">שלח מחדש</string>
     <string name="dgts__resend_confirmation_text">שלח מחדש קוד אישור</string>
-    <string name="dgts__sign_in">כניסה</string>
-    <string name="dgts__sign_in_error">לא הצלחנו להכניס אותך לטוויטר בשלב זה. נסה שוב מאוחר יותר.</string>
-    <string name="dgts__sign_in_twitter">היכנס לטוויטר</string>
-    <string name="dgts__signing_in">נכנס</string>
     <string name="dgts__success_desc">סמל הצלחה</string>
     <string name="dgts__terms_text">לאחר ההקשה על %1$sשלח קוד אישור%1$s לעיל, Digits by Twitter שולח לך הודעת SMS כדי לאשר את מספר הטלפון שלך. ייתכן שתחויב בתשלום על העברת הודעות ונתונים.</string>
     <string name="dgts__terms_text_create">בהקשה על %1$sצור חשבון%1$s לעיל, אתה מסכים לתנאי השירות, למדיניות הפרטיות ולמדיניות קובצי ה-Cookie של Digits by Twitter, ולכך שמשתמשים אחרים של יישום זה יוכלו לגלות אותך באמצעות מספר טלפון ו/או דואר אלקטרוני.</string>
@@ -60,6 +47,4 @@
     <string name="dgts__upload_contacts">אנחנו משתמשים ב-Digits by Twitter לאיתור עוד חברים שלך המשתמשים ביישום זה. בעת ההקשה על \'אישור\', אנחנו מעלים את פנקס הכתובות שלך ל-Digits by Twitter כדי שנוכל לעזור לך לאתר משתמשים של %1$s שאתה מכיר, או לעזור למשתמשים אחרים של %1$s למצוא אותך.</string>
     <string name="dgts__verification_code">קוד אימות</string>
     <string name="dgts_pin_code_terms">הגדרת בעבר קוד אימות בשני שלבים באתר digits.com</string>
-    <string name="dgts_verify">אמת</string>
-    <string name="dgts_verifying">אימות</string>
 </resources>

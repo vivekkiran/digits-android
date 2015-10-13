@@ -18,19 +18,11 @@
   -->
 
 <resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
-    <string name="dgts__cancel">Annulla</string>
-    <string name="dgts__communication_error">Errore di comunicazione</string>
     <string name="dgts__confirmation_code">Codice di conferma</string>
     <string name="dgts__confirmation_edit_hint">Inserisci codice di conferma</string>
     <string name="dgts__confirmation_error">Impossibile confermare il tuo numero di telefono</string>
     <string name="dgts__confirmation_error_alternative">Spiacenti, non riusciamo a inviarti un codice di conferma.</string>
     <string name="dgts__confirmation_expired">Questo codice è scaduto. Reinvia codice di conferma.</string>
-    <string name="dgts__confirmation_send_text">Invia codice di conferma</string>
-    <string name="dgts__confirmation_sending_text">Invio codice di conferma in corso</string>
-    <string name="dgts__confirmation_sent_text">Codice di conferma inviato</string>
-    <string name="dgts__confirmation_sms">Codice di conferma: %1$s. Inserisci questo codice in %2$s</string>
-    <string name="dgts__create_account_text">Crea account</string>
-    <string name="dgts__creating_account_text">Creazione dell\'account in corso</string>
     <string name="dgts__digits_logo_desc">icona del logo su Digits</string>
     <string name="dgts__digits_logo_name_desc">nome del logo su Digits</string>
     <string name="dgts__dismiss">Rimuovi</string>
@@ -43,12 +35,7 @@
     <string name="dgts__phone_number_edit_hint">Il tuo numero</string>
     <string name="dgts__phone_number_text">Inserisci il tuo numero di telefono</string>
     <string name="dgts__pin_code_verification_title">Inserisci il codice di verifica in 2 passaggi</string>
-    <string name="dgts__resend">Reinvia</string>
     <string name="dgts__resend_confirmation_text">Reinvia codice di conferma</string>
-    <string name="dgts__sign_in">Accedi</string>
-    <string name="dgts__sign_in_error">Al momento non è stato possibile eseguire l\'accesso a Twitter. Riprova più tardi.</string>
-    <string name="dgts__sign_in_twitter">Accedi tramite Twitter</string>
-    <string name="dgts__signing_in">Accesso in corso</string>
     <string name="dgts__success_desc">Icona di avvenuta operazione</string>
     <string name="dgts__terms_text">Selezionando %1$sInvia codice di conferma%1$s qui sopra, ti verrà inviato un SMS da Digits by Twitter per confermare il tuo numero di telefono. Verranno applicate le tariffe standard.</string>
     <string name="dgts__terms_text_create">Selezionando %1$sCrea account%1$s qui sopra, accetti i Termini di servizio, l\'Informativa sulla privacy e l\'Informativa sull\'uso dei cookie di Digits by Twitter. Accetti inoltre che altri utenti di quest\'app possano trovarti tramite il tuo numero di telefono e/o la tua email.</string>
@@ -60,6 +47,4 @@
     <string name="dgts__upload_contacts">Utilizziamo Digits by Twitter per trovare altri tuoi amici che usano quest\'app. Selezionando Ok, caricheremo la tua rubrica su Digits by Twitter per aiutarti a trovare utenti di %1$s che conosci o per aiutare altri utenti di %1$s a trovarti.</string>
     <string name="dgts__verification_code">Codice di verifica</string>
     <string name="dgts_pin_code_terms">Precedentemente hai impostato un codice di verifica in 2 passaggi su digits.com</string>
-    <string name="dgts_verify">Verifica</string>
-    <string name="dgts_verifying">Verifica in corso</string>
 </resources>
