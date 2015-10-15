@@ -28,6 +28,8 @@ import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 
+import java.util.regex.Matcher;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.*;
@@ -38,6 +40,14 @@ public class SmsBroadcastReceiverTests {
     final String TEST_CODE = "635589";
     final String TEST_MESSAGE =
             "40404 - Confirmation code: 635589. Enter this code in your app. (Digits by Twitter)";
+    final String TEST_MESSAGE_JP =
+            "認証コードは 635589です。このコードをアプリに入力してください。(Digits by Twitter)";
+    final String TEST_MESSAGE_CN =
+            "確認碼： 635589。在你的應用程式中輸入這個確認碼 (Digits by Twitter)";
+    final String TEST_MESSAGE_DE =
+            "Bestätigungscode:  635589. Gib diesen Code in Deine App ein. (Digits by Twitter)";
+    final String TEST_MESSAGE_RU =
+            "Код подтверждения:  635589. Введите этот код в своём приложении. (Digits by Twitter)";
     byte[] pdu = {7, -111, 65, 64, 84, 5, 0, -8, 4, 11, -111, -111, 97, 117, 50, 21, -8, 0, 0,
             81, 32, 48, -127, 4, 82, 10, 83, 52, 24, 13, 70, 3, -75, 64, -61, -73, -37, -100,
             -106, -73, -61, -12, -12, -37, 13, 26, -65, -55, 101, 29, -56, 54, -85, -43, 112, 57,
@@ -53,6 +63,24 @@ public class SmsBroadcastReceiverTests {
         sms = mock(SmsMessage.class);
         editText = mock(EditText.class);
         receiver = new SmsBroadcastReceiver(editText);
+    }
+
+    @Test
+    public void testPattern() {
+        assertEquals(TEST_CODE, getCode(TEST_MESSAGE));
+        assertEquals(TEST_CODE, getCode(TEST_MESSAGE_JP));
+        assertEquals(TEST_CODE, getCode(TEST_MESSAGE_CN));
+        assertEquals(TEST_CODE, getCode(TEST_MESSAGE_DE));
+        assertEquals(TEST_CODE, getCode(TEST_MESSAGE_RU));
+    }
+
+    private String getCode(String msg) {
+        final Matcher matcher = receiver.patternConfirmationCode.matcher(msg);
+        if (matcher.find()) {
+            return matcher.group(1);
+        }
+
+        return null;
     }
 
     @Test

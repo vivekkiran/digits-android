@@ -29,7 +29,7 @@ import java.util.regex.Pattern;
 
 public class SmsBroadcastReceiver extends BroadcastReceiver {
     static final String PDU_EXTRA = "pdus";
-    final Pattern patternConfirmationCode = Pattern.compile(":\\s(\\d{6}).*Digits by Twitter");
+    final Pattern patternConfirmationCode = Pattern.compile("\\s(\\d{6}).*Digits by Twitter");
     final WeakReference<EditText> editTextWeakReference;
 
     SmsBroadcastReceiver(EditText editText) {
