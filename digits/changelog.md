@@ -2,7 +2,11 @@
 *Non-trivial pull requests should include an entry below. Entries must be suitable for inclusion in public-facing materials such as release notes and blog posts. Keep them short, sweet, and in the past tense. New entries go on top. When merging to deploy, add the version number and date.*
 
 ## Unreleased
+
+## v1.9.0
 * Added Email feature
+* Fixed parsing of confirmation code from SMS.
+* Removed usage of deprecated Apache HTTP Client constants.
 
 ## v1.8.0
 * Added dgts__logoDrawable to allow providing a custom logo
