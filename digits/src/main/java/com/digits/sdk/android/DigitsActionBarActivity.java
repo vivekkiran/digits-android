@@ -60,6 +60,7 @@ public abstract class DigitsActionBarActivity extends ActionBarActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        delegate.onActivityResult(requestCode, resultCode, this);
         if (resultCode == RESULT_FINISH_DIGITS && requestCode == REQUEST_CODE) {
             finish();
         }
