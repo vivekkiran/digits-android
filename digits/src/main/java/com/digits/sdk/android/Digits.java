@@ -178,9 +178,9 @@ public class Digits extends Kit<Void> {
     protected Void doInBackground() {
         // Trigger restoration of session
         sessionManager.getActiveSession();
+        scribeClient = setUpScribing();
         createDigitsClient();
         createContactsClient();
-        scribeClient = setUpScribing();
         userSessionMonitor = new SessionMonitor<>(getSessionManager(), getExecutorService(),
                 digitsSessionVerifier);
         userSessionMonitor.triggerVerificationIfNecessary();
