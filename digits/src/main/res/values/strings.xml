@@ -28,11 +28,9 @@
     <!-- Button text -->
     <!-- Terms and Conditions text displayed at the bottom of the screen -->
     <!--suppress MissingTranslation StringFormatCount-->
-    <string name="dgts__terms_text">By tapping %1$sContinue%1$s above, %2$sDigits
-        by Twitter%3$s will send you an SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
+    <string name="dgts__terms_text">By tapping %1$sContinue%1$s above, %2$sDigits by Twitter%3$s will send you an SMS message to confirm your phone number. Message &amp; data rates may apply.</string>
     <!--suppress MissingTranslation StringFormatCount-->
-    <string name="dgts__terms_text_call_me">By tapping %1$sCall
-    me%1$s above, %2$sDigits by Twitter%3$s will send you a voice call to confirm your phone number. Call &amp; data rates may apply.</string>
+    <string name="dgts__terms_text_call_me">By tapping %1$sCall me%1$s above, %2$sDigits by Twitter%3$s will send you a voice call to confirm your phone number. Call &amp; data rates may apply.</string>
     <!-- Confirmation code screen -->
     <string name="dgts__confirmation_edit_hint">Enter confirmation code</string>
     <!--suppress MissingTranslation -->
@@ -51,7 +49,7 @@
     <string name="dgts__not_now">Not now</string>
     <string name="dgts__try_again_phone_number">Please check your number and try again.</string>
     <string name="dgts__try_again_confirmation">Please check your code and try again.</string>
-    <!--suppress UnusedResources -->
+    <!--suppress UnusedResources MissingTranslation-->
     <string name="dgts__confirmation_expired">This code has expired. Please resend confirmation code.</string>
     <string name="dgts__network_error">Please check your network and try again.</string>
     <string name="dgts__try_another_phone">Try a different phone number</string>
