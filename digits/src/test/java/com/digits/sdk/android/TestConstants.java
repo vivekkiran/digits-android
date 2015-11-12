@@ -43,6 +43,8 @@ public class TestConstants {
     public static final DigitsException ANY_EXCEPTION = new DigitsException("");
     public static final Email EMAIL = new Email("support@fabric.io", false);
     public static final boolean ANY_BOOLEAN = Boolean.TRUE;
+    public static final int THEME_ID = 12;
+
 
     public static DigitsSessionResponse LOGGED_OUT_USER = getDigitsSessionResponse(
             TestConstants.TOKEN, TestConstants.SECRET, DigitsSession.LOGGED_OUT_USER_ID);

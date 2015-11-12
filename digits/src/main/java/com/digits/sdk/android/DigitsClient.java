@@ -90,39 +90,26 @@ public class DigitsClient {
         return new DigitsAuthRequestQueue(this, sessionProvider);
     }
 
-    protected void startSignUp(AuthCallback callback) {
-        startSignUpWithBundle(callback, createBundleForAuthFlow(callback));
-    }
-
-    protected void startSignUp(AuthCallback callback, String phoneNumber,
-                               boolean emailCollection) {
-        startSignUpWithBundle(callback, createBundleForAuthFlow(callback,
-                phoneNumber == null ? "" : phoneNumber, emailCollection));
-    }
-
-    private void startSignUpWithBundle(AuthCallback callback, Bundle bundle) {
+    protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {
         scribeService.impression();
         final DigitsSession session = sessionManager.getActiveSession();
         if (session != null && !session.isLoggedOutUser()) {
-            callback.success(session, null);
+            digitsAuthConfig.authCallback.success(session, null);
             scribeService.success();
         } else {
-            startPhoneNumberActivity(twitterCore.getContext(), bundle);
+            startPhoneNumberActivity(twitterCore.getContext(),
+                    createBundleForAuthFlow(digitsAuthConfig));
         }
     }
 
-    private Bundle createBundleForAuthFlow(AuthCallback callback, String phoneNumber,
-                                           boolean emailCollection) {
-        final Bundle bundle = createBundleForAuthFlow(callback);
-        bundle.putString(DigitsClient.EXTRA_PHONE, phoneNumber);
-        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, emailCollection);
-        return bundle;
-    }
-
-    private Bundle createBundleForAuthFlow(AuthCallback callback) {
+    private Bundle createBundleForAuthFlow(DigitsAuthConfig digitsAuthConfig) {
         final Bundle bundle = new Bundle();
+
         bundle.putParcelable(DigitsClient.EXTRA_RESULT_RECEIVER,
-                createResultReceiver(callback));
+                createResultReceiver(digitsAuthConfig.authCallback));
+        bundle.putString(DigitsClient.EXTRA_PHONE, digitsAuthConfig.phoneNumber);
+        bundle.putBoolean(DigitsClient.EXTRA_EMAIL, digitsAuthConfig.isEmailRequired);
+
         return bundle;
     }
 

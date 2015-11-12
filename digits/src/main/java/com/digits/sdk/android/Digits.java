@@ -72,7 +72,9 @@ public class Digits extends Kit<Void> {
      *                 Digits holds a weak reference to this object, therefore the caller should
      *                 <strong>have a strong reference to this object</strong> or it will never receive
      *                 the result.
+     * @deprecated replaced by {@link #authenticate(DigitsAuthConfig)} method
      */
+    @Deprecated
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback) {
         authenticate(callback, ThemeUtils.DEFAULT_THEME);
@@ -86,10 +88,17 @@ public class Digits extends Kit<Void> {
      *                    <strong>have a strong reference to this object</strong> or it will never receive
      *                    the result.
      * @param phoneNumber the phone number to authenticate
+     * @deprecated replaced by {@link #authenticate(DigitsAuthConfig)} method
      */
+    @Deprecated
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback, String phoneNumber) {
-        authenticate(callback, ThemeUtils.DEFAULT_THEME, phoneNumber, false);
+        final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withThemeResId(ThemeUtils.DEFAULT_THEME)
+                .withPhoneNumber(phoneNumber);
+
+        authenticate(digitsAuthConfigBuilder.build());
     }
 
     /**
@@ -98,11 +107,16 @@ public class Digits extends Kit<Void> {
      * @param callback   will get the success or failure callback. It can be null,
      *                   but the developer will not get any callback.
      * @param themeResId Theme resource id
+     * @deprecated replaced by {@link #authenticate(DigitsAuthConfig)} method
      */
+    @Deprecated
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback, int themeResId) {
-        getInstance().setTheme(themeResId);
-        getInstance().getDigitsClient().startSignUp(callback);
+        final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withThemeResId(themeResId);
+
+        authenticate(digitsAuthConfigBuilder.build());
     }
 
     /**
@@ -112,12 +126,25 @@ public class Digits extends Kit<Void> {
      *                    but the developer will not get any callback.
      * @param themeResId  Theme resource id
      * @param phoneNumber the phone number to authenticate
+     * @deprecated replaced by {@link #authenticate(DigitsAuthConfig)} method
      */
+    @Deprecated
     @SuppressWarnings("UnusedDeclaration")
     public static void authenticate(AuthCallback callback, int themeResId, String phoneNumber,
                                     boolean emailCollection) {
-        getInstance().setTheme(themeResId);
-        getInstance().getDigitsClient().startSignUp(callback, phoneNumber, emailCollection);
+        final DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withThemeResId(themeResId)
+                .withPhoneNumber(phoneNumber)
+                .withEmailCollection(emailCollection);
+
+        authenticate(digitsAuthConfigBuilder.build());
+    }
+
+    @SuppressWarnings("UnusedDeclaration")
+    public static void authenticate(DigitsAuthConfig digitsAuthConfig) {
+        getInstance().setTheme(digitsAuthConfig.themeResId);
+        getInstance().getDigitsClient().startSignUp(digitsAuthConfig);
     }
 
     public static SessionManager<DigitsSession> getSessionManager() {

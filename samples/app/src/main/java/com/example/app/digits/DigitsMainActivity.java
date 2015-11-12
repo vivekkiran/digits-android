@@ -26,7 +26,7 @@ import android.widget.Toast;
 
 import com.digits.sdk.android.AuthCallback;
 import com.digits.sdk.android.Digits;
-import com.digits.sdk.android.DigitsAuthButton;
+import com.digits.sdk.android.DigitsAuthConfig;
 import com.digits.sdk.android.DigitsException;
 import com.digits.sdk.android.DigitsSession;
 import com.digits.sdk.android.SessionListener;
@@ -86,7 +86,14 @@ public class DigitsMainActivity extends Activity {
         digitsAuthButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Digits.authenticate(callback, R.style.LightTheme,"",true);
+
+                DigitsAuthConfig.Builder digitsAuthConfigBuilder = new DigitsAuthConfig.Builder()
+                        .withAuthCallBack(callback)
+                        .withPhoneNumber("")
+                        .withEmailCollection()
+                        .withThemeResId(R.style.LightTheme);
+
+                Digits.authenticate(digitsAuthConfigBuilder.build());
             }
         });
 

@@ -19,14 +19,18 @@ package com.digits.sdk.android;
 
 import android.content.Context;
 
-import io.fabric.sdk.android.Fabric;
-import io.fabric.sdk.android.FabricTestUtils;
-
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterCore;
 
+import io.fabric.sdk.android.Fabric;
+import io.fabric.sdk.android.FabricTestUtils;
+
+import org.mockito.ArgumentCaptor;
+
 import static android.view.View.OnClickListener;
+
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
@@ -36,6 +40,7 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
     private AuthCallback callback;
     private OnClickListener clickListener;
     private Digits digits;
+    private DigitsAuthConfig digitsAuthConfig;
 
     @Override
     public void setUp() throws Exception {
@@ -45,20 +50,27 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
         button = new DigitsAuthMock(getContext());
         callback = mock(AuthCallback.class);
         clickListener = mock(OnClickListener.class);
+        digitsAuthConfig = new DigitsAuthConfig.Builder().withAuthCallBack(callback).build();
     }
 
     public void testOnClick() throws Exception {
+        final ArgumentCaptor<DigitsAuthConfig> digitsAuthConfigArg =
+            ArgumentCaptor.forClass(DigitsAuthConfig.class);
         button.setCallback(callback);
         button.setOnClickListener(clickListener);
         button.onClick(button);
-        verify(client).startSignUp(callback);
+        verify(client).startSignUp(digitsAuthConfigArg.capture());
+        assetDigitsAuthConfigEquals(digitsAuthConfig, digitsAuthConfigArg.getValue());
         verify(clickListener).onClick(button);
     }
 
     public void testOnClick_noOnClickListener() throws Exception {
+        final ArgumentCaptor<DigitsAuthConfig> digitsAuthConfigArg =
+            ArgumentCaptor.forClass(DigitsAuthConfig.class);
         button.setCallback(callback);
         button.onClick(button);
-        verify(client).startSignUp(callback);
+        verify(client).startSignUp(digitsAuthConfigArg.capture());
+        assetDigitsAuthConfigEquals(digitsAuthConfig, digitsAuthConfigArg.getValue());
         verifyNoInteractions(clickListener);
     }
 
@@ -66,11 +78,11 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
         try {
             button.setOnClickListener(clickListener);
             button.onClick(button);
-            verify(client).startSignUp(null);
             fail("Should throw IllegalArgumentException");
         } catch (IllegalArgumentException ex) {
             assertEquals("AuthCallback must not be null",
                     ex.getMessage());
+            verify(client, never()).startSignUp(null);
             verifyNoInteractions(client, callback);
         }
     }
@@ -95,9 +107,12 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
     }
 
     public void testOnClick_getDigitsClientCalled() throws Exception {
+        final ArgumentCaptor<DigitsAuthConfig> digitsAuthConfigArg =
+            ArgumentCaptor.forClass(DigitsAuthConfig.class);
         button.setCallback(callback);
         button.onClick(button);
-        verify(client).startSignUp(callback);
+        verify(client).startSignUp(digitsAuthConfigArg.capture());
+        assetDigitsAuthConfigEquals(digitsAuthConfig, digitsAuthConfigArg.getValue());
     }
 
     public void testGetDigitsClient() throws Exception {
@@ -120,6 +135,13 @@ public class DigitsAuthButtonTests extends DigitsAndroidTestCase {
     public void testAuthTheme() throws Exception {
         button.setAuthTheme(ANY_THEME);
         verify(digits).setTheme(ANY_THEME);
+    }
+
+    private void assetDigitsAuthConfigEquals(DigitsAuthConfig expected, DigitsAuthConfig actual) {
+        assertEquals(expected.themeResId, actual.themeResId);
+        assertEquals(expected.isEmailRequired, actual.isEmailRequired);
+        assertEquals(expected.phoneNumber, actual.phoneNumber);
+        assertEquals(expected.authCallback, actual.authCallback);
     }
 
     class DigitsAuthMock extends DigitsAuthButton {

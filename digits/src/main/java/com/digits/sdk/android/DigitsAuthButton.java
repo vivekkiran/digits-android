@@ -35,8 +35,8 @@ import android.widget.Button;
  */
 public class DigitsAuthButton extends Button implements View.OnClickListener {
     volatile DigitsClient digitsClient;
-    private AuthCallback callback;
     private OnClickListener onClickListener;
+    private DigitsAuthConfig.Builder digitsAuthConfigBuilder;
 
     public DigitsAuthButton(Context context) {
         this(context, null);
@@ -49,6 +49,7 @@ public class DigitsAuthButton extends Button implements View.OnClickListener {
     public DigitsAuthButton(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         setUpButton();
+        digitsAuthConfigBuilder = new DigitsAuthConfig.Builder();
         super.setOnClickListener(this);
     }
 
@@ -68,11 +69,9 @@ public class DigitsAuthButton extends Button implements View.OnClickListener {
 
     @Override
     public void onClick(View v) {
-        if (callback == null) {
-            throw new IllegalArgumentException("AuthCallback must not be null");
-        }
+        final DigitsAuthConfig digitsAuthConfig = digitsAuthConfigBuilder.build();
+        getDigitsClient().startSignUp(digitsAuthConfig);
 
-        getDigitsClient().startSignUp(callback);
         if (onClickListener != null) {
             onClickListener.onClick(v);
         }
@@ -82,7 +81,7 @@ public class DigitsAuthButton extends Button implements View.OnClickListener {
      * Sets the AuthCallback that will receive the result of the authentication process
      */
     public void setCallback(AuthCallback callback) {
-        this.callback = callback;
+        digitsAuthConfigBuilder.withAuthCallBack(callback);
     }
 
     /**

@@ -74,6 +74,7 @@ public class DigitsClientTests {
     private DigitsScribeClient scribeClient;
     private DigitsAuthRequestQueue authRequestQueue;
     private DigitsScribeService scribeService;
+    private DigitsAuthConfig digitsAuthConfig;
 
     @Before
     public void setUp() throws Exception {
@@ -89,7 +90,6 @@ public class DigitsClientTests {
         scribeClient = mock(DigitsScribeClient.class);
         scribeService = mock(DigitsScribeService.class);
         authRequestQueue = createAuthRequestQueue();
-
         userSession = DigitsSession.create(TestConstants.DIGITS_USER, TestConstants.PHONE);
         guestSession = DigitsSession.create(TestConstants.LOGGED_OUT_USER, "");
 
@@ -165,20 +165,34 @@ public class DigitsClientTests {
 
     @Test
     public void testStartSignUp_nullListener() throws Exception {
-        verifySignUp(null);
-        verifyCallbackInReceiver(null);
+        try {
+            verifySignUp(null);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("AuthCallback must not be null",
+                    ex.getMessage());
+        }
     }
 
     @Test
     public void testStartSignUp_nullListenerWithPhone() throws Exception {
-        verifySignUpWithProvidedPhone(null, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
-        verifyCallbackInReceiver(null);
+        try {
+            verifySignUpWithProvidedPhone(null, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
+            fail("Should throw IllegalArgumentException");
+        } catch (IllegalArgumentException ex) {
+            assertEquals("AuthCallback must not be null",
+                    ex.getMessage());
+        }
     }
 
     @Test
     public void testStartSignUp_callbackSuccess() throws Exception {
+        final DigitsAuthConfig configWithCallback = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withPhoneNumber(TestConstants.PHONE)
+                .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(callback);
+        digitsClient.startSignUp(configWithCallback);
         verify(scribeService).impression();
         verify(scribeService).success();
         verify(callback).success(userSession, null);
@@ -186,8 +200,12 @@ public class DigitsClientTests {
 
     @Test
     public void testStartSignUp_callbackSuccessWithPhone() throws Exception {
+        final DigitsAuthConfig configWithPhone = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection(TestConstants.ANY_BOOLEAN)
+                .build();
         when(sessionManager.getActiveSession()).thenReturn(userSession);
-        digitsClient.startSignUp(callback, TestConstants.PHONE, TestConstants.ANY_BOOLEAN);
+        digitsClient.startSignUp(configWithPhone);
         verify(scribeService).impression();
         verify(scribeService).success();
         verify(callback).success(userSession, null);
@@ -277,7 +295,11 @@ public class DigitsClientTests {
     }
 
     private void verifySignUp(AuthCallback callback) {
-        digitsClient.startSignUp(callback);
+        final DigitsAuthConfig configWithCallback = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .build();
+
+        digitsClient.startSignUp(configWithCallback);
         verify(scribeService).impression();
         verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
@@ -290,7 +312,12 @@ public class DigitsClientTests {
 
     private void verifySignUpWithProvidedPhone(AuthCallback callback, String phone,
                                                boolean emailCollection) {
-        digitsClient.startSignUp(callback, phone, emailCollection);
+        final DigitsAuthConfig digitsAuthConfig = new DigitsAuthConfig.Builder()
+                .withAuthCallBack(callback)
+                .withEmailCollection(emailCollection)
+                .withPhoneNumber(phone)
+                .build();
+        digitsClient.startSignUp(digitsAuthConfig);
         verify(scribeService).impression();
         verifyNoMoreInteractions(scribeService);
         final ArgumentCaptor<Intent> argument = ArgumentCaptor.forClass(Intent.class);
