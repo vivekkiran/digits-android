@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.9.1
+
+* Updated translations.
+
 ## v1.9.0
 * Added Email feature
 * Fixed parsing of confirmation code from SMS.
