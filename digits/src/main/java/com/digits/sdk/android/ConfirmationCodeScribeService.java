@@ -19,7 +19,7 @@ package com.digits.sdk.android;
 import com.twitter.sdk.android.core.internal.scribe.EventNamespace;
 
 class ConfirmationCodeScribeService implements DigitsScribeService {
-    static final String SIGNUP_COMPONENT = "sign_up";
+    static final String SIGNUP_COMPONENT = "signup";
     private final DigitsScribeClient scribeClient;
 
     ConfirmationCodeScribeService(DigitsScribeClient scribeClient) {
