@@ -140,13 +140,13 @@ public class ContactsUploadService extends IntentService {
     }
 
     void sendFailureBroadcast() {
-        final Intent localIntent = new Intent(UPLOAD_FAILED);
-        sendBroadcast(localIntent);
+        final Intent intent = new Intent(UPLOAD_FAILED);
+        sendBroadcast(intent);
     }
 
     void sendSuccessBroadcast(ContactsUploadResult extra) {
-        final Intent localIntent = new Intent(UPLOAD_COMPLETE);
-        localIntent.putExtra(UPLOAD_COMPLETE_EXTRA, extra);
-        sendBroadcast(localIntent);
+        final Intent intent = new Intent(UPLOAD_COMPLETE);
+        intent.putExtra(UPLOAD_COMPLETE_EXTRA, extra);
+        sendBroadcast(intent);
     }
 }
