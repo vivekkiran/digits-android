@@ -38,7 +38,7 @@ class DigitsScribeConstants {
             .setSection(SCRIBE_SECTION);
 
     enum Element {
-        COUNTRY_CODE("contry_code"), SUBMIT("submit"), RETRY("retry"), CALL("call"), CANCEL
+        COUNTRY_CODE("country_code"), SUBMIT("submit"), RETRY("retry"), CALL("call"), CANCEL
                 ("cancel"), RESEND("resend"), DISMISS("dismiss");
 
         private final String element;
