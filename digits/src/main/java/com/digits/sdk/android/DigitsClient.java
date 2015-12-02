@@ -17,6 +17,7 @@
 
 package com.digits.sdk.android;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
@@ -93,12 +94,12 @@ public class DigitsClient {
     protected void startSignUp(DigitsAuthConfig digitsAuthConfig) {
         scribeService.impression();
         final DigitsSession session = sessionManager.getActiveSession();
+
         if (session != null && !session.isLoggedOutUser()) {
             digitsAuthConfig.authCallback.success(session, null);
             scribeService.success();
         } else {
-            startPhoneNumberActivity(twitterCore.getContext(),
-                    createBundleForAuthFlow(digitsAuthConfig));
+            startPhoneNumberActivity(createBundleForAuthFlow(digitsAuthConfig));
         }
     }
 
@@ -117,12 +118,19 @@ public class DigitsClient {
         return new LoginResultReceiver(callback, sessionManager);
     }
 
-    private void startPhoneNumberActivity(Context context, Bundle bundle) {
-        final Intent intent = new Intent(context, digits.getActivityClassManager()
+    private void startPhoneNumberActivity(Bundle bundle) {
+        final Context appContext = twitterCore.getContext();
+        final Activity currentActivity = digits.getFabric().getCurrentActivity();
+        final Context selectedContext = (currentActivity != null && !currentActivity.isFinishing())
+                        ? currentActivity : appContext;
+        final int intentFlags = (currentActivity != null && !currentActivity.isFinishing())
+                ? 0 : (Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+
+        final Intent intent = new Intent(selectedContext, digits.getActivityClassManager()
                 .getPhoneNumberActivity());
         intent.putExtras(bundle);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        context.startActivity(intent);
+        intent.setFlags(intentFlags);
+        selectedContext.startActivity(intent);
     }
 
     protected void authDevice(final String phoneNumber, final Verification verificationType,
