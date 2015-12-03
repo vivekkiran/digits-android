@@ -24,7 +24,7 @@ import android.util.SparseIntArray;
 import com.twitter.sdk.android.core.TwitterApiErrorConstants;
 
 /**
- * More error information go/daasErrors
+ * Common error messages used in digits SDK.
  */
 class DigitsErrorCodes implements ErrorCodes {
     private static final int INITIAL_CAPACITY = 10;
@@ -52,9 +52,8 @@ class DigitsErrorCodes implements ErrorCodes {
 
     @Override
     public String getMessage(int code) {
-        final int id = codeIdMap.get(code, TwitterApiErrorConstants.UNKNOWN_ERROR);
-        return id == TwitterApiErrorConstants.UNKNOWN_ERROR ? getDefaultMessage() : resources
-                .getString(id);
+        final int idx = codeIdMap.indexOfKey(code);
+        return idx < 0 ? getDefaultMessage() : resources.getString(codeIdMap.valueAt(idx));
     }
 
     @Override
