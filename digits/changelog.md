@@ -3,6 +3,10 @@
 
 ## Unreleased
 
+## v1.9.2
+
+* Fix issue where Digits Activities are retained in recents.
+
 ## v1.9.1
 
 * Updated translations.
