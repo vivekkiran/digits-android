@@ -22,7 +22,7 @@ import android.os.Bundle;
 
 /**
  * FailureActivity should never be started from outside digits otherwise
- * will throw an IllegalAccessError
+ * will throw an {@link IllegalAccessError}.
  */
 public class FailureActivity extends Activity {
     FailureActivityDelegateImpl delegate;

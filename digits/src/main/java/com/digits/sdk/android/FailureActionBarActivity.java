@@ -22,7 +22,7 @@ import android.support.v7.app.ActionBarActivity;
 
 /**
  * FailureActionBarActivity should never be started from outside digits otherwise
- * will throw an IllegalAccessError
+ * will throw an {@link IllegalAccessError}.
  */
 public class FailureActionBarActivity extends ActionBarActivity {
     FailureActivityDelegateImpl delegate;

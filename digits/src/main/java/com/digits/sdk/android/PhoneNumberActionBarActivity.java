@@ -19,7 +19,7 @@ package com.digits.sdk.android;
 
 /**
  * PhoneNumberActionBarActivity should never be started from outside digits otherwise
- * will throw an IllegalAccessError
+ * will throw an {@link IllegalAccessError}.
  */
 
 public class PhoneNumberActionBarActivity extends DigitsActionBarActivity {
